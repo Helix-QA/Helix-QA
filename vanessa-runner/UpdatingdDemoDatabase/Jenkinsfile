@@ -14,14 +14,22 @@ pipeline {
         stage('Обновление в релизном хранилище'){
             steps{
                 script{
-                    if (params.NameBaseRelease.contains('FitnessRel')){def NameBaseUserRelease = "Администратор" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"}
-                    if (params.NameBaseRelease.contains('StomaRel')){def NameBaseUserRelease = "admin" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"}
-                    if (params.NameBaseRelease.contains('SalonRel')){def NameBaseUserRelease = "Администратор" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"}
+                    def NameBaseUserRelease = ""
+                    def releaseRepository = ""
+                    if (params.NameBaseRelease.contains('FitnessRel')){
+                        NameBaseUserRelease = "Администратор" 
+                        releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"}
+                    if (params.NameBaseRelease.contains('StomaRel')){
+                        NameBaseUserRelease = "admin"
+                        releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"}
+                    if (params.NameBaseRelease.contains('SalonRel')){
+                        NameBaseUserRelease = "Администратор" 
+                        releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"}
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${NameBaseRelease} --db-user ${NameBaseUserRelease}
-                    @call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${NameBaseRelease} --db-user ${NameBaseUserRelease}
-                    @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${NameBaseRelease} --db-user ${NameBaseUserRelease}
+                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
+                    @call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
+                    @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
                     """
                 }
             }
