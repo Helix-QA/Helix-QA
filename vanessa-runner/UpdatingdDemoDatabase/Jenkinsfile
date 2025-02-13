@@ -15,7 +15,7 @@ pipeline {
             steps{
                 script{
                     if (params.NameBaseRelease.contains('FitnessRel')){def NameBaseUserRelease = "Администратор" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"}
-                    if (params.NameBaseRelease.contains('StomaRel')){def NameBaseUserRelease = "Администратор" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"}
+                    if (params.NameBaseRelease.contains('StomaRel')){def NameBaseUserRelease = "admin" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"}
                     if (params.NameBaseRelease.contains('SalonRel')){def NameBaseUserRelease = "Администратор" def releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"}
                     bat """
                     chcp 65001
