@@ -10,25 +10,34 @@ pipeline {
         cfsrc = "D:\\cf\\cf.cf"
     } 
     stages {
+        stage('Инициализация параметров'){
+            steps{
+                script{
+                    // Установка значений переменных
+                    if (params.NameBaseRelease.contains('FitnessRel')) {
+                        env.nameBaseUserRelease = "Администратор"
+                        env.namefeature =  "fitness"
+                        env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"
+                    } else if (params.NameBaseRelease.contains('StomaRel')) {
+                        env.nameBaseUserRelease = "admin"
+                        env.namefeature = "stoma"
+                        env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"
+                    } else if (params.NameBaseRelease.contains('SalonRel')) {
+                        envnameBaseUserRelease = "Администратор"
+                        env.namefeature = "salon"
+                        env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"
+                    }
+                }
+            }
+        }
         stage('Обновление в релизном хранилище'){
             steps{
                 script{
-                    def NameBaseUserRelease = ""
-                    def releaseRepository = ""
-                    if (params.NameBaseRelease.contains('FitnessRel')){
-                        NameBaseUserRelease = "Администратор" 
-                        releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"}
-                    if (params.NameBaseRelease.contains('StomaRel')){
-                        NameBaseUserRelease = "admin"
-                        releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"}
-                    if (params.NameBaseRelease.contains('SalonRel')){
-                        NameBaseUserRelease = "Администратор" 
-                        releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"}
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
-                    @call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
-                    @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
+                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+                    @call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+                    @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
                     """
                 }
             }
@@ -38,13 +47,9 @@ pipeline {
                 stage('Выгрузка .cf файла конфигурации из ИБ') {
                     steps {
                         script {
-                            def NameBaseUserRelease = ""
-                            if (params.NameBaseRelease.contains('FitnessRel')){NameBaseUserRelease = "Администратор"}
-                            if (params.NameBaseRelease.contains('StomaRel')){NameBaseUserRelease = "admin"}
-                            if (params.NameBaseRelease.contains('SalonRel')){NameBaseUserRelease = "Администратор"}
                             bat """
                             chcp 65001
-                            @call ${VRUNNER_PATH} unload ${cfsrc} --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${NameBaseUserRelease}
+                            @call ${VRUNNER_PATH} unload ${cfsrc} --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
                             """
                         }
                     }
@@ -75,13 +80,9 @@ pipeline {
         stage('Первоначальное заполнение'){
             steps{
                 script{
-                    def namefeature = ""
-                    if (params.NameBaseRelease.contains('FitnessRel')){namefeature = "fitness"}
-                    if (params.NameBaseRelease.contains('StomaRel')){namefeature = "stoma"}
-                    if (params.NameBaseRelease.contains('SalonRel')){namefeature = "salon"}
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\${namefeature}.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/pusto --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
+                    @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\${env.namefeature}.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/pusto --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
                     """
                 }
             }
