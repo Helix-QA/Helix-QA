@@ -39,7 +39,6 @@ pipeline {
                     steps {
                         script {
                             def NameBaseUserRelease = ""
-                            def releaseRepository = ""
                             if (params.NameBaseRelease.contains('FitnessRel')){NameBaseUserRelease = "Администратор"}
                             if (params.NameBaseRelease.contains('StomaRel')){NameBaseUserRelease = "admin"}
                             if (params.NameBaseRelease.contains('SalonRel')){NameBaseUserRelease = "Администратор"}
@@ -78,8 +77,8 @@ pipeline {
                 script{
                     def namefeature = ""
                     if (params.NameBaseRelease.contains('FitnessRel')){namefeature = "fitness"}
-                    if (params.NameBaseRelease.contains('StomaRel')){namefeature = "admin"}
-                    if (params.NameBaseRelease.contains('SalonRel')){namefeature = "Администратор"}
+                    if (params.NameBaseRelease.contains('StomaRel')){namefeature = "stoma"}
+                    if (params.NameBaseRelease.contains('SalonRel')){namefeature = "salon"}
                     bat """
                     chcp 65001
                     @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\${namefeature}.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/pusto --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
