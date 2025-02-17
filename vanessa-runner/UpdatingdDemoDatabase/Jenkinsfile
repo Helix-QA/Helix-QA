@@ -108,7 +108,7 @@ pipeline {
                         results: [[path: "results"]]
                     ])
                     def reportMessage = """
-Тестирование первоначального заполнения
+Тестирование первоначального заполнения: ${params.NameBaseRelease}
 Allure отчет доступен по ссылке:
 ${allureReportUrl}
                         """
