@@ -3,7 +3,7 @@ pipeline {
         string(defaultValue: "OneS", description: 'Нода дженкинса, на которой запускать пайплайн', name: 'jenkinsAgent')
         string(defaultValue: "C:\\automation\\sample\\Stomatology", description: 'Путь к шаблонам', name: 'sourceDirectory')
         string(defaultValue: "D:\\STOMA_release_build\\Stomatology", description: 'Путь к документации', name: 'target_path')
-        string(defaultValue: "2.1.20.1", description: 'Старая версия', name: 'oldversion_1')
+        string(defaultValue: "2.1.20.2", description: 'Старая версия', name: 'oldversion_1')
         string(defaultValue: "2.1.21.1", description: 'Новая версия', name: 'newversion_1')
         string(defaultValue: "8.3.24.1368", description: 'Версия платформы 1с', name: 'platformversion_1')
         string(defaultValue: "3.0.37.11710", description: 'Версия СЛК', name: 'slkversion')
