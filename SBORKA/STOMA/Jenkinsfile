@@ -71,7 +71,7 @@ pipeline {
 					bat """
 					chcp 65001
 					@call ${VRUNNER_PATH} session kill --with-nolock --db ${releaseServer} --db-user ${releaseUser}
-					@call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user ${varepositoryUser} --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+					@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseStom} --storage-user ${varepositoryUser} --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
 					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
 					"""
                 // // Выгрузка .cf из релизного хранилища
