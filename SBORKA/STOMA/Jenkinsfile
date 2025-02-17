@@ -101,7 +101,6 @@ pipeline {
                 // chcp 65001
                 // "${env.platformPath}" DESIGNER /S"${releaseServer}" /N"${releaseUser}" /DisableStartupDialogs /DumpCfg ${fbrb}\\jurnal.cfe -Extension ЖурналЗаписи_Стоматология
                 // """
-            }
         }
 
         // stage(' Загрузка .cf в базу для сборки релиза') {
