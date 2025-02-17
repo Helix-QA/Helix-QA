@@ -51,21 +51,21 @@ pipeline {
 					}
 				}
 			}
-	post {
-			always {
-				script {
-						allure([
-						includeProperties: false,
-						jdk: '',
-						results: [[path: "results"]]
-					])
-					def reportMessage = """
-	Синтаксический контроль: ${params.NameBaseRelease}
-	Allure отчет доступен по ссылке:
-	${allureReportUrl}
-						"""
-						httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
+		post {
+				always {
+					script {
+							allure([
+							includeProperties: false,
+							jdk: '',
+							results: [[path: "results"]]
+						])
+						def reportMessage = """
+		Синтаксический контроль: ${params.NameBaseRelease}
+		Allure отчет доступен по ссылке:
+		${allureReportUrl}
+							"""
+							httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
+				}
 			}
 		}
-	}
 	}

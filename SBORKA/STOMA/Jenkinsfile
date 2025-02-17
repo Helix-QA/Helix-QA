@@ -73,10 +73,10 @@ pipeline {
                 "${env.platformPath}" DESIGNER /ConfigurationRepositoryUpdateCfg -revised -force /DepotUpdateCfg /UpdateDBCfg /S"${releaseServer}" /N"${releaseUser}" /ConfigurationRepositoryF"${env.repositoryReleaseStom}" /ConfigurationRepositoryN"${varepositoryUser}" /ConfigurationRepositoryP""
                 """
                 // Выгрузка .cf из релизного хранилища
-                // bat """
-                // chcp 65001
-                // "${env.platformPath}" DESIGNER /S"${releaseServer}" /N"${releaseUser}" /DisableStartupDialogs /DumpCfg ${fbrb}\\1Cv8.cf
-                // """
+                bat """
+                chcp 65001
+                "${env.platformPath}" DESIGNER /S"${releaseServer}" /N"${releaseUser}" /DisableStartupDialogs /DumpCfg ${fbrb}\\1Cv8.cf
+                """
                 // Выгрузка мессенджера из релизного хранилища
                 bat """
                 chcp 65001
