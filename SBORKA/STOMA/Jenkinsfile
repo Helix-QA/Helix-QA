@@ -47,8 +47,8 @@ pipeline {
                     def newversion_1 = params.newversion_1
                     def platformversion_1 = params.platformversion_1
                     def slkversion = params.slkversion
-                    def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'
-                    def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+               //     def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'
+               //     def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
                 }
             }
         }
