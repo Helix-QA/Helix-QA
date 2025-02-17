@@ -19,7 +19,7 @@ pipeline {
 
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
         allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
-
+        VRUNNER_PATH = 'vrunner'
         varepositoryUser = "VATest"
         // Релизное хранилище
         releaseServer = "VAStoma"
