@@ -81,6 +81,7 @@ pipeline {
             steps{  
                 script {
                     bat """
+                    chcp 65001
                     @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
                     @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
                     """
@@ -91,6 +92,7 @@ pipeline {
             steps{
                 script {
                     bat """
+                    chcp 65001
                     @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
                     @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
                     """
