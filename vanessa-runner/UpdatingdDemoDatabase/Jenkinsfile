@@ -4,7 +4,6 @@ pipeline {
     }
     environment {
         VRUNNER_PATH = 'vrunner' // Путь к исполняемому файлу Vanessa Runner
-        JSON_PATH = 'vanessa-runner/UpdatingdDemoDatabase/udd.json'
         allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
         cfsrc = "D:\\cf\\cf.cf"
