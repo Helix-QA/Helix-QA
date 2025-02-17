@@ -64,18 +64,7 @@ pipeline {
                 }
             }
         }
-        stage('Генерация Allure отчета') {
-            steps {
-                script {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        results: [[path: "results"]]
-                    ])
-                    
-                }
-            }
-        }
+        
         stage("Выгрузка из релизного хранилища") {
             steps {
                 // Обновление в релизном хранилище
@@ -127,7 +116,7 @@ pipeline {
                     ${allureReportUrl}
                     """
                     // Отправка сообщения в Telegram
-                    
+
                     def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
                     // Вручную запрашиваем продолжение пайплайна
                     input 'Продолжить выполнение пайплайна?'
