@@ -66,14 +66,26 @@ pipeline {
         }
 
         stage("Выгрузка из релизного хранилища") {
-            steps {
-                // Обновление в релизном хранилище
+            steps ("Обновление из хранилища"){
 					bat """
 					chcp 65001
 					@call ${VRUNNER_PATH} session kill --with-nolock --db ${releaseServer} --db-user ${releaseUser}
 					@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseStom} --storage-user ${varepositoryUser} --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
 					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-					"""
+                    """
+            }
+            steps("Обновление расширения мессенджера"){
+                    bat """
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    bat """
+            }
+            steps("Обновление расширения журнала записи"){
+                    bat """
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    bat """
+            }
                 // // Выгрузка .cf из релизного хранилища
                 // bat """
                 // chcp 65001
