@@ -9,7 +9,8 @@ pipeline {
                     def imageName = "1c-java-vanessa"
                     def tag = "latest"
 
-                    sh "docker build -t ${imageName}:${tag} ."
+                    // Используем 'bat' для Windows команд
+                    bat "docker build -t ${imageName}:${tag} ."
                 }
             }
         }
@@ -19,7 +20,8 @@ pipeline {
                 script {
                     def containerName = "1c_env"
 
-                    sh "docker run --name ${containerName} -d 1c-java-vanessa:latest"
+                    // Используем 'bat' для Windows команд
+                    bat "docker run --name ${containerName} -d ${imageName}:${tag}"
                 }
             }
         }
