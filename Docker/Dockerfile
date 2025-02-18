@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+FROM ubuntu:20.04
 
 # Установка Chocolatey
 RUN powershell -NoProfile -ExecutionPolicy Bypass -Command \
