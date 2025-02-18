@@ -52,23 +52,23 @@ pipeline {
                 }
             }
         }
-        stage('Обновление документации') {
-            steps {
-                script {
-                    def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
-                    def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
-                    def scriptPath2 = 'SBORKA/records/process_files.py'
-                    bat "python ${scriptPath} ${params.target_path}"
-                    bat "python ${scriptPath1} ${params.sourceDirectory} ${params.target_path} ${params.oldversion_1} ${params.newversion_1} ${params.platformversion_1} ${params.slkversion} ${sbor}"
-                    bat "python ${scriptPath2} ${params.oldversion_1} ${params.newversion_1}"
+                stage('Обновление документации') {
+                    steps {
+                        script {
+                            def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
+                            def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
+                            def scriptPath2 = 'SBORKA/records/process_files.py'
+                            bat "python ${scriptPath} ${params.target_path}"
+                            bat "python ${scriptPath1} ${params.sourceDirectory} ${params.target_path} ${params.oldversion_1} ${params.newversion_1} ${params.platformversion_1} ${params.slkversion} ${sbor}"
+                            bat "python ${scriptPath2} ${params.oldversion_1} ${params.newversion_1}"
+                        }
+                    }
                 }
-            }
-        }
 
-        stage{
+        stage("Параллельное обновление конфигураций") {
             parallel(
                 "Обновление конфигурации из релизного хранилища": {
-                    stage{
+                    stage("Обновление конфигурации из релизного хранилища") {
                         steps {
                             script {
                                 bat """
@@ -82,7 +82,7 @@ pipeline {
                     }
                 },
                 "Обновление мессенджера из хранилища": {
-                    stage{
+                    stage("Обновление мессенджера из хранилища") {
                         steps {
                             script {
                                 bat """
@@ -95,7 +95,7 @@ pipeline {
                     }
                 },
                 "Обновление журнала записи из хранилища": {
-                    stage{
+                    stage("Обновление журнала записи из хранилища") {
                         steps {
                             script {
                                 bat """
@@ -109,6 +109,7 @@ pipeline {
                 }
             )
         }
+
 
     //     stage("Выгрузка конфигураций и расширений из хранилища") {
     //         steps{
