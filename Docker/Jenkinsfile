@@ -10,7 +10,7 @@ pipeline {
                     def tag = "latest"
 
                     // Используем 'bat' для Windows команд
-                    bat "docker build -t ${imageName}:${tag} Docker/Dockerfile."
+                    bat "docker build -t ${imageName}:${tag} Docker\\Dockerfile."
                 }
             }
         }
