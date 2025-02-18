@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     def containerName = "1c_env"
-                    bat "docker run --name ${containerName} -d ${env.IMAGE_NAME}:${env.TAG}"
+                    bat "docker run -it --name ${containerName} -d ${env.IMAGE_NAME}:${env.TAG}"
                 }
             }
         }
