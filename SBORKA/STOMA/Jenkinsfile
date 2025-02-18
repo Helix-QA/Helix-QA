@@ -472,7 +472,7 @@ pipeline {
                     def unzipping = 'SBORKA/STOMA/unzipping.py'
                     bat "python ${unzipping} ${collectedReleaseP}"
 
-                    // Установка
+                    // Установка //
                     def install = 'SBORKA/STOMA/install.py'
                     bat "python ${install} ${collectedReleaseP}"
                 }
