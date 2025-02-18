@@ -2,15 +2,15 @@ pipeline {
     agent {
         label "${params.jenkinsAgent}"
     }
+    environment {
+        IMAGE_NAME = "1c-java-vanessa"
+        TAG = "latest"
+    }
     stages {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageName = "1c-java-vanessa"
-                    def tag = "latest"
-
-                    // Используем 'bat' для Windows команд
-                    bat "docker build -t ${imageName}:${tag} -f Docker\\Dockerfile ."
+                    bat "docker build -t ${env.IMAGE_NAME}:${env.TAG} -f Docker\\Dockerfile ."
                 }
             }
         }
@@ -19,9 +19,7 @@ pipeline {
             steps {
                 script {
                     def containerName = "1c_env"
-
-                    // Используем 'bat' для Windows команд
-                    bat "docker run --name ${containerName} -d ${imageName}:${tag}"
+                    bat "docker run --name ${containerName} -d ${env.IMAGE_NAME}:${env.TAG}"
                 }
             }
         }
