@@ -488,6 +488,24 @@ pipeline {
                 }
             }
         }
+        stage('Поставка обновления') {
+            steps {
+                script {
+                    bat """
+                    chcp 65001
+                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributivePackage"${collectedReleaseOb}" -File"${fbrb}\\Файл описания комплекта поставки.edf" -PackageFileName update.zip -Option"Поставка обновления"
+                    """
+
+                    // Разархивирование
+                    def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'
+                    bat "python ${unzippingupdate} ${collectedReleaseOb}"
+
+                     // Установка
+                    def installupdate = 'SBORKA/STOMA/installupdate.py'
+                    bat "python ${installupdate} ${collectedReleaseOb}"
+                }
+            }
+        }
         stage('Создание архива дистрибутива') {
             steps {
                 script {
