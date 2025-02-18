@@ -1,12 +1,13 @@
 FROM ubuntu:20.04
 
-# Предотвращение интерактивных запросов
-ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Установка временной зоны и необходимых пакетов
-RUN apt-get update && apt-get install -y tzdata \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y tzdata python3-pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Установка Allure через pip (пример)
 RUN pip3 install allure-pytest
