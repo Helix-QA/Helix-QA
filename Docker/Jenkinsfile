@@ -23,5 +23,23 @@ pipeline {
                 }
             }
         }
+        stage('Run VanessaAutomation Tests') {
+            steps {
+                script {
+                    // Предполагаем, что VanessaAutomation запускается командой 
+                    // и использует конфигурационный файл для тестов
+                    bat "docker exec ${env.CONTAINER_NAME} powershell -Command \"& 'C:\\Program Files\\Vanessa-Automation\\Vanessa-Automation.exe' /Execute 'C:\\Path\\To\\Your\\Test.json'\""
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                // Остановка и удаление контейнера после завершения тестов
+                bat "docker stop ${env.CONTAINER_NAME}"
+                bat "docker rm ${env.CONTAINER_NAME}"
+            }
+        }
     }
 }
