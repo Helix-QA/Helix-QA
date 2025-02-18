@@ -1,10 +1,11 @@
 FROM ubuntu:20.04
 
-# Обновление списка пакетов и установка необходимых инструментов
-RUN apt-get update && apt-get install -y \
-    openjdk-11-jdk \
-    git \
-    python3-pip \
+# Предотвращение интерактивных запросов
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Установка временной зоны и необходимых пакетов
+RUN apt-get update && apt-get install -y tzdata \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Установка Allure через pip (пример)
