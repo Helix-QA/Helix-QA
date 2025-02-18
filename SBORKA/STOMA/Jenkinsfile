@@ -65,41 +65,40 @@ pipeline {
             }
         }
 
-        stage('Обновление...') {
-            parallel {
-                stage('Обновление конфигурации из релизного хранилища'){
-                    steps{
-                            bat """
-                            chcp 65001
-                            @call ${VRUNNER_PATH} session kill --with-nolock --db ${releaseServer} --db-user ${releaseUser}
-                            @call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseStom} --storage-user ${varepositoryUser} --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                            @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                            """
-                        }
-                    }
-                stage("Обновление мессенджера из хранилища") {
-                    steps{  
-                            bat """
-                            chcp 65001
-                            @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                            @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                            """
-                        }
-                    }
-                    
-                stage("Обновление журнала записи из хранилища") {
-                    steps{
-                            bat """
-                            chcp 65001
-                            @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                            @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                            """
-                    }
+        stage("Обновление конфигурации из релизного хранилища") {
+            steps{
+                script {
+					bat """
+					chcp 65001
+					@call ${VRUNNER_PATH} session kill --with-nolock --db ${releaseServer} --db-user ${releaseUser}
+					@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseStom} --storage-user ${varepositoryUser} --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    """
                 }
             }
         }
-
-
+        stage("Обновление мессенджера из хранилища") {
+            steps{  
+                script {
+                    bat """
+                    chcp 65001
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    """
+                }
+            }
+        }
+        stage("Обновление журнала записи из хранилища") {
+            steps{
+                script {
+                    bat """
+                    chcp 65001
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    """
+                }
+            }
+        }
         stage("Выгрузка конфигураций и расширений из хранилища") {
             steps{
                 script {
@@ -112,7 +111,7 @@ pipeline {
                 }
             }
         }
-        stage('Шифрование расширения журнала записи') {
+        stage('Шифрование расширения') {
             steps {
                 script{
                     bat """
@@ -472,6 +471,7 @@ pipeline {
                     // Разархивирование
                     def unzipping = 'SBORKA/STOMA/unzipping.py'
                     bat "python ${unzipping} ${collectedReleaseP}"
+
                     // Установка
                     def install = 'SBORKA/STOMA/install.py'
                     bat "python ${install} ${collectedReleaseP}"
@@ -485,22 +485,6 @@ pipeline {
                     chcp 65001
                     "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributionFiles -cfufile ${sbor}\\Update\\1Cv8.cfu -f ${oldCF}\\${oldversion_1}.cf
                     """
-                }
-            }
-        }
-        stage('Поставка обновления') {
-            steps {
-                script {
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributivePackage"${collectedReleaseOb}" -File"${fbrb}\\Файл описания комплекта поставки.edf" -PackageFileName update.zip -Option"Поставка обновления"
-                    """
-                    // Разархивирование
-                    def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'
-                    bat "python ${unzippingupdate} ${collectedReleaseOb}"
-                     // Установка
-                    def installupdate = 'SBORKA/STOMA/installupdate.py'
-                    bat "python ${installupdate} ${collectedReleaseOb}"
                 }
             }
         }
