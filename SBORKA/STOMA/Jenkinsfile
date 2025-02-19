@@ -465,7 +465,6 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    timeout /t 10 /nobreak
                     "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributivePackage"${collectedReleaseP}" -File"${fbrb}\\1С_Медицина_21_Внутренний_КомплектПоставки.edf" -PackageFileName setup.zip -Option"Основная поставка"
                     """
                     // Разархивирование
