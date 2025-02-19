@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y tzdata python3-pip \
 # Установка Allure через pip (пример)
 RUN pip3 install allure-pytest
 
+
 # Установка Java home
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH

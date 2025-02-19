@@ -11,6 +11,7 @@ pipeline {
             steps {
                 script {
                     bat "docker build -t ${env.IMAGE_NAME}:${env.TAG} -f Docker\\Dockerfile ."
+                    
                 }
             }
         }
@@ -20,6 +21,7 @@ pipeline {
                 script {
                     def containerName = "1c_env"
                     bat "docker run -it --name ${containerName} -d ${env.IMAGE_NAME}:${env.TAG}"
+                   
                 }
             }
         }
