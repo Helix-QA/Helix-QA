@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'Product', defaultValue: 'finessCorp', description: 'Product type')
-        string(name: 'version', defaultValue: '1.0.0', description: 'Version number')
+        string(name: 'version', defaultValue: '4.0.51.1', description: 'Version number')
     }
     stages {
         stage('Get Presigned URL from 1C API') {
@@ -24,7 +24,7 @@ pipeline {
                     def currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
 
                     // Формирование URL с query-параметрами для GET
-                    def url = "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl?"
+                    def url = "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl"
                     url += "applicationId=${prod}&"
                     url += "name=${params.version}&"
                     url += "filename=1Cv8.dt&"
