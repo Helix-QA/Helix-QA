@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+	stages {
+		stage('Get Presigned URL from 1C API') {
+				steps {
+					script {
+						// Второй запрос: POST /getPresignedUrl (предполагается, что это POST из-за данных)
+						if (params.Product.contains('finessCorp')) {
+							def prod = "ff8080818114016801822509d75d0029"
+						} else if (params.Product.contains('salon30')) {
+							def prod = "ff8080817ccbb453017d0ee91ffe000d"
+						} else if (params.Product.contains('SpaSalon3')) {
+							def prod = "ff808081811401680182257b91c0002d"
+						}
+						def currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
+						def jsonBody = '''{
+							"applicationId": "${prod}",
+							"name": "${params.version}",
+							"filename": "1Cv8.dt",
+							"releaseDate": "${currentDateTime}"
+						}'''
+
+						def presignedUrlResponse = httpRequest(
+							url: 'https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl',
+							httpMode: 'GET',
+							contentType: 'APPLICATION_JSON',
+							requestBody: jsonBody,
+							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
+							validResponseCodes: '200:299'
+						)
+						echo "Get Presigned URL Response Status: ${presignedUrlResponse.status}"
+						echo "Get Presigned URL Response Content: ${presignedUrlResponse.content}"
+					}
+				}
+			}	
+		}
+	}
