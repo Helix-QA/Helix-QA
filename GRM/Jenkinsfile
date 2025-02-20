@@ -1,38 +1,56 @@
 pipeline {
     agent any
-	stages {
-		stage('Get Presigned URL from 1C API') {
-				steps {
-					script {
-						// Второй запрос: POST /getPresignedUrl (предполагается, что это POST из-за данных)
-						if (params.Product.contains('finessCorp')) {
-							def prod = "ff8080818114016801822509d75d0029"
-						} else if (params.Product.contains('salon30')) {
-							def prod = "ff8080817ccbb453017d0ee91ffe000d"
-						} else if (params.Product.contains('SpaSalon3')) {
-							def prod = "ff808081811401680182257b91c0002d"
-						}
-						def currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
-						def jsonBody = '''{
-							"applicationId": "${prod}",
-							"name": "${params.version}",
-							"filename": "1Cv8.dt",
-							"releaseDate": "${currentDateTime}"
-						}'''
+    parameters {
+        string(name: 'Product', defaultValue: 'finessCorp', description: 'Product type')
+        string(name: 'version', defaultValue: '1.0.0', description: 'Version number')
+    }
+    stages {
+        stage('Get Presigned URL from 1C API') {
+            steps {
+                script {
+                    // Определение applicationId на основе params.Product
+                    def prod
+                    if (params.Product.contains('finessCorp')) {
+                        prod = "ff8080818114016801822509d75d0029"
+                    } else if (params.Product.contains('salon30')) {
+                        prod = "ff8080817ccbb453017d0ee91ffe000d"
+                    } else if (params.Product.contains('SpaSalon3')) {
+                        prod = "ff808081811401680182257b91c0002d"
+                    } else {
+                        error "Unknown Product type: ${params.Product}"
+                    }
 
-						def presignedUrlResponse = httpRequest(
-							url: 'https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl',
-							httpMode: 'GET',
-							contentType: 'APPLICATION_JSON',
-							requestBody: jsonBody,
-							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
-							validResponseCodes: '200:299',
-							ignoreSslErrors: true
-						)
-						echo "Get Presigned URL Response Status: ${presignedUrlResponse.status}"
-						echo "Get Presigned URL Response Content: ${presignedUrlResponse.content}"
-					}
-				}
-			}	
-		}
-	}
+                    // Форматирование текущей даты
+                    def currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
+
+                    // Формирование JSON тела
+                    def jsonBody = """{
+                        "applicationId": "${prod}",
+                        "name": "${params.version}",
+                        "filename": "1Cv8.dt",
+                        "releaseDate": "${currentDateTime}"
+                    }"""
+
+                    // Выполнение HTTP-запроса
+                    try {
+                        def presignedUrlResponse = httpRequest(
+                            url: 'https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl',
+                            httpMode: 'POST', // Используем POST вместо GET
+                            contentType: 'APPLICATION_JSON',
+                            requestBody: jsonBody,
+                            customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
+                            validResponseCodes: '200:299',
+                            ignoreSslErrors: true
+                        )
+                        echo "Get Presigned URL Response Status: ${presignedUrlResponse.status}"
+                        echo "Get Presigned URL Response Content: ${presignedUrlResponse.content}"
+                    } catch (Exception e) {
+                        echo "Request failed with error: ${e.getMessage()}"
+                        echo "Response content (if available): ${e.response?.content}"
+                        error "Failed to get presigned URL: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+    }
+}
