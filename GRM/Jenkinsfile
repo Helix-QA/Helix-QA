@@ -1,40 +1,29 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'Product', defaultValue: 'finessCorp', description: 'Product type')
-        string(name: 'version', defaultValue: '1.0.0', description: 'Version number')
-    }
     stages {
         stage('Get Presigned URL from 1C API') {
             steps {
                 script {
-                    // Определение applicationId на основе params.Product
-                    def prod
-                    if (params.Product.contains('finessCorp')) {
-                        prod = "ff8080818114016801822509d75d0029"
-                    } else if (params.Product.contains('salon30')) {
-                        prod = "ff8080817ccbb453017d0ee91ffe000d"
-                    } else if (params.Product.contains('SpaSalon3')) {
-                        prod = "ff808081811401680182257b91c0002d"
-                    } else {
-                        error "Unknown Product type: ${params.Product}"
-                    }
+                    // Формирование параметров с URL-кодированием
+                    def params = [
+                        "applicationId": "ff8080818114016801822509d75d0029",
+                        "name": "4.0.51.1",
+                        "filename": "1Cv8.dt",
+                        "releaseDate": new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
+                    ]
 
-                    // Форматирование текущей даты
-                    def currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
+                    // Кодирование параметров в URL
+                    def encodedParams = params.collect { key, value ->
+                        "${key}=${java.net.URLEncoder.encode(value, 'UTF-8')}"
+                    }.join('&')
 
-                    // Формирование URL с query-параметрами для GET
-                    def url = "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl?"
-                    url += "applicationId=ff8080818114016801822509d75d0029&"
-                    url += "name=4.0.51.1&"
-                    url += "filename=1Cv8.dt&"
-                    url += "releaseDate=2025-02-20T18:41:18.936"
+                    def url = "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl?${encodedParams}"
 
                     // Вывод URL для отладки
                     echo "Request URL: ${url}"
 
                     try {
-                        def presignedUrlResponse = httpRequest(
+                        def response = httpRequest(
                             url: url,
                             httpMode: 'GET',
                             contentType: 'APPLICATION_JSON',
@@ -42,8 +31,8 @@ pipeline {
                             validResponseCodes: '200:299',
                             ignoreSslErrors: true
                         )
-                        echo "Get Presigned URL Response Status: ${presignedUrlResponse.status}"
-                        echo "Get Presigned URL Response Content: ${presignedUrlResponse.content}"
+                        echo "Response Status: ${response.status}"
+                        echo "Response Content: ${response.content}"
                     } catch (Exception e) {
                         echo "Request failed with error: ${e.getMessage()}"
                         error "Failed to get presigned URL: ${e.getMessage()}"
