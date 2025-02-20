@@ -23,21 +23,21 @@ pipeline {
                     // Форматирование текущей даты
                     def currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
 
-                    // Формирование JSON тела
-                    def jsonBody = """{
-                        "applicationId": "${prod}",
-                        "name": "${params.version}",
-                        "filename": "1Cv8.dt",
-                        "releaseDate": "${currentDateTime}"
-                    }"""
+                    // Формирование URL с query-параметрами для GET
+                    def url = "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl?"
+                    url += "applicationId=${prod}&"
+                    url += "name=${params.version}&"
+                    url += "filename=1Cv8.dt&"
+                    url += "releaseDate=${currentDateTime}"
 
-                    // Выполнение HTTP-запроса
+                    // Вывод URL для отладки
+                    echo "Request URL: ${url}"
+
                     try {
                         def presignedUrlResponse = httpRequest(
-                            url: 'https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl',
-                            httpMode: 'POST', // Используем POST вместо GET
+                            url: url,
+                            httpMode: 'GET', // Возвращаемся к GET
                             contentType: 'APPLICATION_JSON',
-                            requestBody: jsonBody,
                             customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
                             validResponseCodes: '200:299',
                             ignoreSslErrors: true
@@ -46,7 +46,7 @@ pipeline {
                         echo "Get Presigned URL Response Content: ${presignedUrlResponse.content}"
                     } catch (Exception e) {
                         echo "Request failed with error: ${e.getMessage()}"
-                        echo "Response content (if available): ${e.response?.content}"
+                        // Удаляем попытку доступа к e.response, так как оно недоступно
                         error "Failed to get presigned URL: ${e.getMessage()}"
                     }
                 }
