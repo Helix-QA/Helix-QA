@@ -25,10 +25,10 @@ pipeline {
 
                     // Формирование URL с query-параметрами для GET
                     def url = "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl?"
-                    url += "applicationId=${prod}&"
-                    url += "name=${params.version}&"
+                    url += "applicationId=ff8080818114016801822509d75d0029&"
+                    url += "name=4.0.51.1&"
                     url += "filename=1Cv8.dt&"
-                    url += "releaseDate=${currentDateTime}"
+                    url += "releaseDate=2025-02-20T18:41:18.936"
 
                     // Вывод URL для отладки
                     echo "Request URL: ${url}"
