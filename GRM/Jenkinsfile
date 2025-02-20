@@ -26,7 +26,8 @@ pipeline {
 							contentType: 'APPLICATION_JSON',
 							requestBody: jsonBody,
 							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
-							validResponseCodes: '200:299'
+							validResponseCodes: '200:299',
+							ignoreSslErrors: true
 						)
 						echo "Get Presigned URL Response Status: ${presignedUrlResponse.status}"
 						echo "Get Presigned URL Response Content: ${presignedUrlResponse.content}"
