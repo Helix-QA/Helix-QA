@@ -13,7 +13,7 @@ pipeline {
 					applicationId = "ff8080817ccbb453017d0ee91ffe000d"
                     }
                     def params = [
-                        "applicationId": "${params.nameProduct}",
+                        "applicationId": "${applicationId}",
                         "name": "${params.version}",
                         "filename": "1Cv8.dt",
                         "releaseDate": new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())
