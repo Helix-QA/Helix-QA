@@ -62,6 +62,7 @@ pipeline {
 
                     // Выполнение curl через bat
                     bat """
+					chcp 65001
                     curl -X PUT -H "Content-Type: application/octet-stream" --data-binary "@${filePath}" "${uploadUrl}"
                     """
                 }
