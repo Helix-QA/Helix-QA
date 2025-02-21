@@ -35,6 +35,8 @@ pipeline {
                         def jsonSlurper = new groovy.json.JsonSlurper()
                         def responseJson = jsonSlurper.parseText(response.content)
                         def uploadUrl = responseJson.uploadUrl
+						env.versionID = responseJson.id
+
                         echo "Extracted uploadUrl: ${uploadUrl}"
                         env.UPLOAD_URL = uploadUrl
                         echo "Saved uploadUrl to env variable: ${env.UPLOAD_URL}"
@@ -70,7 +72,7 @@ pipeline {
 				script {
 					try {
 						def response = httpRequest(
-							url: "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/setDefaultVersion?applicationId=${env.applicationId}&versionId=${params.version}",
+							url: "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/setDefaultVersion?applicationId=${env.applicationId}&versionId=${env.versionID}",
 							httpMode: 'POST',
 							contentType: 'APPLICATION_JSON',
 							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
