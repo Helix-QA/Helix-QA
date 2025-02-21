@@ -67,7 +67,6 @@ pipeline {
                             httpMode: 'PUT',
                             contentType: 'APPLICATION_OCTETSTREAM', // Исправлено на корректное значение
                             uploadFile: filePath,
-							name: 'file',
                             validResponseCodes: '200:299'
                         )
                         echo "Upload Response Status: ${response.status}"
