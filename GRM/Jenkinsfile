@@ -51,16 +51,23 @@ pipeline {
                 script {
 					def uploadUrl = env.UPLOAD_URL
                     def filePath = "D:\\dt\\1Cv8.dt"
+					
+					// Проверка наличия файла
+                    if (!fileExists(filePath)) {
+                        error "File not found at: ${filePath}"
+                    }
 
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
-
+					// Чтение файла в бинарном формате
+                    def fileContent = new File(filePath).bytes
                     try {
                         def response = httpRequest(
                             url: uploadUrl,
                             httpMode: 'PUT',
                             contentType: 'APPLICATION_OCTETSTREAM', // Исправлено на корректное значение
                             uploadFile: filePath,
+							name: 'file',
                             validResponseCodes: '200:299'
                         )
                         echo "Upload Response Status: ${response.status}"
