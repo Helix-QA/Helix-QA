@@ -37,7 +37,6 @@ pipeline {
 					    def jsonSlurper = new groovy.json.JsonSlurper()
                         def responseJson = jsonSlurper.parseText(response.content)
                         def uploadUrl = responseJson.uploadUrl
-
                         echo "Extracted uploadUrl: ${uploadUrl}"
                         env.UPLOAD_URL = uploadUrl
                         echo "Saved uploadUrl to env variable: ${env.UPLOAD_URL}"
@@ -54,16 +53,23 @@ pipeline {
                 script {
 					def uploadUrl = env.UPLOAD_URL
                     def filePath = "D:\\dt\\1Cv8.dt"
-                    def response = httpRequest(
+                    def fileContent = new File(filePath).bytes
+                    echo "Uploading file from: ${filePath}"
+                    echo "Target URL: ${uploadUrl}"
+                    try {
+                        def response = httpRequest(
                             url: uploadUrl,
                             httpMode: 'PUT',
                             contentType: 'APPLICATION_OCTET_STREAM', // application/octet-stream для бинарных данных
                             requestBody: filePath, // Передаем содержимое файла напрямую
                             validResponseCodes: '200:299'
                         )
-					echo "Upload Response Status: ${response.status}"
-					echo "Upload Response Content: ${response.content}"
-                    
+                        echo "Upload Response Status: ${response.status}"
+                        echo "Upload Response Content: ${response.content}"
+                    } catch (Exception e) {
+                        echo "Upload failed with error: ${e.getMessage()}"
+                        error "Failed to upload file: ${e.getMessage()}"
+                    }
                 }
             }
         }
