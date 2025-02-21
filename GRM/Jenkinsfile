@@ -49,32 +49,21 @@ pipeline {
 		stage('Upload File to Presigned URL') {
             steps {
                 script {
-					def uploadUrl = env.UPLOAD_URL
-                    def filePath = "D:\\dt\\1Cv8.dt"
-					
-					// Проверка наличия файла
+					def uploadUrl = UPLOAD_URL
+                    def filePath = "D:\\dt\\1Cv8.dt" // Укажите правильный путь к файлу
+
+                    // Проверка наличия файла
                     if (!fileExists(filePath)) {
                         error "File not found at: ${filePath}"
                     }
 
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
-					// Чтение файла в бинарном формате
-                    def fileContent = new File(filePath).bytes
-                    try {
-                        def response = httpRequest(
-                            url: uploadUrl,
-                            httpMode: 'PUT',
-                            contentType: 'APPLICATION_OCTETSTREAM', // Исправлено на корректное значение
-                            uploadFile: filePath,
-                            validResponseCodes: '200:299'
-                        )
-                        echo "Upload Response Status: ${response.status}"
-                        echo "Upload Response Content: ${response.content}"
-                    } catch (Exception e) {
-                        echo "Upload failed with error: ${e.getMessage()}"
-                        error "Failed to upload file: ${e.getMessage()}"
-                    }
+
+                    // Выполнение curl через bat
+                    bat """
+                    curl -X PUT -H "Content-Type: application/octet-stream" --data-binary "@${filePath}" "${uploadUrl}"
+                    """
                 }
             }
         }
