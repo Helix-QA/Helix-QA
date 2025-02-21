@@ -53,7 +53,7 @@ pipeline {
                 script {
 					def uploadUrl = env.UPLOAD_URL
                     def filePath = "D:\\dt\\1Cv8.dt"
-                    def fileContent = new File(filePath).bytes
+                    //def fileContent = new File(filePath).bytes
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
                     try {
