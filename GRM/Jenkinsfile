@@ -54,15 +54,11 @@ pipeline {
                 script {
 					def uploadUrl = env.UPLOAD_URL
                     def filePath = "D:\\dt\\1Cv8.dt"
-
-                    def fileContent = readFile(file: filePath, encoding: 'Binary')
-                    echo "Uploading file from: ${filePath}"
-                    echo "Target URL: ${uploadUrl}"
                     def response = httpRequest(
                             url: uploadUrl,
                             httpMode: 'PUT',
                             contentType: 'APPLICATION_OCTET_STREAM', // application/octet-stream для бинарных данных
-                            requestBody: fileContent, // Передаем содержимое файла напрямую
+                            requestBody: filePath, // Передаем содержимое файла напрямую
                             validResponseCodes: '200:299'
                         )
 					echo "Upload Response Status: ${response.status}"
