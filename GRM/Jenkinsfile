@@ -33,14 +33,12 @@ pipeline {
                         echo "Response Status: ${response.status}"
                         echo "Response Content: ${response.content}"
 
-                       
-					    def jsonSlurper = new groovy.json.JsonSlurper()
+                        def jsonSlurper = new groovy.json.JsonSlurper()
                         def responseJson = jsonSlurper.parseText(response.content)
                         def uploadUrl = responseJson.uploadUrl
                         echo "Extracted uploadUrl: ${uploadUrl}"
                         env.UPLOAD_URL = uploadUrl
                         echo "Saved uploadUrl to env variable: ${env.UPLOAD_URL}"
-
                     } catch (Exception e) {
                         echo "Request failed with error: ${e.getMessage()}"
                         error "Failed to get presigned URL: ${e.getMessage()}"
@@ -53,17 +51,18 @@ pipeline {
                 script {
 					def uploadUrl = env.UPLOAD_URL
                     def filePath = "D:\\dt\\1Cv8.dt"
-                    //def fileContent = new File(filePath).bytes
+
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
+
                     try {
-						def response = httpRequest(
-						url: uploadUrl,
-						httpMode: 'PUT',
-						contentType: 'application/octet-stream', // Используем строку
-						uploadFile: filePath,
-						validResponseCodes: '200:299'
-                    )
+                        def response = httpRequest(
+                            url: uploadUrl,
+                            httpMode: 'PUT',
+                            contentType: 'APPLICATION_OCTETSTREAM', // Исправлено на корректное значение
+                            uploadFile: filePath,
+                            validResponseCodes: '200:299'
+                        )
                         echo "Upload Response Status: ${response.status}"
                         echo "Upload Response Content: ${response.content}"
                     } catch (Exception e) {
