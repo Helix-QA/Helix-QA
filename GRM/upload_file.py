@@ -1,18 +1,19 @@
 import sys
 import requests
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 def upload_file(upload_url, file_path):
     try:
-        # Открываем файл в бинарном режиме
         with open(file_path, 'rb') as file:
-            # Отправляем PUT-запрос с бинарным содержимым файла
+            file_content = file.read()
+            print(f"File size to upload: {len(file_content)} bytes")
             response = requests.put(
                 upload_url,
-                data=file,
+                data=file_content,
                 headers={'Content-Type': 'application/octet-stream'}
             )
         
-        # Проверяем статус ответа
         if response.status_code in range(200, 300):
             print(f"Upload successful. Status: {response.status_code}")
             if response.text:
@@ -35,5 +36,5 @@ if __name__ == "__main__":
     
     upload_url = sys.argv[1]
     file_path = sys.argv[2]
-    print(f"Received upload_url: {upload_url}")  # Добавьте эту строку
+    print(f"Received upload_url: {upload_url}")
     upload_file(upload_url, file_path)
