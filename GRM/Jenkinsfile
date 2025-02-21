@@ -60,9 +60,8 @@ pipeline {
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
 
-                    // Выполнение curl через bat
-					bat """
-                    python GRM\\upload_file.py "${uploadUrl}" "${filePath}"
+					sh """
+                    python GRM\\upload_file.py ${uploadUrl} ${filePath}"
                     """
                 }
             }

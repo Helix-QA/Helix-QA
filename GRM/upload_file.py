@@ -35,4 +35,5 @@ if __name__ == "__main__":
     
     upload_url = sys.argv[1]
     file_path = sys.argv[2]
+    print(f"Received upload_url: {upload_url}")  # Добавьте эту строку
     upload_file(upload_url, file_path)
