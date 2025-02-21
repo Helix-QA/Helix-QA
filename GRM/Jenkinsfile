@@ -4,7 +4,6 @@ pipeline {
         stage('Получение предподписанной ссылки') {
             steps {
                 script {
-                    def env.applicationId = ""
 					if (params.nameProduct.contains('finessCorp')) {
 					env.applicationId = "ff8080818114016801822509d75d0029"
                     } else if (params.nameProduct.contains('SpaSalon3')) {
