@@ -61,9 +61,8 @@ pipeline {
                     echo "Target URL: ${uploadUrl}"
 
                     // Выполнение curl через bat
-                    bat """
-					chcp 65001
-                    curl -X PUT -H "Content-Type: application/octet-stream" --data-binary "@${filePath}" "${uploadUrl}"
+					bat """
+                    python scripts\\upload_file.py "${uploadUrl}" "${filePath}"
                     """
                 }
             }
