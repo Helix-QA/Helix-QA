@@ -57,13 +57,13 @@ pipeline {
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
                     try {
-                        def response = httpRequest(
-                            url: uploadUrl,
-                            httpMode: 'PUT',
-                            contentType: 'APPLICATION_OCTET_STREAM', // application/octet-stream для бинарных данных
-                            requestBody: filePath, // Передаем содержимое файла напрямую
-                            validResponseCodes: '200:299'
-                        )
+						def response = httpRequest(
+						url: uploadUrl,
+						httpMode: 'PUT',
+						contentType: 'application/octet-stream', // Используем строку
+						uploadFile: filePath,
+						validResponseCodes: '200:299'
+                    )
                         echo "Upload Response Status: ${response.status}"
                         echo "Upload Response Content: ${response.content}"
                     } catch (Exception e) {
