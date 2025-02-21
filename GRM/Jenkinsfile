@@ -62,7 +62,7 @@ pipeline {
 
                     // Выполнение curl через bat
 					bat """
-                    python scripts\\upload_file.py "${uploadUrl}" "${filePath}"
+                    python GRM\\upload_file.py "${uploadUrl}" "${filePath}"
                     """
                 }
             }
