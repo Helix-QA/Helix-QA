@@ -11,8 +11,12 @@ build_user = sys.argv[4]  # Имя пользователя на кирилли�
 template_name = sys.argv[5]
 
 def main():
-    # Установка кодировки UTF-8 для вывода
+    # Установка кодировки UTF-8 для вывода в консоль
     sys.stdout.reconfigure(encoding='utf-8')
+
+    # Перекодировка build_user из UTF-8 в cp1251
+    build_user_cp1251 = build_user.encode().decode('utf-8').encode('cp1251').decode('cp1251')
+
     temp_dir = os.path.join(os.environ.get("TEMP", "C:\\Temp"), "template.upd")
     check_template = ""  # Оставлено пустым, как в BAT
 
@@ -24,6 +28,7 @@ def main():
     print(f"Путь к информационной базе: {base_build}")
     print(f"Исходный файл: {source_file}")
     print(f"Целевой шаблон: {template_name}")
+    print(f"Пользователь: {build_user}")  # Для отладки
 
     # Проверка наличия 1C:Enterprise
     if not os.path.exists(designer_path):
@@ -62,9 +67,9 @@ def main():
     shutil.copy2(source_file, target_file)
     print("Загрузка шаблона...")
 
-    # Загрузка шаблона в базу с учетом кодировки cp1251
+    # Загрузка шаблона в базу с перекодированным именем пользователя
     load_cmd = [
-        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user}",
+        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user_cp1251}",
         f"/LoadConfigFiles{temp_dir}", "-Template", "/UpdateDBCfg"
     ]
     result = subprocess.run(load_cmd, capture_output=True, text=True, encoding='cp1251')
