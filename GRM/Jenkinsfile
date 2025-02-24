@@ -22,7 +22,7 @@ pipeline {
                     try {
                         def response = httpRequest(
                             url: 'https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/getPresignedUrl',
-                            httpMode: 'GET', // Используем POST для передачи тела
+                            httpMode: 'GET',
                             contentType: 'APPLICATION_JSON',
                             requestBody: jsonBody,
                             customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
@@ -51,16 +51,14 @@ pipeline {
             steps {
                 script {
 					def uploadUrl = UPLOAD_URL
-                    def filePath = "D:\\dt\\1Cv8.dt" // Укажите правильный путь к файлу
-
+                    def filePath = "D:\\dt\\1Cv8.dt" //путь к файлу
                     // Проверка наличия файла
                     if (!fileExists(filePath)) {
                         error "File not found at: ${filePath}"
                     }
-
                     echo "Uploading file from: ${filePath}"
                     echo "Target URL: ${uploadUrl}"
-
+					// Отправляем запрос через python 
 					sh """
 					python GRM/upload_file.py "${uploadUrl}" "${filePath}"
 					"""
@@ -79,7 +77,6 @@ pipeline {
 							validResponseCodes: '200:299', // Ожидаем успешные коды ответа
 							ignoreSslErrors: true // Если нужно игнорировать ошибки SSL
 						)
-						
 						echo "Response Status: ${response.status}"
 						echo "Response Content: ${response.content}"
 					} catch (Exception e) {
