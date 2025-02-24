@@ -38,8 +38,8 @@ pipeline {
                         env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"                  // Наиминование файла основновй поставки
                         env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
                         env.namedistr = "Стоматологическая клиника"                                         // Наименование архива собранного релиза
-                    def messageStart = 'Запущен процесс сборки «1С: Фитнес клуб КОРП 4.0»'                  // Отпарвка сообщение в телеграмм о запуске сборки 
-                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+                //    def messageStart = 'Запущен процесс сборки «1С: Фитнес клуб КОРП 4.0»'                  // Отпарвка сообщение в телеграмм о запуске сборки 
+                //    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
 
 					}else if (params.Product.contains('FITNESS')) {
                         //
