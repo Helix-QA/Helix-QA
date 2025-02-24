@@ -1,54 +1,39 @@
 pipeline {
-    parameters {
-        string(defaultValue: "OneS", description: 'Нода дженкинса, на которой запускать пайплайн', name: 'jenkinsAgent')
-        string(defaultValue: "C:\\automation\\sample\\Stomatology", description: 'Путь к шаблонам', name: 'sourceDirectory')
-        string(defaultValue: "D:\\STOMA_release_build\\Stomatology", description: 'Путь к документации', name: 'target_path')
-        string(defaultValue: "2.1.20.2", description: 'Старая версия', name: 'oldversion_1')
-        string(defaultValue: "2.1.21.1", description: 'Новая версия', name: 'newversion_1')
-        string(defaultValue: "8.3.24.1368", description: 'Версия платформы 1с', name: 'platformversion_1')
-        string(defaultValue: "3.0.37.11710", description: 'Версия СЛК', name: 'slkversion')
-    }
-
+    agent { label "OneS" }
     environment {
-        oldCF = "D:\\STOMA_release_build\\Old_versions_cf"  // Старые cf 
-        fbrb = "D:\\STOMA_release_build\\files_before_release_build" // Все необходимые файлы для сборки релиза
-        sbor = "D:\\STOMA_release_build\\Sbor" // Файлы для сборки поставок
-
-        collectedReleaseP = "D:\\STOMA_release_build\\Collected_release\\Polnaya"  // Полная поствка
-        collectedReleaseOb = "D:\\STOMA_release_build\\Collected_release\\obnovlenine" // Поставка обновления
-
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
         allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
         VRUNNER_PATH = 'vrunner'
-        varepositoryUser = "VATest"
-        // Релизное хранилище
-        releaseServer = "VAStoma"
-        releaseUser = "Админ"
-        // База на которой проходит сборка
-        baseBuild = "localhost/StomaSborka"
-        buildUser = "Николаев Лев (Полные права)"
-        // База VA для запуска обработки
-        testManagerBase = "localhost/VAStoma"
-        testManagerUser = "Админ"
-        // TelegramBot
-        botToken = '7117726988:AAFJFXz3rF7XyNXK23vtcy6MQG1E9x3DmRc'
-        chatId = '-1002167629740'
     }
-
-    agent { label "${params.jenkinsAgent}" }
-
     stages {
-        stage("Подготовка и запуск") {
-            steps {
-                script {
-                    def sourceDirectory = params.sourceDirectory
-                    def target_path = params.target_path
-                    def oldversion_1 = params.oldversion_1
-                    def newversion_1 = params.newversion_1
-                    def platformversion_1 = params.platformversion_1
-                    def slkversion = params.slkversion
-                    def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'
-                    def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+        stage("Инициализация параметров"){
+            steps{
+                script{
+                    if (params.Product.contains('fitnesscorp')) {
+                        //
+					}else if (params.Product.contains('fitness')) {
+                        //
+					}else if (params.Product.contains('spasalon')) {
+                        //
+					}else if (params.Product.contains('salon')) {
+                        //
+					}else if (params.Product.contains('stoma')) {
+                        env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
+                        env.collectedReleaseP = "D:\\release_build\\STOMA\\Collected_release\\Polnaya"      // Полная поствка
+                        env.collectedReleaseOb = "D:\\release_build\\STOMA\\Collected_release\\obnovlenine" // Поставка обновления
+                        env.target_path = "D:\\release_build\\STOMA\\Stomatology"                           // Путь к файлам документации
+                        env.oldCF = "D:\\release_build\\STOMA\\Old_versions_cf"                             // Старые cf 
+                        env.fbrb = "D:\\release_build\\STOMA\\files_before_release_build"                   // Все необходимые файлы для сборки релиза
+                        env.sbor = "D:\\release_build\\STOMA\\Sbor"                                         // Путь где собирается релиз
+                        env.releaseServer = "VAStoma"                                                       // Имя базы релизного хранилища
+                        env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
+                        env.baseBuild = "localhost/StomaSborka"                                             // База на которой проходит сборка
+                        env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
+                        env.netlenka = "D:\\release_build\\Netlenka1c"                                      // Путь к нетленки - шифрование расширения
+                        env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
+                    def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'         // Отпарвка сообщение в телеграмм о запуске сборки 
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+                    }
                 }
             }
         }
@@ -58,8 +43,8 @@ pipeline {
                     def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
                     def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
                     def scriptPath2 = 'SBORKA/records/process_files.py'
-                    bat "python ${scriptPath} ${params.target_path}"
-                    bat "python ${scriptPath1} ${params.sourceDirectory} ${params.target_path} ${params.oldversion_1} ${params.newversion_1} ${params.platformversion_1} ${params.slkversion} ${sbor}"
+                    bat "python ${scriptPath} ${env.target_path}"
+                    bat "python ${scriptPath1} ${env.sourceDirectory} ${env.target_path} ${params.oldversion_1} ${params.newversion_1} ${params.platformversion_1} ${params.slkversion} ${env.sbor}"
                     bat "python ${scriptPath2} ${params.oldversion_1} ${params.newversion_1}"
                 }
             }
@@ -70,9 +55,9 @@ pipeline {
                 script {
 					bat """
 					chcp 65001
-					@call ${VRUNNER_PATH} session kill --with-nolock --db ${releaseServer} --db-user ${releaseUser}
-					@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseStom} --storage-user ${varepositoryUser} --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+					@call ${VRUNNER_PATH} session kill --with-nolock --db ${env.releaseServer} --db-user ${env.releaseUser}
+					@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseStom} --storage-user ${env.varepositoryUser} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                     """
                 }
             }
@@ -82,8 +67,8 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                    @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                     """
                 }
             }
@@ -93,8 +78,8 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                    @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                     """
                 }
             }
@@ -104,9 +89,9 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} unload ${fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                    @call ${VRUNNER_PATH} unloadext ${fbrb}\\messenger.cfe Мессенджер_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
-                    @call ${VRUNNER_PATH} unloadext ${fbrb}\\jurnal.cfe ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${releaseServer} --db-user ${releaseUser}
+                    @call ${VRUNNER_PATH} unload ${env.fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\messenger.cfe Мессенджер_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\jurnal.cfe ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                     """
                 }
             }
@@ -115,7 +100,7 @@ pipeline {
             steps {
                 script{
                     bat """
-                    start D:\\STOMA_release_build\\Netlenka1c\\Netlenka1C.exe --mode=prof --source ${fbrb}\\jurnal.cfe --createpdb
+                    start ${env.netlenka}\\Netlenka1C.exe --mode=prof --source ${env.fbrb}\\jurnal.cfe --createpdb
                     exit
                     """
                 }
@@ -126,8 +111,8 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} load --src ${fbrb}\\1Cv8.cf --ibconnection /S${baseBuild} --db-user "${buildUser}"
-                    @call ${VRUNNER_PATH} updatedb --ibconnection /S${baseBuild} --db-user "${buildUser}"
+                    @call ${VRUNNER_PATH} load --src ${env.fbrb}\\1Cv8.cf --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}"
+                    @call ${VRUNNER_PATH} updatedb --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}"
                     """
                 }
             }
@@ -137,7 +122,7 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH}  run --command ЗавершитьРаботуСистемы; --ibconnection /S${baseBuild} --db-user "${buildUser}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
+                    @call ${VRUNNER_PATH}  run --command ЗавершитьРаботуСистемы; --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
                     """
                 }
             }
@@ -146,7 +131,7 @@ pipeline {
             steps {
                script{
                     def messageText = """Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"""
-                    def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
                     // Вручную запрашиваем продолжение пайплайна
                     input 'Продолжить выполнение пайплайна?'
                 }
@@ -159,13 +144,13 @@ pipeline {
                     bat """
                     echo off
                     chcp 65001 >nul
-                    set SourceFile=${fbrb}\\messenger.cfe
+                    set SourceFile=${env.fbrb}\\messenger.cfe
                     set TemplateName=РасширениеМессенджера
                     if not exist %SourceFile% (
                         echo Исходный файл "%SourceFile%" не найден!
                         goto Error
                     )
-                    echo Путь к информационной базе: %${baseBuild}%
+                    echo Путь к информационной базе: %${env.baseBuild}%
                     echo Исходный файл: %SourceFile%
                     echo Целевой шаблон: %TemplateName%
                     for /f "delims=" %%i in ('dir /b /s /a:d /O:-D "%ProgramFiles%\\1cv8\\8.3.*"') do (
@@ -182,11 +167,11 @@ pipeline {
                     mkdir "%TempDir%"
                     if "%CheckTemplate%" == "" goto CopySource
                     echo Проверка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /DumpConfigFiles"%TempDir%" -Template
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /DumpConfigFiles"%TempDir%" -Template
                     if errorlevel 1 goto Error
 
                     if not exist "%TempDir%\\ОбщийМакет.%TemplateName%.Макет.bin" (
-                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${baseBuild}%"
+                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${env.baseBuild}%"
                         goto Error
                     )
                     if exist "%TempDir%"\\* (rmdir /s /q "%TempDir%" >nul)
@@ -194,7 +179,7 @@ pipeline {
                     :CopySource
                     copy "%SourceFile%" "%TempDir%\\ОбщийМакет.%TemplateName%.Макет.bin" >nul
                     echo Загрузка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
                     if errorlevel 1 goto Error
                     :Success
                     echo Операция выполнена успешно
@@ -215,7 +200,7 @@ pipeline {
                     chcp 65001 >nul
 
                     rem Задаем переменные: имя исходного файла, путь к информационной базе и имя шаблона
-                    set SourceFile=${fbrb}\\Protected\\jurnal.cfe
+                    set SourceFile=${env.fbrb}\\Protected\\jurnal.cfe
                     set TemplateName=РасширениеЖурналаЗаписи
 
                     rem Проверяем существование исходного файла
@@ -224,7 +209,7 @@ pipeline {
                         goto Error
                     )
 
-                    echo Путь к информационной базе: %${baseBuild}%
+                    echo Путь к информационной базе: %${env.baseBuild}%
                     echo Исходный файл: %SourceFile%
                     echo Целевой шаблон: %TemplateName%
 
@@ -248,11 +233,11 @@ pipeline {
                     if "%CheckTemplate%" == "" goto CopySource
                     rem Проверяем наличие шаблона в информационной базе
                     echo Проверка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /DumpConfigFiles"%TempDir%" -Template
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /DumpConfigFiles"%TempDir%" -Template
                     if errorlevel 1 goto Error
                     rem Если общий шаблон не найден, выводим сообщение об ошибке
                     if not exist "%TempDir%\\ОбщийМакет.%TemplateName%.Макет.bin" (
-                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${baseBuild}%"
+                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${env.baseBuild}%"
                         goto Error
                     )
                     if exist "%TempDir%"\\* (rmdir /s /q "%TempDir%" >nul)
@@ -262,7 +247,7 @@ pipeline {
                     copy "%SourceFile%" "%TempDir%\\ОбщийМакет.%TemplateName%.Макет.bin" >nul
                     rem Загружаем шаблон в информационную базу и обновляем конфигурацию
                     echo Загрузка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
                     if errorlevel 1 goto Error
                     :Success
                     echo Операция выполнена успешно
@@ -284,7 +269,7 @@ pipeline {
                     chcp 65001 >nul
 
                     rem Задаем переменные: имя исходного файла, путь к информационной базе и имя шаблона
-                    set SourceFile=${fbrb}\\licenceaddin-${slkversion}-template.zip
+                    set SourceFile=${env.fbrb}\\licenceaddin-${params.slkversion}-template.zip
                     set TemplateName=КомпонентаСЛК
 
                     rem Проверяем существование исходного файла
@@ -293,7 +278,7 @@ pipeline {
                         goto Error
                     )
 
-                    echo Путь к информационной базе: %${baseBuild}%
+                    echo Путь к информационной базе: %${env.baseBuild}%
                     echo Исходный файл: %SourceFile%
                     echo Целевой шаблон: %TemplateName%
 
@@ -321,12 +306,12 @@ pipeline {
 
                     rem Проверяем наличие шаблона в информационной базе
                     echo Проверка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /DumpConfigFiles"%TempDir%" -Template
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /DumpConfigFiles"%TempDir%" -Template
                     if errorlevel 1 goto Error
 
                     rem Если общий шаблон не найден, выводим сообщение об ошибке
                     if not exist "%TempDir%\\ОбщийМакет.%TemplateName%.Макет.bin" (
-                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${baseBuild}%"
+                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${env.baseBuild}%"
                         goto Error
                     )
                     if exist "%TempDir%"\\* (rmdir /s /q "%TempDir%" >nul)
@@ -338,7 +323,7 @@ pipeline {
 
                     rem Загружаем шаблон в информационную базу и обновляем конфигурацию
                     echo Загрузка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}"  /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}"  /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
                     if errorlevel 1 goto Error
                     :Success
                     echo Операция выполнена успешно
@@ -357,7 +342,7 @@ pipeline {
                     bat """
                     chcp 65001
                     rem Путь к папке с licenceedit.exe
-                    cd /d "${fbrb}"
+                    cd /d "${env.fbrb}"
                     @echo off
                     rem Change to your serie ID
                     set Serie=4FB1
@@ -383,7 +368,7 @@ pipeline {
                     chcp 65001 >nul
 
                     rem Задаем переменные: имя исходного файла, путь к информационной базе и имя шаблона
-                    set SourceFile=${fbrb}\\4FB1.datafile
+                    set SourceFile=${env.fbrb}\\4FB1.datafile
                     set TemplateName=ОбъектыСЛК
 
                     rem Проверяем существование исходного файла
@@ -392,7 +377,7 @@ pipeline {
                         goto Error
                     )
 
-                    echo Путь к информационной базе: %${baseBuild}%
+                    echo Путь к информационной базе: %${env.baseBuild}%
                     echo Исходный файл: %SourceFile%
                     echo Целевой шаблон: %TemplateName%
 
@@ -420,12 +405,12 @@ pipeline {
 
                     rem Проверяем наличие шаблона в информационной базе
                     echo Проверка шаблона...
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /DumpConfigFiles"%TempDir%" -Template
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /DumpConfigFiles"%TempDir%" -Template
                     if errorlevel 1 goto Error
 
                     rem Если общий шаблон не найден, выводим сообщение об ошибке
                     if not exist "%TempDir%\\ОбщийМакет.%TemplateName%.Макет.bin" (
-                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${baseBuild}%"
+                        echo Ошибка: Общий шаблон "%TemplateName%" не найден в информационной базе "%${env.baseBuild}%"
                         goto Error
                     )
                     if exist "%TempDir%"\\* (rmdir /s /q "%TempDir%" >nul)
@@ -437,7 +422,7 @@ pipeline {
 
                     rem Загружаем шаблон в информационную базу и обновляем конфигурацию
                     echo Загрузка шаблона...
-                    "${env.platformPath}" CONFIG /S"${baseBuild}" /N"${buildUser}" /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
+                    "${env.platformPath}" CONFIG /S"${env.baseBuild}" /N"${env.buildUser}" /LoadConfigFiles"%TempDir%" -Template /UpdateDBCfg
                     if errorlevel 1 goto Error
 
                     :Success
@@ -456,7 +441,7 @@ pipeline {
                     """
                     // Создание файла 4FB1.zip
                     def zip = 'SBORKA/STOMA/zip.py'
-                    bat "python ${zip} ${fbrb} ${target_path}"
+                    bat "python ${zip} ${env.fbrb} ${env.target_path}"
                 }
             }
         }
@@ -465,16 +450,16 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db StomaSborka --db-user "${buildUser}"
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributivePackage"${collectedReleaseP}" -File"${fbrb}\\1С_Медицина_21_Внутренний_КомплектПоставки.edf" -PackageFileName setup.zip -Option"Основная поставка"
+                    @call ${VRUNNER_PATH} session kill --with-nolock --db StomaSborka --db-user "${env.buildUser}"
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\1С_Медицина_21_Внутренний_КомплектПоставки.edf" -PackageFileName setup.zip -Option"Основная поставка"
                     """
                     // Разархивирование
                     def unzipping = 'SBORKA/STOMA/unzipping.py'
-                    bat "python ${unzipping} ${collectedReleaseP}"
+                    bat "python ${unzipping} ${env.collectedReleaseP}"
 
                     // Установка //
                     def install = 'SBORKA/STOMA/install.py'
-                    bat "python ${install} ${collectedReleaseP}"
+                    bat "python ${install} ${env.collectedReleaseP}"
                 }
             }
         }
@@ -483,7 +468,7 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributionFiles -cfufile ${sbor}\\Update\\1Cv8.cfu -f ${oldCF}\\${oldversion_1}.cf
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.sbor}\\Update\\1Cv8.cfu -f ${env.oldCF}\\${oldversion_1}.cf
                     """
                 }
             }
@@ -493,16 +478,16 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${baseBuild}" /N"${buildUser}" /CreateDistributivePackage"${collectedReleaseOb}" -File"${fbrb}\\Файл описания комплекта поставки.edf" -PackageFileName update.zip -Option"Поставка обновления"
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseOb}" -File"${env.fbrb}\\Файл описания комплекта поставки.edf" -PackageFileName update.zip -Option"Поставка обновления"
                     """
 
                     // Разархивирование
                     def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'
-                    bat "python ${unzippingupdate} ${collectedReleaseOb}"
+                    bat "python ${unzippingupdate} ${env.collectedReleaseOb}"
 
                      // Установка
                     def installupdate = 'SBORKA/STOMA/installupdate.py'
-                    bat "python ${installupdate} ${collectedReleaseOb}"
+                    bat "python ${installupdate} ${env.collectedReleaseOb}"
                 }
             }
         }
@@ -510,12 +495,19 @@ pipeline {
             steps {
                 script {
                     def perenos = 'SBORKA/STOMA/Perenos.py'
-                    bat "python ${perenos} ${newversion_1} ${target_path} ${collectedReleaseP} ${oldCF} ${collectedReleaseOb} ${fbrb}"
+                    bat "python ${perenos} ${newversion_1} ${env.target_path} ${env.collectedReleaseP} ${env.oldCF} ${env.collectedReleaseOb} ${env.fbrb}"
 
                     // Отправка сообщения в Telegram
                     def messagefinish = 'Сборка «1С: Стоматологическая клиника 2.0» успешно завершена.'
                     def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
                     )
+                }
+            }
+        }
+        stage{
+            steps{
+                script{
+                    // удаление и очистка за собой
                 }
             }
         }
