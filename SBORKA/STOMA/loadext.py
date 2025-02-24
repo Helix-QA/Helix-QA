@@ -14,21 +14,24 @@ def main():
     # Установка кодировки UTF-8 для вывода в консоль
     sys.stdout.reconfigure(encoding='utf-8')
 
-    # Проверка и перекодировка build_user из UTF-8 в cp1251 для 1C
+    # Подробная отладка: выводим сырой аргумент и его байты
+    print(f"Сырой аргумент build_user (как пришел): {build_user}")
+    print(f"Байты аргумента build_user (UTF-8): {repr(build_user.encode('utf-8', errors='replace'))}")
+
+    # Пробуем декодировать как UTF-8 и перекодировать в cp1251
     try:
-        # Выводим сырой аргумент для отладки
-        print(f"Сырой аргумент build_user (как пришел): {build_user}")
-        
-        # Проверяем, что строка валидна в UTF-8, и преобразуем в cp1251
-        build_user_encoded = build_user.encode('utf-8')  # Убеждаемся, что строка в UTF-8
-        build_user_cp1251 = build_user_encoded.decode('cp1251')
-        
+        # Убеждаемся, что строка валидна в UTF-8
+        build_user_utf8 = build_user.encode('utf-8', errors='replace').decode('utf-8')
+        print(f"Нормализованный аргумент (UTF-8): {build_user_utf8}")
+
+        # Преобразуем в cp1251 для 1C
+        build_user_cp1251 = build_user_utf8.encode('cp1251', errors='replace').decode('cp1251')
         print(f"Перекодированный аргумент build_user (cp1251): {build_user_cp1251}")
     except UnicodeEncodeError as e:
-        print(f"Ошибка кодировки (encode UTF-8): {e}")
+        print(f"Ошибка кодировки (encode): {e}")
         sys.exit(1)
     except UnicodeDecodeError as e:
-        print(f"Ошибка декодирования (decode cp1251): {e}")
+        print(f"Ошибка декодирования (decode): {e}")
         sys.exit(1)
 
     temp_dir = os.path.join(os.environ.get("TEMP", "C:\\Temp"), "template.upd")
