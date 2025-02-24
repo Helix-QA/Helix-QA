@@ -6,7 +6,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 # Путь к исходной директории и целевой директории
 source_directory = r"C:\automation\sample\edf\Stomatology"
-target_directory = r"D:\STOMA_release_build\files_before_release_build"
+target_directory = r"D:\release_build\STOMA\files_before_release_build"
 
 # Аргументы версии
 oldversion_1 = sys.argv[1]
