@@ -1,5 +1,11 @@
 pipeline {
     agent { label "OneS" }
+    parameters {
+            string(defaultValue: "2.1.20.2", description: 'Старая версия', name: 'oldversion_1')
+            string(defaultValue: "2.1.21.1", description: 'Новая версия', name: 'newversion_1')
+            string(defaultValue: "8.3.24.1368", description: 'Версия платформы 1с', name: 'platformversion_1')
+            string(defaultValue: "3.0.37.11710", description: 'Версия СЛК', name: 'slkversion')
+    }
     environment {
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
         allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
