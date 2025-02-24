@@ -4,13 +4,12 @@ from datetime import datetime
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-# Путь к исходной директории и целевой директории
-source_directory = r"C:\automation\sample\edf\Stomatology"
-target_directory = r"D:\STOMA_release_build\files_before_release_build"
-
 # Аргументы версии
 oldversion_1 = sys.argv[1]
 newversion_1 = sys.argv[2]
+sampleEdf = sys.argv[3]
+fbrb = sys.argv[4]
+
 
 # Формирование дополнительных переменных для версии
 def create_version_variables(version):
@@ -48,10 +47,10 @@ def replace_text_in_file(source, target, replacements):
         file.write(file_content)
 
 # Обрабатываем все файлы в исходной директории
-for filename in os.listdir(source_directory):
+for filename in os.listdir(sampleEdf):
     if filename.endswith(".edf"):
-        source_file = os.path.join(source_directory, filename)
-        target_file = os.path.join(target_directory, filename)
+        source_file = os.path.join(sampleEdf, filename)
+        target_file = os.path.join(fbrb, filename)
         replace_text_in_file(source_file, target_file, replacements)
         print(f"Файл успешно скопирован и обработан: {target_file}")
 
