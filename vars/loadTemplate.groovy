@@ -1,5 +1,11 @@
+// vars/loadTemplate.groovy
 def call(Map config = [:]) {
     stage('Загрузка шаблона') {
+        def sourceFile = config.sourceFile ?: "${env.fbrb}\\messenger.cfe"
+        def designerPath = config.designerPath ?: env.platformPath
+        def baseBuild = config.baseBuild ?: env.baseBuild
+        def buildUser = config.buildUser ?: env.buildUser
+        def templateName = config.templateName ?: "РасширениеМессенджера"
         def tempDir = "${env.TEMP ?: 'C:\\Temp'}\\template.upd"
 
         if (!fileExists(sourceFile)) {

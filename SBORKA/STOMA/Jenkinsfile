@@ -250,7 +250,7 @@ pipeline {
                     bat """
                     chcp 65001
                     @call ${VRUNNER_PATH} session kill --with-nolock --db StomaSborka --db-user "${env.buildUser}"
-                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\${edfNamefull}" -PackageFileName setup.zip -Option"Основная поставка"
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\${env.edfNamefull}" -PackageFileName setup.zip -Option"Основная поставка"
                     """
                     def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
                     bat "python ${unzipping} ${env.collectedReleaseP}"
@@ -264,7 +264,7 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.sbor}\\Update\\1Cv8.cfu -f ${env.oldCF}\\${oldversion_1}.cf
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.sbor}\\Update\\1Cv8.cfu -f ${env.oldCF}\\${params.oldversion_1}.cf
                     """
                 }
             }
@@ -274,7 +274,7 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseOb}" -File"${env.fbrb}\\${edfNameobnov}" -PackageFileName update.zip -Option"Поставка обновления"
+                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseOb}" -File"${env.fbrb}\\${env.edfNameobnov}" -PackageFileName update.zip -Option"Поставка обновления"
                     """
                     def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'           // Разархивирование
                     bat "python ${unzippingupdate} ${env.collectedReleaseOb}"
@@ -287,7 +287,7 @@ pipeline {
             steps {
                 script {
                     def perenos = 'SBORKA/STOMA/Perenos.py'
-                    bat "python ${perenos} ${newversion_1} ${env.target_path} ${env.collectedReleaseP} ${env.oldCF} ${env.collectedReleaseOb} ${env.fbrb} ${env.ProductName} ${edfNameobnov} ${archiveName} ${namedistr}"
+                    bat "python ${perenos} ${newversion_1} ${env.target_path} ${env.collectedReleaseP} ${env.oldCF} ${env.collectedReleaseOb} ${env.fbrb} ${env.ProductName} ${env.edfNameobnov} ${env.archiveName} ${env.namedistr}"
                     def messagefinish = 'Сборка «1С: Стоматологическая клиника 2.0» успешно завершена.'            // Отправка сообщения в Telegram
                     def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
                     )
