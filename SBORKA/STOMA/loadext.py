@@ -3,16 +3,15 @@ import shutil
 import subprocess
 import sys
 
+source_file = sys.argv[1]
+designer_path = sys.argv[2]
+base_build = sys.argv[3]
+build_user = sys.argv[4]
+template_name = sys.argv[5]
+
 def main():
     # Установка кодировки UTF-8 (аналог chcp 65001)
     sys.stdout.reconfigure(encoding='utf-8')
-
-    # Константы из BAT-скрипта
-    source_file = r"D:\Release_build\STOMA\files_before_release_build\messenger.cfe"
-    template_name = "РасширениеМессенджера"
-    base_build = "localhost/StomaSborka"
-    designer_path = r"C:\Program Files\1cv8\8.3.24.1368\bin\1cv8.exe"
-    build_user = "Николаев Лев (Полные права)"
     temp_dir = os.path.join(os.environ.get("TEMP", "C:\\Temp"), "template.upd")
     check_template = ""  # Оставлено пустым, как в BAT
 

@@ -4,6 +4,7 @@ import sys
 
 fbrb = sys.argv[1]
 target_path = sys.argv[2] 
+serie = sys.argv[3]
 def zip_selected_files(file_paths, archive_name):
     """
     Архивирует выбранные файлы в указанный архив.
@@ -22,9 +23,9 @@ def zip_selected_files(file_paths, archive_name):
 # Пример использования
 directory_path = rf'{fbrb}'
 selected_files = [
-    os.path.join(directory_path, '4FB1.datafile'),
-    os.path.join(directory_path, '4FB1.paramfile')
+    os.path.join(directory_path, rf'{serie}.datafile'),
+    os.path.join(directory_path, rf'{serie}.paramfile')
 ]
-archive_name = rf'{target_path}\Комплект первичных материалов\KeyDB\4FB1.zip'
+archive_name = rf'{target_path}\Комплект первичных материалов\KeyDB\{serie}.zip'
 
 zip_selected_files(selected_files, archive_name)

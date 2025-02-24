@@ -10,6 +10,10 @@ collectedReleaseP = sys.argv[3]
 oldCF = sys.argv[4]
 collectedReleaseOb = sys.argv[5]
 fbrb = sys.argv[6]
+ProductName = sys.argv[7]
+edfNameobnov = sys.argv[8]
+archiveName = sys.argv[9]
+namedistr = sys.argv[10]
 
 # Формирование дополнительных переменных для версии
 def create_version_variables(version):
@@ -76,7 +80,7 @@ def move_specific_files(source_folder, destination_folder, filenames):
             print(f"Файл {filename} не найден в {source_folder}")
 
 source_folder = rf'{collectedReleaseP}'
-destination_folder = rf'{target_path}\Дистрибутив\Configs\Stomatology\Setup'
+destination_folder = rf'{target_path}\Дистрибутив\Configs\{ProductName}\Setup'
 filenames = ['1cv8.efd', 'setup', 'setup.exe']  # Имена файлов
 move_specific_files(source_folder, destination_folder, filenames)
 
@@ -106,7 +110,7 @@ def move_specific_files(source_folder, destination_folder, filenames):
         else:
             print(f"Файл {filename} не найден в {source_folder}")
 
-source_folder = rf'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix\stomatology\{newversion_3}'
+source_folder = rf'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix\{ProductName}\{newversion_3}'
 destination_folder = rf'{target_path}\Комплект первичных материалов\DemoDB'
 filenames = ['1Cv8.dt']  # Имена файлов
 move_specific_files(source_folder, destination_folder, filenames)
@@ -140,7 +144,7 @@ def copy_specific_files(source_folder, destination_folder, filenames):
 # Пример использования
 source_folder = rf'{fbrb}'
 destination_folder = rf'{target_path}\Комплект первичных материалов'
-filenames = ['Файл описания комплекта поставки.edf']  # Имена файлов
+filenames = [rf'{edfNameobnov}']  # Имена файлов
 copy_specific_files(source_folder, destination_folder, filenames)
 
 
@@ -202,7 +206,7 @@ def move_specific_files(source_folder, destination_folder, filenames):
         else:
             print(f"Файл {filename} не найден в {source_folder}")
 
-source_folder = rf'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix\stomatology\{newversion_3}'
+source_folder = rf'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix\{ProductName}\{newversion_3}'
 destination_folder = rf'{oldCF}'
 filenames = ['1Cv8.cf']  # Имена файлов
 move_specific_files(source_folder, destination_folder, filenames)
@@ -269,5 +273,5 @@ def zip_all_files_and_folders(directory_path, archive_name):
                     print(f"Папка {folder_path} добавлена в архив {archive_name}.")
 
 directory_path = rf'{target_path}\Дистрибутив'
-archive_name = rf'D:\release_build\STOMA\Стоматологическая клиника {newversion_1}.zip'
+archive_name = rf'{archiveName}\{namedistr} {newversion_1}.zip'
 zip_all_files_and_folders(directory_path, archive_name)
