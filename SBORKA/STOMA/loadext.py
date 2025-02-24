@@ -14,8 +14,9 @@ def main():
     # Установка кодировки UTF-8 для вывода в консоль
     sys.stdout.reconfigure(encoding='utf-8')
 
-    # Перекодировка build_user из UTF-8 в cp1251
-    build_user_cp1251 = build_user.encode().decode('utf-8').encode('cp1251').decode('cp1251')
+    # Оставляем build_user как есть, без лишних перекодировок
+    # Если нужно, 1C сама обработает входные данные
+    print(f"Сырой аргумент build_user: {build_user}")  # Для отладки
 
     temp_dir = os.path.join(os.environ.get("TEMP", "C:\\Temp"), "template.upd")
     check_template = ""  # Оставлено пустым, как в BAT
@@ -67,9 +68,9 @@ def main():
     shutil.copy2(source_file, target_file)
     print("Загрузка шаблона...")
 
-    # Загрузка шаблона в базу с перекодированным именем пользователя
+    # Загрузка шаблона в базу
     load_cmd = [
-        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user_cp1251}",
+        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user}",
         f"/LoadConfigFiles{temp_dir}", "-Template", "/UpdateDBCfg"
     ]
     result = subprocess.run(load_cmd, capture_output=True, text=True, encoding='cp1251')
