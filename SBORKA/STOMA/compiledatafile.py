@@ -41,9 +41,6 @@ def main():
         print()  # Пустая строка
         print("Success, press any key to quit...")
 
-    # Ожидание нажатия клавиши (опционально)
-    input()  # Аналог "press any key to quit"
-
 if __name__ == "__main__":
     try:
         main()
