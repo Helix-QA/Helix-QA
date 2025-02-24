@@ -25,7 +25,22 @@ pipeline {
                     env.archiveName = "D:\\release_build\\${params.Product}"                                        // Путь для архивации дистрибутива
 
                     if (params.Product.contains('FINTESSCORP')) {
-                        //
+                        env.ProductName = "Fitness"                                                         // Имя продукта
+                        env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
+                        env.releaseServer = "VAFitness"                                                       // Имя базы релизного хранилища
+                        env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
+                        env.baseBuild = "localhost/FitnessCorpSborka"                                             // База на которой проходит сборка
+                        env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
+                        env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
+                        env.sampleEdf = "C:\\automation\\sample\\edf\\Stomatology"                          // Путь к шаблону edf
+                        env.extensionNamemess = "Мессенджер_Стоматология"                                   // Наиминование расширения мессенджера
+                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"                               // Наиминование расширения журнала записи
+                        env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"                  // Наиминование файла основновй поставки
+                        env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
+                        env.namedistr = "Стоматологическая клиника"                                         // Наименование архива собранного релиза
+                    def messageStart = 'Запущен процесс сборки «1С: Фитнес клуб КОРП 4.0»'                  // Отпарвка сообщение в телеграмм о запуске сборки 
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+
 					}else if (params.Product.contains('FITNESS')) {
                         //
 					}else if (params.Product.contains('SPASALON')) {
@@ -33,7 +48,7 @@ pipeline {
 					}else if (params.Product.contains('SALON')) {
                         //
 					}else if (params.Product.contains('STOMA')) {
-                        env.ProductName = "Stomatology"
+                        env.ProductName = "Stomatology"                                                     // Имя продукта
                         env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
                         env.releaseServer = "VAStoma"                                                       // Имя базы релизного хранилища
                         env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
@@ -41,12 +56,11 @@ pipeline {
                         env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
                         env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
                         env.sampleEdf = "C:\\automation\\sample\\edf\\Stomatology"                          // Путь к шаблону edf
-                        env.extensionNamemess = "Мессенджер_Стоматология"                                   // 
-                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"                               //
-                        env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"                  //
-                        env.edfNameobnov = "Файл описания комплекта поставки.edf"                           //
-                        env.namedistr = "Стоматологическая клиника"                                         //
-
+                        env.extensionNamemess = "Мессенджер_Стоматология"                                   // Наиминование расширения мессенджера
+                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"                               // Наиминование расширения журнала записи
+                        env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"                  // Наиминование файла основновй поставки
+                        env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
+                        env.namedistr = "Стоматологическая клиника"                                         // Наименование архива собранного релиза
                     def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'         // Отпарвка сообщение в телеграмм о запуске сборки 
                     def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
                     }
@@ -192,28 +206,28 @@ pipeline {
                         // Загрузка расширения журнала записи
                         source_file = "${env.fbrb}\\Protected\\jurnal.cfe"
                         template_name = "РасширениеЖурналаЗаписи"
-                        bat "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                        bat "chcp 65001 >nul & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
                     }
                     // Загрузка расширения мессенджера
                     source_file = "${env.fbrb}\\messenger.cfe"
                     template_name = "РасширениеМессенджера"
-                    bat "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                    bat "chcp 65001 >nul & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
                     source_file = "${env.fbrb}\\licenceaddin-${params.slkversion}-template.zip"
                     template_name = "КомпонентаСЛК"
-                    bat "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                    bat "chcp 65001 >nul & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Создание файла .datafile
-                    bat "python ${compiledatafile} \"${env.fbrb}\" \"${serie}\""
+                    bat "chcp 65001 >nul & python ${compiledatafile} \"${env.fbrb}\" \"${serie}\""
 
                     // Загрузка .datafile в макет 'ОбъектыСЛК'
                     source_file = "${env.fbrb}\\${serie}.datafile"
                     template_name = "ОбъектыСЛК"
-                    bat "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                    bat "chcp 65001 >nul & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Создание файла 4FB1.zip
-                    bat "python ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${serie}\""
+                    bat "chcp 65001 >nul & python ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${serie}\""
                 }
             }
         }
