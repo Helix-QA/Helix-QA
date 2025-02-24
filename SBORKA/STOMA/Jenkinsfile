@@ -41,11 +41,11 @@ pipeline {
                         env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
                         env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
                         env.sampleEdf = "C:\\automation\\sample\\edf\\Stomatology"                          // Путь к шаблону edf
-                        env.extensionNamemess = "Мессенджер_Стоматология"
-                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"
-                        env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf" 
-                        env.edfNameobnov = "Файл описания комплекта поставки.edf"
-                        env.namedistr = "Стоматологическая клиника"
+                        env.extensionNamemess = "Мессенджер_Стоматология"                                   // 
+                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"                               //
+                        env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"                  //
+                        env.edfNameobnov = "Файл описания комплекта поставки.edf"                           //
+                        env.namedistr = "Стоматологическая клиника"                                         //
 
                     def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'         // Отпарвка сообщение в телеграмм о запуске сборки 
                     def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
@@ -99,7 +99,7 @@ pipeline {
             }
         }
         stage("Обновление журнала записи из хранилища") {
-            when { expression { !params.Product.contains('STOMA') } }
+            when { expression { params.Product.contains('STOMA') } }
             steps{
                 script {
                     bat """
@@ -129,7 +129,7 @@ pipeline {
             }
         }
         stage('Шифрование расширения') {
-            when { expression { !params.Product.contains('STOMA') } }
+            when { expression {params.Product.contains('STOMA') } }
             steps {
                 script{
                     bat """
