@@ -1,5 +1,5 @@
-// Определение функции loadTemplate локально
-def loadTemplate(Map config = [:]) {
+// vars/loadTemplate.groovy
+def call(Map config = [:]) {
     stage('Загрузка шаблона') {
         def sourceFile = config.sourceFile ?: "${env.fbrb}\\messenger.cfe"
         def designerPath = config.designerPath ?: env.platformPath
@@ -51,4 +51,3 @@ def loadTemplate(Map config = [:]) {
         }
     }
 }
-
