@@ -207,7 +207,7 @@ pipeline {
                         // Загрузка расширения журнала записи
                         source_file = "${env.fbrb}\\Protected\\jurnal.cfe"
                         template_name = "РасширениеЖурналаЗаписи"
-                        bat "chcp 65001 & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                        bat "chcp 1251 & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
                     }
                     // Загрузка расширения мессенджера
                     source_file = "${env.fbrb}\\messenger.cfe"
