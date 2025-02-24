@@ -269,5 +269,5 @@ def zip_all_files_and_folders(directory_path, archive_name):
                     print(f"Папка {folder_path} добавлена в архив {archive_name}.")
 
 directory_path = rf'{target_path}\Дистрибутив'
-archive_name = rf'D:\release_build\Стоматологическая клиника {newversion_1}.zip'
+archive_name = rf'D:\release_build\STOMA\Стоматологическая клиника {newversion_1}.zip'
 zip_all_files_and_folders(directory_path, archive_name)

@@ -15,28 +15,33 @@ pipeline {
         stage("Инициализация параметров"){
             steps{
                 script{
-                    if (params.Product.contains('fitnesscorp')) {
+                    env.collectedReleaseP = "D:\\release_build\\${params.Product}\\Collected_release\\Polnaya"      // Полная поствка
+                    env.collectedReleaseOb = "D:\\release_build\\${params.Product}\\Collected_release\\obnovlenine" // Поставка обновления
+                    env.target_path = "D:\\release_build\\${params.Product}\\Stomatology"                           // Путь к файлам документации
+                    env.oldCF = "D:\\release_build\\${params.Product}\\Old_versions_cf"                             // Старые cf 
+                    env.fbrb = "D:\\release_build\\${params.Product}\\files_before_release_build"                   // Все необходимые файлы для сборки релиза
+                    env.sbor = "D:\\release_build\\${params.Product}\\Sbor"                                         // Путь где собирается релиз
+                    env.netlenka = "D:\\release_build\\${params.Product}\\Netlenka1c"                               // Путь к нетленки - шифрование расширения
+                    env.archiveName = "D:\\release_build\\${params.Product}"                                        // Путь для архивации дистрибутива
+
+                    if (params.Product.contains('FINTESSCORP')) {
                         //
-					}else if (params.Product.contains('fitness')) {
+					}else if (params.Product.contains('FITNESS')) {
                         //
-					}else if (params.Product.contains('spasalon')) {
+					}else if (params.Product.contains('SPASALON')) {
                         //
-					}else if (params.Product.contains('salon')) {
+					}else if (params.Product.contains('SALON')) {
                         //
-					}else if (params.Product.contains('stoma')) {
+					}else if (params.Product.contains('STOMA')) {
                         env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
-                        env.collectedReleaseP = "D:\\release_build\\STOMA\\Collected_release\\Polnaya"      // Полная поствка
-                        env.collectedReleaseOb = "D:\\release_build\\STOMA\\Collected_release\\obnovlenine" // Поставка обновления
-                        env.target_path = "D:\\release_build\\STOMA\\Stomatology"                           // Путь к файлам документации
-                        env.oldCF = "D:\\release_build\\STOMA\\Old_versions_cf"                             // Старые cf 
-                        env.fbrb = "D:\\release_build\\STOMA\\files_before_release_build"                   // Все необходимые файлы для сборки релиза
-                        env.sbor = "D:\\release_build\\STOMA\\Sbor"                                         // Путь где собирается релиз
                         env.releaseServer = "VAStoma"                                                       // Имя базы релизного хранилища
                         env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
                         env.baseBuild = "localhost/StomaSborka"                                             // База на которой проходит сборка
                         env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
-                        env.netlenka = "D:\\release_build\\STOMA\\Netlenka1c"                                      // Путь к нетленки - шифрование расширения
                         env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
+                        env.sampleEdf = "C:\\automation\\sample\\edf\\Stomatology"                          // Путь к шаблону edf
+                        env.extensionNamemess = "Мессенджер_Стоматология"
+                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"
                     def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'         // Отпарвка сообщение в телеграмм о запуске сборки 
                     def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
                     }
@@ -51,7 +56,7 @@ pipeline {
                     def scriptPath2 = 'SBORKA/records/process_files.py'
                     bat "python ${scriptPath} ${env.target_path}"
                     bat "python ${scriptPath1} ${env.sourceDirectory} ${env.target_path} ${params.oldversion_1} ${params.newversion_1} ${params.platformversion_1} ${params.slkversion} ${env.sbor}"
-                    bat "python ${scriptPath2} ${params.oldversion_1} ${params.newversion_1}"
+                    bat "python ${scriptPath2} ${params.oldversion_1} ${params.newversion_1} ${env.sampleEdf} ${env.fbrb}"
                 }
             }
         }
@@ -70,38 +75,56 @@ pipeline {
         stage("Обновление мессенджера из хранилища") {
             steps{  
                 script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension Мессенджер_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    @call ${VRUNNER_PATH} updateext Мессенджер_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    """
+                    if (params.Product.contains('FINTESSCORP')) {
+                        //
+					}else if (params.Product.contains('FITNESS')) {
+                        //
+					}else if (params.Product.contains('SPASALON')) {
+                        //
+					}else if (params.Product.contains('SALON')) {
+                        //
+					}else if (params.Product.contains('STOMA')) {
+                        bat """
+                        chcp 65001
+                        @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                        @call ${VRUNNER_PATH} updateext ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                        """
+                    }
                 }
             }
         }
         stage("Обновление журнала записи из хранилища") {
+            when { expression { !params.Product.contains('STOMA') } }
             steps{
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    @call ${VRUNNER_PATH} updateext ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} updateext ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                     """
+                    }
                 }
             }
-        }
         stage("Выгрузка конфигураций и расширений из хранилища") {
             steps{
                 script {
                     bat """
                     chcp 65001
                     @call ${VRUNNER_PATH} unload ${env.fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\messenger.cfe Мессенджер_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\jurnal.cfe ЖурналЗаписи_Стоматология --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                    @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\messenger.cfe ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                     """
+                    if (params.Product.contains('STOMA')) {
+                        bat """
+                        chcp 65001
+                        @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\jurnal.cfe ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+                        """
+					}
+
                 }
             }
         }
         stage('Шифрование расширения') {
+            when { expression { !params.Product.contains('STOMA') } }
             steps {
                 script{
                     bat """
