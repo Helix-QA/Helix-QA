@@ -1,4 +1,3 @@
-@Library('shared-lib@main') _
 pipeline {
     agent { label "OneS" }
     parameters {
