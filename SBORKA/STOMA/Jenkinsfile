@@ -212,23 +212,23 @@ pipeline {
                     // Загрузка расширения мессенджера
                     source_file = "${env.fbrb}\\messenger.cfe"
                     template_name = "РасширениеМессенджера"
-                    bat "chcp 65001 & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                    sh "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
                     source_file = "${env.fbrb}\\licenceaddin-${params.slkversion}-template.zip"
                     template_name = "КомпонентаСЛК"
-                    bat "chcp 65001 & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                    sh "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Создание файла .datafile
-                    bat "chcp 65001 & python ${compiledatafile} \"${env.fbrb}\" \"${serie}\""
+                    sh "python ${compiledatafile} \"${env.fbrb}\" \"${serie}\""
 
                     // Загрузка .datafile в макет 'ОбъектыСЛК'
                     source_file = "${env.fbrb}\\${serie}.datafile"
                     template_name = "ОбъектыСЛК"
-                    bat "chcp 65001 & python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+                    sh "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Создание файла 4FB1.zip
-                    bat "chcp 65001 >nul & python ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${serie}\""
+                    sh "python ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${serie}\""
                 }
             }
         }
@@ -275,7 +275,7 @@ pipeline {
             steps {
                 script {
                     def perenos = 'SBORKA/STOMA/Perenos.py'
-                    bat "python ${perenos} ${newversion_1} ${env.target_path} ${env.collectedReleaseP} ${env.oldCF} ${env.collectedReleaseOb} ${env.fbrb} ${env.ProductName} ${edfNameobnov} ${archiveName} ${namedistr}"
+                    sh "python ${perenos} ${newversion_1} ${env.target_path} ${env.collectedReleaseP} ${env.oldCF} ${env.collectedReleaseOb} ${env.fbrb} ${env.ProductName} ${edfNameobnov} ${archiveName} ${namedistr}"
                     def messagefinish = 'Сборка «1С: Стоматологическая клиника 2.0» успешно завершена.'            // Отправка сообщения в Telegram
                     def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
                     )
