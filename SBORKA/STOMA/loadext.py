@@ -3,14 +3,15 @@ import shutil
 import subprocess
 import sys
 
+# Получение аргументов из командной строки
 source_file = sys.argv[1]
 designer_path = sys.argv[2]
 base_build = sys.argv[3]
-build_user = sys.argv[4]
+build_user = sys.argv[4]  # Имя пользователя на кириллице
 template_name = sys.argv[5]
 
 def main():
-    # Установка кодировки UTF-8 (аналог chcp 65001)
+    # Установка кодировки UTF-8 для вывода
     sys.stdout.reconfigure(encoding='utf-8')
     temp_dir = os.path.join(os.environ.get("TEMP", "C:\\Temp"), "template.upd")
     check_template = ""  # Оставлено пустым, как в BAT
@@ -42,7 +43,7 @@ def main():
             designer_path, "DESIGNER", f"/S{base_build}",
             f"/DumpConfigFiles{temp_dir}", "-Template"
         ]
-        result = subprocess.run(dump_cmd, capture_output=True, text=True)
+        result = subprocess.run(dump_cmd, capture_output=True, text=True, encoding='cp1251')
         if result.returncode != 0:
             print(f"Ошибка при выгрузке шаблона: {result.stderr}")
             sys.exit(1)
@@ -61,12 +62,12 @@ def main():
     shutil.copy2(source_file, target_file)
     print("Загрузка шаблона...")
 
-    # Загрузка шаблона в базу
+    # Загрузка шаблона в базу с учетом кодировки cp1251
     load_cmd = [
         designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user}",
         f"/LoadConfigFiles{temp_dir}", "-Template", "/UpdateDBCfg"
     ]
-    result = subprocess.run(load_cmd, capture_output=True, text=True)
+    result = subprocess.run(load_cmd, capture_output=True, text=True, encoding='cp1251')
     if result.returncode != 0:
         print(f"Ошибка при загрузке шаблона: {result.stderr}")
         sys.exit(1)
