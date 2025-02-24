@@ -1,4 +1,3 @@
-@Library('loadTemplate') _
 pipeline {
     agent { label "OneS" }
     parameters {
