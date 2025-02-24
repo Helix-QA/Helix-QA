@@ -9,7 +9,7 @@ def main():
     # Константы
     working_dir = sys.argv[1]
     licenceedit_path = os.path.join(working_dir, "licenceedit.exe")
-    serie = sys.agrv[2]
+    serie = sys.argv[2]
     
     datafile = f"{serie}.datafile"
     source_file = "Helix.epf"
