@@ -14,9 +14,18 @@ def main():
     # Установка кодировки UTF-8 для вывода в консоль
     sys.stdout.reconfigure(encoding='utf-8')
 
-    # Оставляем build_user как есть, без лишних перекодировок
-    # Если нужно, 1C сама обработает входные данные
-    print(f"Сырой аргумент build_user: {build_user}")  # Для отладки
+    # Перекодировка build_user из UTF-8 в cp1251 для 1C
+    try:
+        build_user_cp1251 = build_user.encode('utf-8').decode('cp1251')
+    except UnicodeEncodeError as e:
+        print(f"Ошибка кодировки build_user: {e}")
+        sys.exit(1)
+    except UnicodeDecodeError as e:
+        print(f"Ошибка декодирования build_user: {e}")
+        sys.exit(1)
+
+    print(f"Сырой аргумент build_user (UTF-8): {build_user}")
+    print(f"Перекодированный аргумент build_user (cp1251): {build_user_cp1251}")
 
     temp_dir = os.path.join(os.environ.get("TEMP", "C:\\Temp"), "template.upd")
     check_template = ""  # Оставлено пустым, как в BAT
@@ -29,7 +38,6 @@ def main():
     print(f"Путь к информационной базе: {base_build}")
     print(f"Исходный файл: {source_file}")
     print(f"Целевой шаблон: {template_name}")
-    print(f"Пользователь: {build_user}")  # Для отладки
 
     # Проверка наличия 1C:Enterprise
     if not os.path.exists(designer_path):
@@ -68,9 +76,9 @@ def main():
     shutil.copy2(source_file, target_file)
     print("Загрузка шаблона...")
 
-    # Загрузка шаблона в базу
+    # Загрузка шаблона в базу с перекодированным именем пользователя
     load_cmd = [
-        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user}",
+        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user_cp1251}",
         f"/LoadConfigFiles{temp_dir}", "-Template", "/UpdateDBCfg"
     ]
     result = subprocess.run(load_cmd, capture_output=True, text=True, encoding='cp1251')
