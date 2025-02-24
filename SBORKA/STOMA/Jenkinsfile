@@ -184,6 +184,18 @@ pipeline {
         //         }
         //     }
         // }
+        
+        stage('Основной этап') {
+            steps {
+                script {
+                    loadTemplate(
+                        sourceFile: "${env.fbrb}\\messenger.cfe",
+                        templateName: "РасширениеМессенджера"
+                    )
+                }
+            }
+        }
+        
         stage("Загрузка расширений и СЛК") {
             steps {
                 script {
