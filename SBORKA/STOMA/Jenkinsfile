@@ -192,9 +192,9 @@ pipeline {
                     def zip = 'SBORKA/STOMA/zip.py'
                     def source_file
                     def template_name
-                    def serie
+                    
                     if (params.Product.contains('FINTESSCORP')) {
-                         serie = "5415"
+                         env.serie = "5415"
 					}//else if (params.Product.contains('FITNESS')) {
                     //     serie = "5415"
 					// }else if (params.Product.contains('SPASALON')) {
@@ -227,7 +227,7 @@ pipeline {
                     // sh "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Создание файла 4FB1.zip
-                    bat "python ${zip} ${env.fbrb} ${env.target_path} ${serie}"
+                    bat "python ${zip} ${env.fbrb} ${env.target_path} ${env.serie}"
                 }
             }
         }
