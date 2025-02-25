@@ -193,9 +193,9 @@ pipeline {
                     def source_file
                     def template_name
                     def serie
-                    // if (params.Product.contains('FINTESSCORP')) {
-                    //     serie = "5415"
-					// }else if (params.Product.contains('FITNESS')) {
+                    if (params.Product.contains('FINTESSCORP')) {
+                         serie = "5415"
+					}//else if (params.Product.contains('FITNESS')) {
                     //     serie = "5415"
 					// }else if (params.Product.contains('SPASALON')) {
                     //     serie = "F433"
