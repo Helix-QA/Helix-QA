@@ -15,6 +15,7 @@ pipeline {
         stage("Инициализация параметров"){
             steps{
                 script{
+                    println "Значение params.Product: '${params.Product}'"
                     env.collectedReleaseP = "D:\\release_build\\${params.Product}\\Collected_release\\Polnaya"      // Полная поствка
                     env.collectedReleaseOb = "D:\\release_build\\${params.Product}\\Collected_release\\obnovlenine" // Поставка обновления
                     env.oldCF = "D:\\release_build\\${params.Product}\\Old_versions_cf"                             // Старые cf 
@@ -75,9 +76,9 @@ pipeline {
                     def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
                     def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
                     def scriptPath2 = 'SBORKA/records/process_files.py'
-                    sh "python ${scriptPath} \"${env.target_path}\""
-                    sh "python ${scriptPath1} \"${env.sourceDirectory}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.sbor}\""
-                    sh "python ${scriptPath2} \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.fbrb}\""
+                    sh "chcp 65001 & python ${scriptPath} \"${env.target_path}\""
+                    sh "chcp 65001 & python ${scriptPath1} \"${env.sourceDirectory}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.sbor}\""
+                    sh "chcp 65001 & python ${scriptPath2} \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.fbrb}\""
                 }
             }
         }
