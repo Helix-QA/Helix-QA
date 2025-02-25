@@ -23,7 +23,7 @@ pipeline {
                     env.sbor = "D:\\release_build\\${params.Product}\\Sbor"                                         // Путь где собирается релиз
                     env.netlenka = "D:\\release_build\\${params.Product}\\Netlenka1c"                               // Путь к нетленки - шифрование расширения
                     env.archiveName = "D:\\release_build\\${params.Product}"                                        // Путь для архивации дистрибутива
-
+//
                     if (params.Product.contains('FITNESSCORP')) {
                         env.ProductName = "Fitness"                                                         // Имя продукта
                         env.serie = "5415"
