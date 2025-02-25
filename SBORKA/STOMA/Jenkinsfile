@@ -37,7 +37,7 @@ pipeline {
                         env.edfNamefull = "Комплект поставки.edf"                                           // Наиминование файла основновй поставки
                         env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
                         env.namedistr = "Fitness"                                                           // Наименование архива собранного релиза
-                        env.target_path = "D:\\release_build\\${params.Product}\\Stomatology"               // Путь к файлам документации
+                        env.target_path = "D:\\release_build\\${params.Product}\\Fitness"                   // Путь к файлам документации
                         def messageStart = 'Запущен процесс сборки «1С: Фитнес клуб КОРП 4.0»'              // Отпарвка сообщение в телеграмм о запуске сборки 
                         def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
 
