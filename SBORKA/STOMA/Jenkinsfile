@@ -227,7 +227,7 @@ pipeline {
                     sh "python ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
                     // Создание файла 4FB1.zip
-                    sh "python ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${serie}\""
+                    bat "python ${zip} ${env.fbrb} ${env.target_path} ${serie}"
                 }
             }
         }

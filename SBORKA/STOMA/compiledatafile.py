@@ -33,13 +33,12 @@ def main():
 
     # Проверка кода завершения
     if result.returncode != 0:
-        print()  # Пустая строка
         print(f"Error ({result.returncode}), press any key to quit...")
         print(f"Ошибка: {result.stderr}")
         sys.exit(1)
     else:
-        print()  # Пустая строка
-        print("Success, press any key to quit...")
+
+        print("Операция выполнена успешно")
 
 if __name__ == "__main__":
     try:
