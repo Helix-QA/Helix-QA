@@ -24,7 +24,7 @@ pipeline {
                     env.netlenka = "D:\\release_build\\${params.Product}\\Netlenka1c"                               // Путь к нетленки - шифрование расширения
                     env.archiveName = "D:\\release_build\\${params.Product}"                                        // Путь для архивации дистрибутива
 
-                    if (params.Product.contains('FINTESSCORP')) {
+                    if (params.Product.contains('FITNESSCORP')) {
                         env.ProductName = "Fitness"                                                         // Имя продукта
                         env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"     // Адрес релизного хранилища
                         env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
@@ -41,13 +41,6 @@ pipeline {
                         env.target_path = "D:\\release_build\\${params.Product}\\Fitness"                   // Путь к файлам документации
                         def messageStart = 'Запущен процесс сборки «1С: Фитнес клуб КОРП 4.0»'              // Отпарвка сообщение в телеграмм о запуске сборки 
                         def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
-
-					}else if (params.Product.contains('FITNESS')) {
-                        //
-					}else if (params.Product.contains('SPASALON')) {
-                        //
-					}else if (params.Product.contains('SALON')) {
-                        //
 					}else if (params.Product.contains('STOMA')) {
                         env.ProductName = "Stomatology"                                                     // Имя продукта
                         env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"// Адрес релизного хранилища
@@ -76,9 +69,9 @@ pipeline {
                     def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
                     def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
                     def scriptPath2 = 'SBORKA/records/process_files.py'
-                    sh "chcp 65001 & python ${scriptPath} \"${env.target_path}\""
-                    sh "chcp 65001 & python ${scriptPath1} \"${env.sourceDirectory}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.sbor}\""
-                    sh "chcp 65001 & python ${scriptPath2} \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.fbrb}\""
+                    sh "python ${scriptPath} \"${env.target_path}\""
+                    sh "python ${scriptPath1} \"${env.sourceDirectory}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.sbor}\""
+                    sh "python ${scriptPath2} \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.fbrb}\""
                 }
             }
         }
