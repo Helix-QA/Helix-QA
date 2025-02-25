@@ -110,12 +110,9 @@ def move_specific_files(source_folder, destination_folder, filenames):
         else:
             print(f"Файл {filename} не найден в {source_folder}")
 
-# Формируем source_folder и destination_folder
-    source_folder = os.path.join(r'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix', ProductName, newversion_1)
-    destination_folder = os.path.join(target_path, 'Комплект первичных материалов', 'DemoDB')  # Используем os.path.join для корректных путей
-    filenames = ['1Cv8.dt']  # Имена файлов
-
-
+source_folder = rf'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix\{ProductName}\{newversion_3}'
+destination_folder = rf'{target_path}\Комплект первичных материалов\DemoDB'
+filenames = ['1Cv8.dt']  # Имена файлов
 move_specific_files(source_folder, destination_folder, filenames)
 
 
@@ -209,11 +206,9 @@ def move_specific_files(source_folder, destination_folder, filenames):
         else:
             print(f"Файл {filename} не найден в {source_folder}")
 
-# Формируем source_folder на основе переданных аргументов
-    source_folder = os.path.join(r'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix', ProductName, newversion_1)
-    destination_folder = oldCF  # Используем переданный oldCF напрямую
-    filenames = ['1Cv8.cf']  # Имена файлов
-    
+source_folder = rf'C:\Users\y.fateeva\AppData\Roaming\1C\1c8\tmplts\helix\{ProductName}\{newversion_3}'
+destination_folder = rf'{oldCF}'
+filenames = ['1Cv8.cf']  # Имена файлов
 move_specific_files(source_folder, destination_folder, filenames)
 
 
