@@ -187,12 +187,12 @@ pipeline {
         stage("Загрузка расширений и СЛК") {
             steps {
                 script {
-                    // def loadexmes = 'SBORKA/STOMA/loadext.py'
-                    // def compiledatafile = 'SBORKA/STOMA/compiledatafile.py'
-                    // def zip = 'SBORKA/STOMA/zip.py'
-                    // def source_file
-                    // def template_name
-                    // def serie
+                    def loadexmes = 'SBORKA/STOMA/loadext.py'
+                    def compiledatafile = 'SBORKA/STOMA/compiledatafile.py'
+                    def zip = 'SBORKA/STOMA/zip.py'
+                    def source_file
+                    def template_name
+                    def serie
                     // if (params.Product.contains('FINTESSCORP')) {
                     //     serie = "5415"
 					// }else if (params.Product.contains('FITNESS')) {
