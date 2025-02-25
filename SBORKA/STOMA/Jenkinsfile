@@ -26,6 +26,7 @@ pipeline {
 
                     if (params.Product.contains('FITNESSCORP')) {
                         env.ProductName = "Fitness"                                                         // Имя продукта
+                        env.serie = "5415"
                         env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"     // Адрес релизного хранилища
                         env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
                         env.releaseServer = "VAFitness"                                                     // Имя базы релизного хранилища
@@ -192,10 +193,7 @@ pipeline {
                     def zip = 'SBORKA/STOMA/zip.py'
                     def source_file
                     def template_name
-                    
-                    if (params.Product.contains('FINTESSCORP')) {
-                         env.serie = "5415"
-					}//else if (params.Product.contains('FITNESS')) {
+					//else if (params.Product.contains('FITNESS')) {
                     //     serie = "5415"
 					// }else if (params.Product.contains('SPASALON')) {
                     //     serie = "F433"
