@@ -75,9 +75,9 @@ pipeline {
                     def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
                     def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
                     def scriptPath2 = 'SBORKA/records/process_files.py'
-                    bat "python ${scriptPath} ${env.target_path}"
-                    bat "python ${scriptPath1} ${env.sourceDirectory} ${env.target_path} ${params.oldversion_1} ${params.newversion_1} ${params.platformversion_1} ${params.slkversion} ${env.sbor}"
-                    bat "python ${scriptPath2} ${params.oldversion_1} ${params.newversion_1} ${env.sampleEdf} ${env.fbrb}"
+                    sh "python ${scriptPath} \"${env.target_path}\""
+                    sh "python ${scriptPath1} \"${env.sourceDirectory}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.sbor}\""
+                    sh "python ${scriptPath2} \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.fbrb}\""
                 }
             }
         }
