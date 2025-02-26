@@ -238,7 +238,6 @@ pipeline {
                     @call ${VRUNNER_PATH} session kill --with-nolock --db ${basenameinf} --db-user "${env.buildUser}"
                     "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\${env.edfNamefull}" -PackageFileName setup.zip -Option"Основная поставка"
                     """
-                    println "Значение params.Product: '${params.Product}'"
                     def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
                     bat "python -X utf8 ${unzipping} ${env.collectedReleaseP}"
                     def install = 'SBORKA/STOMA/install.py'                        // Установка
@@ -263,7 +262,6 @@ pipeline {
                     chcp 65001
                     "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseOb}" -File"${env.fbrb}\\${edfNameobnov}" -PackageFileName update.zip -Option"Поставка обновления"
                     """
-                    println "Значение params.Product: '${params.Product}'"
                     def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'           // Разархивирование
                     bat "python -X utf8 ${unzippingupdate} ${env.collectedReleaseOb}"
                     def installupdate = 'SBORKA/STOMA/installupdate.py'               // Установка
