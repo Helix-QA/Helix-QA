@@ -12,56 +12,28 @@ pipeline {
         VRUNNER_PATH = 'vrunner'
     }
     stages {
-        stage("Инициализация параметров"){
-            steps{
-                script{
-                    env.collectedReleaseP = "D:\\release_build\\${params.Product}\\Collected_release\\Polnaya"      // Полная поствка
-                    env.collectedReleaseOb = "D:\\release_build\\${params.Product}\\Collected_release\\obnovlenine" // Поставка обновления
-                    env.oldCF = "D:\\release_build\\${params.Product}\\Old_versions_cf"                             // Старые cf 
-                    env.fbrb = "D:\\release_build\\${params.Product}\\files_before_release_build"                   // Все необходимые файлы для сборки релиза
-                    env.sbor = "D:\\release_build\\${params.Product}\\Sbor"                                         // Путь где собирается релиз
-                    env.netlenka = "D:\\release_build\\${params.Product}\\Netlenka1c"                               // Путь к нетленки - шифрование расширения
-                    env.archiveName = "D:\\release_build\\${params.Product}"                                        // Путь для архивации дистрибутива
-                    if (params.Product.contains('FITNESSCORP')) {
-                        env.ProductName = "Fitness_CORP"                                                         // Имя продукта
-                        env.serie = "5415"
-                        env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"     // Адрес релизного хранилища
-                        env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
-                        env.releaseServer = "VAFitness"                                                     // Имя базы релизного хранилища
-                        env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
-                        env.baseBuild = "localhost/FitnessCorpSborka"                                       // База на которой проходит сборка
-                        env.basenameinf = "FitnessCorpSborka"
-                        env.buildUser = "Администратор БД"                                                  // Пользователь базы сборки
-                        env.sourceDirectory = "C:\\automation\\sample\\Fitness"                             // Путь к файлам шаблонам
-                        env.sampleEdf = "C:\\automation\\sample\\edf\\FitnessCorp"                          // Путь к шаблону edf
-                        env.extensionNamemess = "Мессенджер"                                                // Наиминование расширения мессенджера
-                        env.edfNamefull = "Комплект поставки.edf"                                           // Наиминование файла основновй поставки
-                        env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
-                        env.namedistr = "Fitness"                                                           // Наименование архива собранного релиза
-                        env.target_path = "D:\\release_build\\${params.Product}\\Fitness"                   // Путь к файлам документации
-					}else if (params.Product.contains('STOMA')) {
-                        env.ProductName = "Stomatology"                                                     // Имя продукта
-                        env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"// Адрес релизного хранилища
-                        env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
-                        env.releaseServer = "VAStoma"                                                       // Имя базы релизного хранилища
-                        env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
-                        env.baseBuild = "localhost/StomaSborka"                                             // База на которой проходит сборка
-                        env.basenameinf = "StomaSborka"
-                        env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
-                        env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
-                        env.sampleEdf = "C:\\automation\\sample\\edf\\Stomatology"                          // Путь к шаблону edf
-                        env.extensionNamemess = "Мессенджер_Стоматология"                                   // Наиминование расширения мессенджера
-                        env.extensionNamejurnal = "ЖурналЗаписи_Стоматология"                               // Наиминование расширения журнала записи
-                        env.edfNamefull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"                  // Наиминование файла основновй поставки
-                        env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
-                        env.namedistr = "Стоматологическая клиника"                                         // Наименование архива собранного релиза
-                        env.target_path = "D:\\release_build\\${params.Product}\\Stomatology"               // Путь к файлам документации
-                    }
-                    def messageStart = 'Запущен процесс сборки «${env.ProductName}»'                        // Отпарвка сообщение в телеграмм о запуске сборки 
-                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+      stage("Инициализация параметров") {
+        steps {
+            script {
+                def config = readYaml file: 'config.yaml'
+                def product
+                
+                if (params.Product.contains('FITNESSCORP')) {
+                    product = 'fitnesscorp'
+                } else if (params.Product.contains('STOMA')) {
+                    product = 'stoma'
+                } else {
+                    error "Неизвестный продукт: ${params.Product}. Ожидается 'FITNESSCORP' или 'STOMA'."
                 }
+                
+                // Примеры использования переменных из нужного раздела YAML
+                //sh "python -X utf8 ${env.scriptPath} \"${config.products[product].target_path.replace('${params.Product}', params.Product)}\""
+                println "Путь к полной поставке: ${config.common.collected_release_p.replace('${params.Product}', params.Product)}"
+                println "Имя продукта: ${config.products[product].product_name}"
+                println "Репозиторий: ${config.products[product].rel_repository}"
             }
         }
+    }
 
         stage('Обновление документации') {
             steps {
@@ -75,202 +47,202 @@ pipeline {
                 }
             }
         }
-        stage("Обновление конфигурации из релизного хранилища") {
-            steps{
-                script {
-					bat """
-					chcp 65001
-					@call ${VRUNNER_PATH} session kill --with-nolock --db ${env.releaseServer} --db-user ${env.releaseUser}
-					@call ${VRUNNER_PATH} loadrepo --storage-name ${env.relrepositoy} --storage-user ${env.varepositoryUser} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    """
-                }
-            }
-        }
-        stage("Обновление мессенджера из хранилища") {
-            steps{  
-                script {
-                    if (params.Product.contains('FINTESSCORP')) {
-                        bat """
-                        chcp 65001
-                        @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release --storage-user МихаилБ --extension ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                        @call ${VRUNNER_PATH} updateext ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                        """
-					}else if (params.Product.contains('FITNESS')) {
-                        //
-					}else if (params.Product.contains('SPASALON')) {
-                        //
-					}else if (params.Product.contains('SALON')) {
-                        //
-					}else if (params.Product.contains('STOMA')) {
-                        bat """
-                        chcp 65001
-                        @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                        @call ${VRUNNER_PATH} updateext ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                        """
-                    }
-                }
-            }
-        }
-        stage("Обновление журнала записи из хранилища") {
-            when { expression {params.Product.contains('STOMA') } }
-            steps{
-                script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    @call ${VRUNNER_PATH} updateext ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    """
-                    }
-                }
-            }
-        stage("Выгрузка конфигураций и расширений из хранилища") {
-            steps{
-                script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} unload ${env.fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\messenger.cfe ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                    """
-                    if (params.Product.contains('STOMA')) {
-                        bat """
-                        chcp 65001
-                        @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\jurnal.cfe ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
-                        """
-					}
+        // stage("Обновление конфигурации из релизного хранилища") {
+        //     steps{
+        //         script {
+		// 			bat """
+		// 			chcp 65001
+		// 			@call ${VRUNNER_PATH} session kill --with-nolock --db ${env.releaseServer} --db-user ${env.releaseUser}
+		// 			@call ${VRUNNER_PATH} loadrepo --storage-name ${env.relrepositoy} --storage-user ${env.varepositoryUser} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+		// 			@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //             """
+        //         }
+        //     }
+        // }
+        // stage("Обновление мессенджера из хранилища") {
+        //     steps{  
+        //         script {
+        //             if (params.Product.contains('FINTESSCORP')) {
+        //                 bat """
+        //                 chcp 65001
+        //                 @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release --storage-user МихаилБ --extension ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //                 @call ${VRUNNER_PATH} updateext ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //                 """
+		// 			}else if (params.Product.contains('FITNESS')) {
+        //                 //
+		// 			}else if (params.Product.contains('SPASALON')) {
+        //                 //
+		// 			}else if (params.Product.contains('SALON')) {
+        //                 //
+		// 			}else if (params.Product.contains('STOMA')) {
+        //                 bat """
+        //                 chcp 65001
+        //                 @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //                 @call ${VRUNNER_PATH} updateext ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
+        // stage("Обновление журнала записи из хранилища") {
+        //     when { expression {params.Product.contains('STOMA') } }
+        //     steps{
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //             @call ${VRUNNER_PATH} updateext ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //             """
+        //             }
+        //         }
+        //     }
+        // stage("Выгрузка конфигураций и расширений из хранилища") {
+        //     steps{
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH} unload ${env.fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //             @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\messenger.cfe ${env.extensionNamemess} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //             """
+        //             if (params.Product.contains('STOMA')) {
+        //                 bat """
+        //                 chcp 65001
+        //                 @call ${VRUNNER_PATH} unloadext ${env.fbrb}\\jurnal.cfe ${env.extensionNamejurnal} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
+        //                 """
+		// 			}
 
-                }
-            }
-        }
-        stage('Шифрование расширения') {
-            when { expression {params.Product.contains('STOMA') } }
-            steps {
-                script{
-                    bat """
-                    start ${env.netlenka}\\Netlenka1C.exe --mode=prof --source ${env.fbrb}\\jurnal.cfe --createpdb
-                    exit
-                    """
-                }
-            }
-        }
-        stage('Загрузка .cf в базу для сборки релиза') {
-            steps {
-                script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} load --src ${env.fbrb}\\1Cv8.cf --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}"
-                    @call ${VRUNNER_PATH} updatedb --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}"
-                    """
-                }
-            }
-        }
-        stage("Обновление базы в режиме 1С:Предприятие") {
-            steps {
-                script{
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH}  run --command ЗавершитьРаботуСистемы; --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
-                    """
-                }
-            }
-        }
-        stage('Пауза') {
-            steps {
-               script{
-                    def messageText = """Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"""
-                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
-                    // Вручную запрашиваем продолжение пайплайна
-                    input 'Продолжить выполнение пайплайна?'
-                }
-            }
-        }
-        stage("Загрузка расширений и СЛК") {
-            steps {
-                script {
-                    def loadexmes = 'SBORKA/STOMA/loadext.py'
-                    def compiledatafile = 'SBORKA/STOMA/compiledatafile.py'
-                    def zip = 'SBORKA/STOMA/zip.py'
-                    def source_file
-                    def template_name
-                    if (params.Product.contains('STOMA')) {
-                        serie = "4FB1" 
-                        // Загрузка расширения журнала записи
-                        source_file = "${env.fbrb}\\Protected\\jurnal.cfe"
-                        template_name = "РасширениеЖурналаЗаписи"
-                        sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
-                    }
-                    // Загрузка расширения мессенджера
-                    source_file = "${env.fbrb}\\messenger.cfe"
-                    template_name = "РасширениеМессенджера"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+        //         }
+        //     }
+        // }
+        // stage('Шифрование расширения') {
+        //     when { expression {params.Product.contains('STOMA') } }
+        //     steps {
+        //         script{
+        //             bat """
+        //             start ${env.netlenka}\\Netlenka1C.exe --mode=prof --source ${env.fbrb}\\jurnal.cfe --createpdb
+        //             exit
+        //             """
+        //         }
+        //     }
+        // }
+        // stage('Загрузка .cf в базу для сборки релиза') {
+        //     steps {
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH} load --src ${env.fbrb}\\1Cv8.cf --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}"
+        //             @call ${VRUNNER_PATH} updatedb --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}"
+        //             """
+        //         }
+        //     }
+        // }
+        // stage("Обновление базы в режиме 1С:Предприятие") {
+        //     steps {
+        //         script{
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH}  run --command ЗавершитьРаботуСистемы; --ibconnection /S${env.baseBuild} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
+        //             """
+        //         }
+        //     }
+        // }
+        // stage('Пауза') {
+        //     steps {
+        //        script{
+        //             def messageText = """Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"""
+        //             def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
+        //             // Вручную запрашиваем продолжение пайплайна
+        //             input 'Продолжить выполнение пайплайна?'
+        //         }
+        //     }
+        // }
+        // stage("Загрузка расширений и СЛК") {
+        //     steps {
+        //         script {
+        //             def loadexmes = 'SBORKA/STOMA/loadext.py'
+        //             def compiledatafile = 'SBORKA/STOMA/compiledatafile.py'
+        //             def zip = 'SBORKA/STOMA/zip.py'
+        //             def source_file
+        //             def template_name
+        //             if (params.Product.contains('STOMA')) {
+        //                 serie = "4FB1" 
+        //                 // Загрузка расширения журнала записи
+        //                 source_file = "${env.fbrb}\\Protected\\jurnal.cfe"
+        //                 template_name = "РасширениеЖурналаЗаписи"
+        //                 sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+        //             }
+        //             // Загрузка расширения мессенджера
+        //             source_file = "${env.fbrb}\\messenger.cfe"
+        //             template_name = "РасширениеМессенджера"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
-                    // Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
-                    source_file = "${env.fbrb}\\licenceaddin-${params.slkversion}-template.zip"
-                    template_name = "КомпонентаСЛК"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+        //             // Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
+        //             source_file = "${env.fbrb}\\licenceaddin-${params.slkversion}-template.zip"
+        //             template_name = "КомпонентаСЛК"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
-                    // Создание файла .datafile
-                    sh "python -X utf8 ${compiledatafile} \"${env.fbrb}\" \"${env.serie}\""
+        //             // Создание файла .datafile
+        //             sh "python -X utf8 ${compiledatafile} \"${env.fbrb}\" \"${env.serie}\""
 
-                    // Загрузка .datafile в макет 'ОбъектыСЛК'
-                    source_file = "${env.fbrb}\\${env.serie}.datafile"
-                    template_name = "ОбъектыСЛК"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
+        //             // Загрузка .datafile в макет 'ОбъектыСЛК'
+        //             source_file = "${env.fbrb}\\${env.serie}.datafile"
+        //             template_name = "ОбъектыСЛК"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.baseBuild}\" \"${env.buildUser}\" \"${template_name}\""
 
-                    //  Создание файла 4FB1.zip
-                    sh "python -X utf8 ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${env.serie}\""
-                }
-            }
-        }
-        stage('Основная поставка') {
-            steps {
-                script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${basenameinf} --db-user "${env.buildUser}"
-                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\${env.edfNamefull}" -PackageFileName setup.zip -Option"Основная поставка"
-                    """
-                    def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
-                    bat "python -X utf8 ${unzipping} ${env.collectedReleaseP}"
-                    def install = 'SBORKA/STOMA/install.py'                        // Установка
-                    bat "python -X utf8 ${install} ${env.collectedReleaseP}"
-                }
-            }
-        }
-        stage("Выгрзка файла .cfu") {
-            steps {
-                script{
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.sbor}\\Update\\1Cv8.cfu -f ${env.oldCF}\\${oldversion_1}.cf
-                    """
-                }
-            }
-        }
-        stage('Поставка обновления') {
-            steps {
-                script {
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseOb}" -File"${env.fbrb}\\${edfNameobnov}" -PackageFileName update.zip -Option"Поставка обновления"
-                    """
-                    def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'           // Разархивирование
-                    bat "python -X utf8 ${unzippingupdate} ${env.collectedReleaseOb}"
-                    def installupdate = 'SBORKA/STOMA/installupdate.py'               // Установка
-                    bat "python -X utf8 ${installupdate} ${env.collectedReleaseOb}"
-                }
-            }
-        }
-        stage('Создание архива дистрибутива') {
-            steps {
-                script {
-                    def perenos = 'SBORKA/STOMA/Perenos.py'
-                    sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${env.target_path}\" \"${env.collectedReleaseP}\" \"${env.oldCF}\" \"${env.collectedReleaseOb}\" \"${env.fbrb}\" \"${env.ProductName}\" \"${edfNameobnov}\" \"${archiveName}\" \"${namedistr}\""
-                    def messagefinish = 'Сборка ${params.Product} успешно завершена.'            // Отправка сообщения в Telegram
-                    def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
-                    )
-                }
-            }
-        }
+        //             //  Создание файла 4FB1.zip
+        //             sh "python -X utf8 ${zip} \"${env.fbrb}\" \"${env.target_path}\" \"${env.serie}\""
+        //         }
+        //     }
+        // }
+        // stage('Основная поставка') {
+        //     steps {
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH} session kill --with-nolock --db ${basenameinf} --db-user "${env.buildUser}"
+        //             "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\${env.edfNamefull}" -PackageFileName setup.zip -Option"Основная поставка"
+        //             """
+        //             def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
+        //             bat "python -X utf8 ${unzipping} ${env.collectedReleaseP}"
+        //             def install = 'SBORKA/STOMA/install.py'                        // Установка
+        //             bat "python -X utf8 ${install} ${env.collectedReleaseP}"
+        //         }
+        //     }
+        // }
+        // stage("Выгрзка файла .cfu") {
+        //     steps {
+        //         script{
+        //             bat """
+        //             chcp 65001
+        //             "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.sbor}\\Update\\1Cv8.cfu -f ${env.oldCF}\\${oldversion_1}.cf
+        //             """
+        //         }
+        //     }
+        // }
+        // stage('Поставка обновления') {
+        //     steps {
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseOb}" -File"${env.fbrb}\\${edfNameobnov}" -PackageFileName update.zip -Option"Поставка обновления"
+        //             """
+        //             def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'           // Разархивирование
+        //             bat "python -X utf8 ${unzippingupdate} ${env.collectedReleaseOb}"
+        //             def installupdate = 'SBORKA/STOMA/installupdate.py'               // Установка
+        //             bat "python -X utf8 ${installupdate} ${env.collectedReleaseOb}"
+        //         }
+        //     }
+        // }
+        // stage('Создание архива дистрибутива') {
+        //     steps {
+        //         script {
+        //             def perenos = 'SBORKA/STOMA/Perenos.py'
+        //             sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${env.target_path}\" \"${env.collectedReleaseP}\" \"${env.oldCF}\" \"${env.collectedReleaseOb}\" \"${env.fbrb}\" \"${env.ProductName}\" \"${edfNameobnov}\" \"${archiveName}\" \"${namedistr}\""
+        //             def messagefinish = 'Сборка ${params.Product} успешно завершена.'            // Отправка сообщения в Telegram
+        //             def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
+        //             )
+        //         }
+        //     }
+        //}
     }
 }
