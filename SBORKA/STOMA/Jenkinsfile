@@ -28,9 +28,9 @@ pipeline {
                 
                 // Примеры использования переменных из нужного раздела YAML
                 //sh "python -X utf8 ${env.scriptPath} \"${config.products[product].target_path.replace('${params.Product}', params.Product)}\""
-                println "Путь к полной поставке: ${config.common.collected_release_p.replace('${params.Product}', params.Product)}"
-                println "Имя продукта: ${config.products[product].product_name}"
-                println "Репозиторий: ${config.products[product].rel_repository}"
+                // println "Путь к полной поставке: ${config.common.collected_release_p.replace('${params.Product}', params.Product)}"
+                // println "Имя продукта: ${config.products[product].product_name}"
+                // println "Репозиторий: ${config.products[product].rel_repository}"
                 println "Репозиторий: ${config.common.target_path}"
             }
         }
