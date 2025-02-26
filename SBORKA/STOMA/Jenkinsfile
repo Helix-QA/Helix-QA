@@ -31,6 +31,7 @@ pipeline {
                 println "Путь к полной поставке: ${config.common.collected_release_p.replace('${params.Product}', params.Product)}"
                 println "Имя продукта: ${config.products[product].product_name}"
                 println "Репозиторий: ${config.products[product].rel_repository}"
+                println "Репозиторий: ${config.common.target_path}"
             }
         }
     }
