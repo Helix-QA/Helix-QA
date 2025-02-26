@@ -1,5 +1,3 @@
-def config = readYaml file: 'SBORKA/STOMA/config.yaml'
-def product
 pipeline {
     agent { label "OneS" }
     parameters {
@@ -17,10 +15,11 @@ pipeline {
         stage("Инициализация параметров") {
             steps {
                 script {
+                    env.config = readYaml file: 'SBORKA/STOMA/config.yaml'
                     if (params.Product.contains('FITNESSCORP')) {
-                        product = 'fitnesscorp'
+                        env.product = 'fitnesscorp'
                     } else if (params.Product.contains('STOMA')) {
-                        product = 'stoma'
+                        env.product = 'stoma'
                     } else {
                         error "Неизвестный продукт: ${params.Product}. Ожидается 'FITNESSCORP' или 'STOMA'."
                     }
