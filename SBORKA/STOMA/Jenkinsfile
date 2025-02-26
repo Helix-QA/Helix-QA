@@ -23,7 +23,7 @@ pipeline {
                     env.netlenka = "D:\\release_build\\${params.Product}\\Netlenka1c"                               // Путь к нетленки - шифрование расширения
                     env.archiveName = "D:\\release_build\\${params.Product}"                                        // Путь для архивации дистрибутива
                     if (params.Product.contains('FITNESSCORP')) {
-                        env.ProductName = "Fitness"                                                         // Имя продукта
+                        env.ProductName = "Fitness_CORP"                                                         // Имя продукта
                         env.serie = "5415"
                         env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"     // Адрес релизного хранилища
                         env.varepositoryUser = "VATest"                                                     // Пользователь хранилища 
@@ -39,8 +39,6 @@ pipeline {
                         env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
                         env.namedistr = "Fitness"                                                           // Наименование архива собранного релиза
                         env.target_path = "D:\\release_build\\${params.Product}\\Fitness"                   // Путь к файлам документации
-                     //   def messageStart = 'Запущен процесс сборки «1С: Фитнес клуб КОРП 4.0»'              // Отпарвка сообщение в телеграмм о запуске сборки 
-                     //   def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
 					}else if (params.Product.contains('STOMA')) {
                         env.ProductName = "Stomatology"                                                     // Имя продукта
                         env.relrepositoy = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"// Адрес релизного хранилища
@@ -58,9 +56,9 @@ pipeline {
                         env.edfNameobnov = "Файл описания комплекта поставки.edf"                           // Наиминование файла поставки обновления
                         env.namedistr = "Стоматологическая клиника"                                         // Наименование архива собранного релиза
                         env.target_path = "D:\\release_build\\${params.Product}\\Stomatology"               // Путь к файлам документации
-                        def messageStart = 'Запущен процесс сборки «1С: Стоматологическая клиника 2.0»'      // Отпарвка сообщение в телеграмм о запуске сборки 
-                        def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
                     }
+                    def messageStart = 'Запущен процесс сборки «${env.ProductName}»'                        // Отпарвка сообщение в телеграмм о запуске сборки 
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
                 }
             }
         }
@@ -268,7 +266,7 @@ pipeline {
                 script {
                     def perenos = 'SBORKA/STOMA/Perenos.py'
                     sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${env.target_path}\" \"${env.collectedReleaseP}\" \"${env.oldCF}\" \"${env.collectedReleaseOb}\" \"${env.fbrb}\" \"${env.ProductName}\" \"${edfNameobnov}\" \"${archiveName}\" \"${namedistr}\""
-                    def messagefinish = 'Сборка «1С: Стоматологическая клиника 2.0» успешно завершена.'            // Отправка сообщения в Telegram
+                    def messagefinish = 'Сборка ${params.Product} успешно завершена.'            // Отправка сообщения в Telegram
                     def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
                     )
                 }
