@@ -15,7 +15,7 @@ pipeline {
       stage("Инициализация параметров") {
         steps {
             script {
-                def config = readYaml file: 'config.yaml'
+                def config = readYaml file: 'SBORKA/STOMA/config.yaml'
                 def product
                 
                 if (params.Product.contains('FITNESSCORP')) {
