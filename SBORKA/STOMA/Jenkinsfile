@@ -194,13 +194,7 @@ pipeline {
                     def zip = 'SBORKA/STOMA/zip.py'
                     def source_file
                     def template_name
-					else if (params.Product.contains('FITNESS')) {
-                        serie = "5415"
-					}else if (params.Product.contains('SPASALON')) {
-                        serie = "F433"
-					}else if (params.Product.contains('SALON')) {
-                        serie = "48E3"
-					}else if (params.Product.contains('STOMA')) {
+                    if (params.Product.contains('STOMA')) {
                         serie = "4FB1" 
                         // Загрузка расширения журнала записи
                         source_file = "${env.fbrb}\\Protected\\jurnal.cfe"
