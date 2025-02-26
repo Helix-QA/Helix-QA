@@ -15,7 +15,6 @@ pipeline {
         stage("Инициализация параметров"){
             steps{
                 script{
-                    println "Значение params.Product: '${params.Product}'"
                     env.collectedReleaseP = "D:\\release_build\\${params.Product}\\Collected_release\\Polnaya"      // Полная поствка
                     env.collectedReleaseOb = "D:\\release_build\\${params.Product}\\Collected_release\\obnovlenine" // Поставка обновления
                     env.oldCF = "D:\\release_build\\${params.Product}\\Old_versions_cf"                             // Старые cf 
@@ -32,6 +31,7 @@ pipeline {
                         env.releaseServer = "VAFitness"                                                     // Имя базы релизного хранилища
                         env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
                         env.baseBuild = "localhost/FitnessCorpSborka"                                       // База на которой проходит сборка
+                        env.basenameinf = "FitnessCorpSborka"
                         env.buildUser = "Администратор БД"                                                  // Пользователь базы сборки
                         env.sourceDirectory = "C:\\automation\\sample\\Fitness"                             // Путь к файлам шаблонам
                         env.sampleEdf = "C:\\automation\\sample\\edf\\FitnessCorp"                          // Путь к шаблону edf
@@ -49,6 +49,7 @@ pipeline {
                         env.releaseServer = "VAStoma"                                                       // Имя базы релизного хранилища
                         env.releaseUser = "Админ"                                                           // Пользователь релизного хранилища
                         env.baseBuild = "localhost/StomaSborka"                                             // База на которой проходит сборка
+                        env.basenameinf = "StomaSborka"
                         env.buildUser = "Николаев Лев (Полные права)"                                       // Пользователь базы сборки
                         env.sourceDirectory = "C:\\automation\\sample\\Stomatology"                         // Путь к файлам шаблонам
                         env.sampleEdf = "C:\\automation\\sample\\edf\\Stomatology"                          // Путь к шаблону edf
@@ -64,6 +65,7 @@ pipeline {
                 }
             }
         }
+
         // stage('Обновление документации') {
         //     steps {
         //         script {
@@ -234,7 +236,7 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db StomaSborka --db-user "${env.buildUser}"
+                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${basenameinf} --db-user "${env.buildUser}"
                     "${env.platformPath}" DESIGNER /S"${env.baseBuild}" /N"${env.buildUser}" /CreateDistributivePackage"${env.collectedReleaseP}" -File"${env.fbrb}\\${env.edfNamefull}" -PackageFileName setup.zip -Option"Основная поставка"
                     """
                     def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
