@@ -145,21 +145,18 @@ pipeline {
        stage('Pause and Notify Telegram') {
             steps {
                 script {
-                    
-                    def jobUrl = "${JENKINS_URL}/job/${JOB_NAME}/${BUILD_NUMBER}".trim()
-                    // Добавляем отладочный вывод для проверки
-                    echo "Generated Job URL: ${jobUrl}"
+                    def jobPath = "${JOB_NAME}/${BUILD_NUMBER}".trim() // Только "my-pipeline/123"
+                    echo "Generated Job Path: ${jobPath}"
 
                     def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
                     def keyboard = '''
                     {
                         "inline_keyboard": [
-                            [ {"text": "Proceed", "callback_data": "proceed_' + jobUrl + '"}, {"text": "Abort", "callback_data": "abort_' + jobUrl + '"} ]
+                            [ {"text": "Proceed", "callback_data": "proceed_''' + jobPath + '''"}, {"text": "Abort", "callback_data": "abort_''' + jobPath + '''"} ]
                         ]
                     }
                     '''
 
-                    // Отправляем сообщение в Telegram
                     def response = httpRequest(
                         url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
                         httpMode: 'POST',
@@ -171,7 +168,6 @@ pipeline {
                         contentType: 'APPLICATION_JSON'
                     )
 
-                    // Ждём действия от Telegram (опционально, можно убрать, если бот управляет пайплайном)
                     input 'Ожидание действия от Telegram...'
                 }
             }

@@ -61,23 +61,20 @@ async def send_inline_keyboard(update: Update, context: CallbackContext, message
 async def handle_button(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
-    
+
     action_data = query.data.split('_', 1)
     if len(action_data) < 2:
         await query.edit_message_text("Некорректные данные кнопки. Пожалуйста, попробуйте снова.")
         logging.error(f"Invalid callback_data format: {query.data}")
         return
-    
+
     action = action_data[0]  # "proceed" или "abort"
-    job_path = action_data[1]  # Путь задания, например, "my-pipeline/123"
-    
-    # Формируем полный URL на основе JENKINS_URL из config
-    job_url = f"{JENKINS_URL}/job/{job_path}"
-    if not (job_url.startswith("http://") or job_url.startswith("https://")):
-        job_url = "http://" + job_url
-    
+    job_path = action_data[1]  # "my-pipeline/123"
+
+    # Формируем полный URL
+    job_url = f"{JENKINS_URL}/job/{job_path}".strip()
     logging.info(f"Processing action: {action}, job_url: {job_url}")
-    
+
     if action == "proceed":
         await query.edit_message_text("Продолжаем выполнение пайплайна...")
         try:
