@@ -145,17 +145,8 @@ pipeline {
        stage('Pause and Notify Telegram') {
             steps {
                 script {
-                    // Формируем корректный URL задания в Jenkins
-                    def jenkinsUrl = "${JENKINS_URL}".trim()
-                    if (!jenkinsUrl.startsWith("http://") && !jenkinsUrl.startsWith("https://")) {
-                        jenkinsUrl = "http://" + jenkinsUrl // Добавляем схему, если её нет
-                    }
-
-                    def jobUrl = "${jenkinsUrl}/job/${JOB_NAME}/${BUILD_NUMBER}".trim()
-                    if (!jobUrl.startsWith("http://") && !jobUrl.startsWith("https://")) {
-                        jobUrl = "http://" + jobUrl // Добавляем схему, если её нет
-                    }
-
+                    
+                    def jobUrl = "${JENKINS_URL}/job/${JOB_NAME}/${BUILD_NUMBER}".trim()
                     // Добавляем отладочный вывод для проверки
                     echo "Generated Job URL: ${jobUrl}"
 
