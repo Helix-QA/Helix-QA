@@ -59,17 +59,28 @@ async def send_inline_keyboard(update: Update, context: CallbackContext, message
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message, reply_markup=reply_markup)
 
 async def handle_button(update: Update, context: CallbackContext):
-    """Обработка нажатий на инлайн-кнопки."""
     query = update.callback_query
     await query.answer()
     
-    action_data = query.data.split('_')  # Разделяем callback_data на действие и URL
+    action_data = query.data.split('_', 1)  # Разделяем только по первому '_'
+    if len(action_data) < 2:
+        await query.edit_message_text("Некорректные данные кнопки. Пожалуйста, попробуйте снова.")
+        logging.error(f"Invalid callback_data format: {query.data}")
+        return
+    
     action = action_data[0]  # "proceed" или "abort"
-    job_url = '_'.join(action_data[1:])  # URL задачи в Jenkins
+    job_url = action_data[1]  # URL задачи в Jenkins
+    
+    # Убедимся, что job_url начинается с "http://" или "https://"
+    if not (job_url.startswith("http://") or job_url.startswith("https://")):
+        job_url = "http://" + job_url  # Добавляем схему, если её нет
+        logging.warning(f"Added 'http://' to job_url: {job_url}")
+    
+    # Добавляем отладочный вывод
+    logging.info(f"Processing action: {action}, job_url: {job_url}")
     
     if action == "proceed":
         await query.edit_message_text("Продолжаем выполнение пайплайна...")
-        # Отправляем запрос в Jenkins для продолжения
         try:
             response = requests.post(
                 f"{job_url}/proceed",
@@ -82,7 +93,6 @@ async def handle_button(update: Update, context: CallbackContext):
             logging.error(f"Error proceeding pipeline for {job_url}: {e}")
     elif action == "abort":
         await query.edit_message_text("Пайплайн прерван.")
-        # Отправляем запрос в Jenkins для прерывания
         try:
             response = requests.post(
                 f"{job_url}/stop",
