@@ -144,30 +144,35 @@ pipeline {
         // }
        stage('Pause and Notify Telegram') {
             steps {
-                script {
+               script {
                     def jobPath = "${JOB_NAME}".replace('/', '/job/') + "/${BUILD_NUMBER}"
                     echo "Generated Job Path: ${jobPath}"
 
                     def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
-                    def keyboard = '''
-                    {
+                    def keyboard = """{
                         "inline_keyboard": [
-                            [ {"text": "Proceed", "callback_data": "proceed_''' + jobPath + '''"}, {"text": "Abort", "callback_data": "abort_''' + jobPath + '''"} ]
+                            [ {"text": "Proceed", "callback_data": "proceed_${jobPath}"}, {"text": "Abort", "callback_data": "abort_${jobPath}"} ]
                         ]
-                    }
-                    '''
+                    }"""
+
+                    def requestBody = """{
+                        "chat_id": "${env.chatId}",
+                        "text": "${messageText}",
+                        "reply_markup": ${keyboard}
+                    }"""
+
+                    echo "Request Body: ${requestBody}"  // Логируем запрос перед отправкой для отладки
 
                     def response = httpRequest(
                         url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
                         httpMode: 'POST',
-                        requestBody: """{
-                            "chat_id": "${env.chatId}",
-                            "text": "${messageText}",
-                            "reply_markup": ${keyboard}
-                        }""",
-                        contentType: 'APPLICATION_JSON'
+                        requestBody: new String(requestBody.getBytes("UTF-8"), "UTF-8"), // Принудительно задаем кодировку
+                        contentType: 'APPLICATION_JSON',
+                        acceptType: 'APPLICATION_JSON',
+                        validResponseCodes: '200:299'
                     )
 
+                    echo "Telegram Response: ${response.content}"  // Логируем ответ для отладки
                     input 'Ожидание действия от Telegram...'
                 }
             }
