@@ -28,6 +28,7 @@ products:
 
   stoma:
     product_name: "Stomatology"
+    serie: "4FB1"
     rel_repository: "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"
     repository_user: "VATest"
     release_server: "VAStoma"
