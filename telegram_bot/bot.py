@@ -5,6 +5,7 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 from config import TOKEN, JENKINS_URL, JENKINS_USER, JENKINS_API_TOKEN
 
+
 # Настройка логирования: вывод в консоль и запись в файл с ротацией
 log_handler = RotatingFileHandler(
     "C:\\logs\\bot_logs.txt",
@@ -36,7 +37,29 @@ def get_jenkins_views():
     except requests.RequestException as e:
         logging.error(f"Error fetching Jenkins views: {e}")
         return []
+    ##########################################################
 
+async def handle_button(update: Update, context):
+    query = update.callback_query
+    await query.answer()
+    
+    action = query.data  # Получаем "proceed" или "abort"
+    
+    if action == "proceed":
+        await query.edit_message_text("Продолжаем выполнение пайплайна...")
+        # Отправляем запрос в Jenkins для продолжения
+        response = requests.post(
+            f"{JENKINS_URL}proceed",
+            auth=(JENKINS_USER, JENKINS_API_TOKEN)
+        )
+    elif action == "abort":
+        await query.edit_message_text("Пайплайн прерван.")
+        # Отправляем запрос в Jenkins для прерывания
+        response = requests.post(
+            f"{JENKINS_URL}stop",
+            auth=(JENKINS_USER, JENKINS_API_TOKEN)
+        )
+        ######################################################
 def get_jenkins_jobs(view_name: str):
     """Получение списка всех доступных Jenkins Jobs в определенном представлении."""
     url = f'{JENKINS_URL}/view/{view_name}/api/json?tree=jobs[name]'
