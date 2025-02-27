@@ -146,7 +146,7 @@ pipeline {
             steps {
                script{
                     def messageText = """Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"""
-                    def response = httpRequest(url: "https://api.telegram.org/bot${config.products[product].botToken}/sendMessage?chat_id=${config.products[product].chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageText, 'UTF-8')}")
                     // Вручную запрашиваем продолжение пайплайна
                     input 'Продолжить выполнение пайплайна?'
                 }
@@ -235,7 +235,7 @@ pipeline {
                     def perenos = 'SBORKA/STOMA/Perenos.py'
                     sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${config.products[product].target_path}\" \"${config.products[product].collected_release_p}\" \"${config.products[product].old_cf}\" \"${config.products[product].collected_release_ob}\" \"${config.products[product].fbrb}\" \"${config.products[product].product_name}\" \"${config.products[product].edf_name_obnov}\" \"${config.products[product].archive_name}\" \"${config.products[product].name_distr}\""
                     def messagefinish = 'Сборка ${params.Product} успешно завершена.'            // Отправка сообщения в Telegram
-                    def response = httpRequest(url: "https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
                     )
                 }
             }
