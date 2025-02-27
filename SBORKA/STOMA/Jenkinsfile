@@ -161,7 +161,6 @@ pipeline {
                     def source_file
                     def template_name
                     if (params.Product.contains('STOMA')) {
-                        serie = "4FB1" 
                         // Загрузка расширения журнала записи
                         source_file = "${config.products[product].fbrb}\\Protected\\jurnal.cfe"
                         template_name = "РасширениеЖурналаЗаписи"
