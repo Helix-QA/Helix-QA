@@ -145,7 +145,7 @@ pipeline {
        stage('Pause and Notify Telegram') {
             steps {
                 script {
-                    def jobPath = "${JOB_NAME}/${BUILD_NUMBER}".trim() // Только "my-pipeline/123"
+                    def jobPath = "${JOB_NAME}".replace('/', '/job/') + "/${BUILD_NUMBER}"
                     echo "Generated Job Path: ${jobPath}"
 
                     def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
