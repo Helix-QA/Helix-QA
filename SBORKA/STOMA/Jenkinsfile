@@ -162,7 +162,7 @@ pipeline {
                         httpMode: 'POST',
                         requestBody: """{
                             "chat_id": "${env.chatId}",
-                            "text": "${URLEncoder.encode(messageText, 'UTF-8')}",
+                            "text": "${messageText}",
                             "reply_markup": ${keyboard}
                         }""",
                         contentType: 'APPLICATION_JSON'
