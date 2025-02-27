@@ -59,18 +59,21 @@ pipeline {
             steps{  
                 script {
                     if (params.Product.contains('FINTESSCORP')) {
+                        println "Значение1 params.Product: '${config.products[product].extension_name_mess}'"
                         bat """
                         chcp 65001
                         @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release --storage-user МихаилБ --extension ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                         @call ${VRUNNER_PATH} updateext ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                         """
+                        
 					}else if (params.Product.contains('FITNESS')) {
-                        //
+                        println "Значение2 params.Product: '${config.products[product].extension_name_mess}'"
 					}else if (params.Product.contains('SPASALON')) {
-                        //
+                        println "Значение3 params.Product: '${config.products[product].extension_name_mess}'"
 					}else if (params.Product.contains('SALON')) {
-                        //
+                        println "Значение4 params.Product: '${config.products[product].extension_name_mess}'"
 					}else if (params.Product.contains('STOMA')) {
+                        println "Значение5 params.Product: '${config.products[product].extension_name_mess}'"
                         bat """
                         chcp 65001
                         @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release --storage-user МихаилБ --extension ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
