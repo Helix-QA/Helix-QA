@@ -62,21 +62,20 @@ async def handle_button(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
     
-    action_data = query.data.split('_', 1)  # Разделяем только по первому '_'
+    action_data = query.data.split('_', 1)
     if len(action_data) < 2:
         await query.edit_message_text("Некорректные данные кнопки. Пожалуйста, попробуйте снова.")
         logging.error(f"Invalid callback_data format: {query.data}")
         return
     
     action = action_data[0]  # "proceed" или "abort"
-    job_url = action_data[1]  # URL задачи в Jenkins
+    job_path = action_data[1]  # Путь задания, например, "my-pipeline/123"
     
-    # Убедимся, что job_url начинается с "http://" или "https://"
+    # Формируем полный URL на основе JENKINS_URL из config
+    job_url = f"{JENKINS_URL}/job/{job_path}"
     if not (job_url.startswith("http://") or job_url.startswith("https://")):
-        job_url = "http://" + job_url  # Добавляем схему, если её нет
-        logging.warning(f"Added 'http://' to job_url: {job_url}")
+        job_url = "http://" + job_url
     
-    # Добавляем отладочный вывод
     logging.info(f"Processing action: {action}, job_url: {job_url}")
     
     if action == "proceed":
