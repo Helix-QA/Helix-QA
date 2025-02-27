@@ -22,7 +22,7 @@ pipeline {
                         env.namefeature = "stoma"
                         env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"
                     } else if (params.NameBaseRelease.contains('SalonRel')) {
-                        envnameBaseUserRelease = "Администратор"
+                        env.nameBaseUserRelease = "Администратор"
                         env.namefeature = "salon"
                         env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"
                     }
