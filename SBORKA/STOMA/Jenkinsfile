@@ -142,12 +142,19 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Пауза') {
+       stage('Pause and Notify Telegram') {
             steps {
-             script {
-                    // Отправляем сообщение в Telegram через HTTP-запрос к боту
+                script {
+                    // Формируем корректный URL задания в Jenkins
+                    def jenkinsUrl = "${JENKINS_URL}".trim() // Убедитесь, что JENKINS_URL корректен (например, "http://your-jenkins-url:8080")
+                    def jobUrl = "${jenkinsUrl}/job/${JOB_NAME}/${BUILD_NUMBER}" // Полный URL текущего задания
+
+                    // Проверяем, что URL начинается с "http://" или "https://"
+                    if (!jobUrl.startsWith("http://") && !jobUrl.startsWith("https://")) {
+                        jobUrl = "http://" + jobUrl // Добавляем схему, если её нет
+                    }
+
                     def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
-                    def jobUrl = "${JENKINS_URL}/job/${JOB_NAME}/${BUILD_NUMBER}" // URL текущего задания в Jenkins
                     def keyboard = '''
                     {
                         "inline_keyboard": [
@@ -156,6 +163,7 @@ pipeline {
                     }
                     '''
 
+                    // Отправляем сообщение в Telegram
                     def response = httpRequest(
                         url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
                         httpMode: 'POST',
@@ -167,9 +175,14 @@ pipeline {
                         contentType: 'APPLICATION_JSON'
                     )
 
-                    // Ждём, пока бот обработает нажатие (пайплайн будет приостановлен, пока бот не отправит запрос в Jenkins)
+                    // Ждём действия от Telegram (пайплайн приостанавливается)
                     input 'Ожидание действия от Telegram...'
                 }
+            }
+        }
+        stage('Continue Pipeline') {
+            steps {
+                echo "Продолжаем выполнение пайплайна..."
             }
         }
         stage("Загрузка расширений и СЛК") {
