@@ -194,7 +194,7 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${base_name_inf} --db-user "${config.products[product].build_user}"
+                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${config.products[product].base_name_inf} --db-user "${config.products[product].build_user}"
                     "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributivePackage"${config.products[product].collected_release_p}" -File"${config.products[product].fbrb}\\${config.products[product].edf_name_full}" -PackageFileName setup.zip -Option"Основная поставка"
                     """
                     def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
