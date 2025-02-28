@@ -144,11 +144,15 @@ pipeline {
         // }
        stage('Pause and Notify Telegram') {
             steps {
-             script {
+                script {
                     def jobPath = "${JOB_NAME}".replace('/', '/job/') + "/${BUILD_NUMBER}"
                     echo "Generated Job Path: ${jobPath}"
+                    echo "Current encoding: ${System.getProperty('file.encoding')}"
 
-                    def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
+                    // Явно задаём текст в UTF-8
+                    def messageText = new String("Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор".getBytes(), "UTF-8")
+                    echo "Message to send: ${messageText}"
+
                     def keyboard = '''
                     {
                         "inline_keyboard": [
@@ -157,8 +161,6 @@ pipeline {
                     }
                     '''
 
-                    // Явно преобразуем строку в UTF-8
-                    def encodedMessageText = messageText.getBytes('UTF-8').encodeBase64().toString()
                     def response = httpRequest(
                         url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
                         httpMode: 'POST',
