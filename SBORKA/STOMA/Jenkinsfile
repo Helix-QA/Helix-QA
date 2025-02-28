@@ -144,7 +144,7 @@ pipeline {
         // }
        stage('Pause and Notify Telegram') {
             steps {
-                script {
+             script {
                     def jobPath = "${JOB_NAME}".replace('/', '/job/') + "/${BUILD_NUMBER}"
                     echo "Generated Job Path: ${jobPath}"
 
@@ -157,15 +157,18 @@ pipeline {
                     }
                     '''
 
+                    // Явно преобразуем строку в UTF-8
+                    def encodedMessageText = messageText.getBytes('UTF-8').encodeBase64().toString()
                     def response = httpRequest(
                         url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
                         httpMode: 'POST',
                         requestBody: """{
                             "chat_id": "${env.chatId}",
-                            "text": "${URLEncoder.encode(messageText, 'UTF-8')}",
+                            "text": "${messageText}",
                             "reply_markup": ${keyboard}
                         }""",
-                        contentType: 'APPLICATION_JSON'
+                        contentType: 'APPLICATION_JSON',
+                        customHeaders: [[name: 'Content-Type', value: 'application/json; charset=utf-8']]
                     )
 
                     input 'Ожидание действия от Telegram...'
