@@ -92,24 +92,24 @@ pipeline {
                     }
                 }
             }
-        stage("Выгрузка конфигураций и расширений из хранилища") {
-            steps{
-                script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} unload ${config.products[product].fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
-                    @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\messenger.cfe ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
-                    """
-                    if (params.Product.contains('STOMA')) {
-                        bat """
-                        chcp 65001
-                        @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\jurnal.cfe ${config.products[product].extension_name_jurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
-                        """
-					}
+        // stage("Выгрузка конфигураций и расширений из хранилища") {
+        //     steps{
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH} unload ${config.products[product].fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+        //             @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\messenger.cfe ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+        //             """
+        //             if (params.Product.contains('STOMA')) {
+        //                 bat """
+        //                 chcp 65001
+        //                 @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\jurnal.cfe ${config.products[product].extension_name_jurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+        //                 """
+		// 			}
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
         stage('Шифрование расширения') {
             when { expression {params.Product.contains('STOMA') } }
             steps {
