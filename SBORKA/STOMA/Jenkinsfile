@@ -191,92 +191,92 @@ pipeline {
                 echo "Продолжаем выполнение пайплайна..."
             }
         }
-        stage("Загрузка расширений и СЛК") {
-            steps {
-                script {
-                    def loadexmes = 'SBORKA/STOMA/loadext.py'
-                    def compiledatafile = 'SBORKA/STOMA/compiledatafile.py'
-                    def zip = 'SBORKA/STOMA/zip.py'
-                    def source_file
-                    def template_name
-                    if (params.Product.contains('STOMA')) {
-                        // Загрузка расширения журнала записи
-                        source_file = "${config.products[product].fbrb}\\Protected\\jurnal.cfe"
-                        template_name = "РасширениеЖурналаЗаписи"
-                        sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
-                    }
-                    // Загрузка расширения мессенджера
-                    source_file = "${config.products[product].fbrb}\\messenger.cfe"
-                    template_name = "РасширениеМессенджера"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
+        // stage("Загрузка расширений и СЛК") {
+        //     steps {
+        //         script {
+        //             def loadexmes = 'SBORKA/STOMA/loadext.py'
+        //             def compiledatafile = 'SBORKA/STOMA/compiledatafile.py'
+        //             def zip = 'SBORKA/STOMA/zip.py'
+        //             def source_file
+        //             def template_name
+        //             if (params.Product.contains('STOMA')) {
+        //                 // Загрузка расширения журнала записи
+        //                 source_file = "${config.products[product].fbrb}\\Protected\\jurnal.cfe"
+        //                 template_name = "РасширениеЖурналаЗаписи"
+        //                 sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
+        //             }
+        //             // Загрузка расширения мессенджера
+        //             source_file = "${config.products[product].fbrb}\\messenger.cfe"
+        //             template_name = "РасширениеМессенджера"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
 
-                    // Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
-                    source_file = "${config.products[product].fbrb}\\licenceaddin-${params.slkversion}-template.zip"
-                    template_name = "КомпонентаСЛК"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
+        //             // Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
+        //             source_file = "${config.products[product].fbrb}\\licenceaddin-${params.slkversion}-template.zip"
+        //             template_name = "КомпонентаСЛК"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
 
-                    // Создание файла .datafile
-                    sh "python -X utf8 ${compiledatafile} \"${config.products[product].fbrb}\" \"${config.products[product].serie}\""
+        //             // Создание файла .datafile
+        //             sh "python -X utf8 ${compiledatafile} \"${config.products[product].fbrb}\" \"${config.products[product].serie}\""
 
-                    // Загрузка .datafile в макет 'ОбъектыСЛК'
-                    source_file = "${config.products[product].fbrb}\\${config.products[product].serie}.datafile"
-                    template_name = "ОбъектыСЛК"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
+        //             // Загрузка .datafile в макет 'ОбъектыСЛК'
+        //             source_file = "${config.products[product].fbrb}\\${config.products[product].serie}.datafile"
+        //             template_name = "ОбъектыСЛК"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${config.products[product].base_build}\" \"${config.products[product].build_user}\" \"${template_name}\""
 
-                    //  Создание файла 4FB1.zip
-                    sh "python -X utf8 ${zip} \"${config.products[product].fbrb}\" \"${config.products[product].target_path}\" \"${config.products[product].serie}\""
-                }
-            }
-        }
-        stage('Основная поставка') {
-            steps {
-                script {
-                    bat """
-                    chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${config.products[product].base_name_inf} --db-user "${config.products[product].build_user}"
-                    "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributivePackage"${config.products[product].collected_release_p}" -File"${config.products[product].fbrb}\\${config.products[product].edf_name_full}" -PackageFileName setup.zip -Option"Основная поставка"
-                    """
-                    def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
-                    bat "python -X utf8 ${unzipping} ${config.products[product].collected_release_p}"
-                    def install = 'SBORKA/STOMA/install.py'                        // Установка
-                    bat "python -X utf8 ${install} ${config.products[product].collected_release_p}"
-                }
-            }
-        }
-        stage("Выгрзка файла .cfu") {
-            steps {
-                script{
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributionFiles -cfufile ${config.products[product].sbor}\\Update\\1Cv8.cfu -f ${config.products[product].old_cf}\\${oldversion_1}.cf
-                    """
-                }
-            }
-        }
-        stage('Поставка обновления') {
-            steps {
-                script {
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributivePackage"${config.products[product].collected_release_ob}" -File"${config.products[product].fbrb}\\${config.products[product].edf_name_obnov}" -PackageFileName update.zip -Option"Поставка обновления"
-                    """
-                    def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'           // Разархивирование
-                    bat "python -X utf8 ${unzippingupdate} ${config.products[product].collected_release_ob}"
-                    def installupdate = 'SBORKA/STOMA/installupdate.py'               // Установка
-                    bat "python -X utf8 ${installupdate} ${config.products[product].collected_release_ob}"
-                }
-            }
-        }
-        stage('Создание архива дистрибутива') {
-            steps {
-                script {
-                    def perenos = 'SBORKA/STOMA/Perenos.py'
-                    sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${config.products[product].target_path}\" \"${config.products[product].collected_release_p}\" \"${config.products[product].old_cf}\" \"${config.products[product].collected_release_ob}\" \"${config.products[product].fbrb}\" \"${config.products[product].product_name}\" \"${config.products[product].edf_name_obnov}\" \"${config.products[product].archive_name}\" \"${config.products[product].name_distr}\""
-                    def messagefinish = "Сборка «${params.Product}» успешно завершена."            // Отправка сообщения в Telegram
-                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
-                    )
-                }
-            }
-        }
+        //             //  Создание файла 4FB1.zip
+        //             sh "python -X utf8 ${zip} \"${config.products[product].fbrb}\" \"${config.products[product].target_path}\" \"${config.products[product].serie}\""
+        //         }
+        //     }
+        // }
+        // stage('Основная поставка') {
+        //     steps {
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             @call ${VRUNNER_PATH} session kill --with-nolock --db ${config.products[product].base_name_inf} --db-user "${config.products[product].build_user}"
+        //             "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributivePackage"${config.products[product].collected_release_p}" -File"${config.products[product].fbrb}\\${config.products[product].edf_name_full}" -PackageFileName setup.zip -Option"Основная поставка"
+        //             """
+        //             def unzipping = 'SBORKA/STOMA/unzipping.py'                    // Разархивирование
+        //             bat "python -X utf8 ${unzipping} ${config.products[product].collected_release_p}"
+        //             def install = 'SBORKA/STOMA/install.py'                        // Установка
+        //             bat "python -X utf8 ${install} ${config.products[product].collected_release_p}"
+        //         }
+        //     }
+        // }
+        // stage("Выгрзка файла .cfu") {
+        //     steps {
+        //         script{
+        //             bat """
+        //             chcp 65001
+        //             "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributionFiles -cfufile ${config.products[product].sbor}\\Update\\1Cv8.cfu -f ${config.products[product].old_cf}\\${oldversion_1}.cf
+        //             """
+        //         }
+        //     }
+        // }
+        // stage('Поставка обновления') {
+        //     steps {
+        //         script {
+        //             bat """
+        //             chcp 65001
+        //             "${env.platformPath}" DESIGNER /S"${config.products[product].base_build}" /N"${config.products[product].build_user}" /CreateDistributivePackage"${config.products[product].collected_release_ob}" -File"${config.products[product].fbrb}\\${config.products[product].edf_name_obnov}" -PackageFileName update.zip -Option"Поставка обновления"
+        //             """
+        //             def unzippingupdate = 'SBORKA/STOMA/unzippingupdate.py'           // Разархивирование
+        //             bat "python -X utf8 ${unzippingupdate} ${config.products[product].collected_release_ob}"
+        //             def installupdate = 'SBORKA/STOMA/installupdate.py'               // Установка
+        //             bat "python -X utf8 ${installupdate} ${config.products[product].collected_release_ob}"
+        //         }
+        //     }
+        // }
+        // stage('Создание архива дистрибутива') {
+        //     steps {
+        //         script {
+        //             def perenos = 'SBORKA/STOMA/Perenos.py'
+        //             sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${config.products[product].target_path}\" \"${config.products[product].collected_release_p}\" \"${config.products[product].old_cf}\" \"${config.products[product].collected_release_ob}\" \"${config.products[product].fbrb}\" \"${config.products[product].product_name}\" \"${config.products[product].edf_name_obnov}\" \"${config.products[product].archive_name}\" \"${config.products[product].name_distr}\""
+        //             def messagefinish = "Сборка «${params.Product}» успешно завершена."            // Отправка сообщения в Telegram
+        //             def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
+        //             )
+        //         }
+        //     }
+        // }
     }
 }
