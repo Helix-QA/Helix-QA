@@ -69,21 +69,41 @@ async def handle_button(update: Update, context: CallbackContext):
         return
 
     action = action_data[0]  # "proceed" или "abort"
-    job_path = action_data[1]  # "my-pipeline/123"
+    job_path = action_data[1]  # "RELEASES/job/release_pack/140"
 
-    # Формируем полный URL
+    # Формируем базовый URL сборки
     job_url = f"{JENKINS_URL}/job/{job_path}".strip()
     logging.info(f"Processing action: {action}, job_url: {job_url}")
 
     if action == "proceed":
         await query.edit_message_text("Продолжаем выполнение пайплайна...")
         try:
+            # Получаем информацию о сборке
+            api_url = f"{job_url}/api/json"
+            response = requests.get(api_url, auth=(JENKINS_USER, JENKINS_API_TOKEN), timeout=10)
+            response.raise_for_status()
+            build_data = response.json()
+
+            # Ищем inputId
+            input_id = None
+            for executor in build_data.get("executors", []):
+                current_executable = executor.get("currentExecutable", {})
+                if current_executable.get("_class") == "org.jenkinsci.plugins.workflow.support.steps.input.InputStepExecution":
+                    input_id = current_executable.get("id")
+                    break
+
+            if not input_id:
+                raise Exception("Не удалось найти inputId в данных сборки")
+
+            # Формируем URL для продолжения
+            proceed_url = f"{job_url}/input/{input_id}/proceedEmpty"
             response = requests.post(
-                f"{job_url}/proceed",
+                proceed_url,
                 auth=(JENKINS_USER, JENKINS_API_TOKEN),
                 timeout=10
             )
-            logging.info(f"Jenkins proceed response for {job_url}: {response.status_code}")
+            response.raise_for_status()
+            logging.info(f"Jenkins proceed response for {proceed_url}: {response.status_code}")
         except Exception as e:
             await query.edit_message_text(f"Ошибка при продолжении пайплайна: {str(e)}")
             logging.error(f"Error proceeding pipeline for {job_url}: {e}")
