@@ -69,31 +69,37 @@ async def handle_button(update: Update, context: CallbackContext):
         return
 
     action = action_data[0]  # "proceed" или "abort"
-    job_path = action_data[1]  # "RELEASES/job/release_pack/140"
+    job_path = action_data[1]  # "RELEASES/job/release_pack/142"
 
     # Формируем базовый URL сборки
+    JENKINS_URL = "http://192.168.2.71:8080"
     job_url = f"{JENKINS_URL}/job/{job_path}".strip()
     logging.info(f"Processing action: {action}, job_url: {job_url}")
+
+    JENKINS_USER = "root"
+    JENKINS_API_TOKEN = "115c10bd20a16f783fbb86d7c253a0738a"
 
     if action == "proceed":
         await query.edit_message_text("Продолжаем выполнение пайплайна...")
         try:
-            # Получаем информацию о сборке
-            api_url = f"{job_url}/api/json"
+            # Получаем информацию о текущих input-шагах
+            api_url = f"{job_url}/input/"
             response = requests.get(api_url, auth=(JENKINS_USER, JENKINS_API_TOKEN), timeout=10)
             response.raise_for_status()
-            build_data = response.json()
+            input_data = response.json()
+
+            # Логируем ответ для диагностики
+            logging.info(f"Input data: {input_data}")
 
             # Ищем inputId
             input_id = None
-            for executor in build_data.get("executors", []):
-                current_executable = executor.get("currentExecutable", {})
-                if current_executable.get("_class") == "org.jenkinsci.plugins.workflow.support.steps.input.InputStepExecution":
-                    input_id = current_executable.get("id")
+            for input_action in input_data:
+                if input_action.get("message") == "Ожидание действия от Telegram...":
+                    input_id = input_action.get("id")
                     break
 
             if not input_id:
-                raise Exception("Не удалось найти inputId в данных сборки")
+                raise Exception("Не удалось найти inputId. Возможно, сборка не ожидает input.")
 
             # Формируем URL для продолжения
             proceed_url = f"{job_url}/input/{input_id}/proceedEmpty"
