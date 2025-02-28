@@ -144,30 +144,45 @@ pipeline {
         // }
        stage('Pause and Notify Telegram') {
             steps {
-                script {
-                    def jobPath = "${JOB_NAME}".replace('/', '/job/') + "/${BUILD_NUMBER}"
-                    echo "Generated Job Path: ${jobPath}"
-                    echo "Current encoding: ${System.getProperty('file.encoding')}"
+              script {
+                def jobPath = "${JOB_NAME}".replace('/', '/job/') + "/${BUILD_NUMBER}"
+                echo "Generated Job Path: ${jobPath}"
+                echo "Current encoding: ${System.getProperty('file.encoding')}"
 
-                    def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
-                    echo "Message to send: ${messageText}"
+                def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
+                echo "Message to send: ${messageText}"
 
-                    def keyboard = '''
-                    {
-                        "inline_keyboard": [
-                            [ {"text": "Proceed", "callback_data": "proceed_''' + jobPath + '''"}, {"text": "Abort", "callback_data": "abort_''' + jobPath + '''"} ]
+                def keyboard = [
+                    inline_keyboard: [
+                        [
+                            [text: "Proceed", callback_data: "proceed_${jobPath}"],
+                            [text: "Abort", callback_data: "abort_${jobPath}"]
                         ]
-                    }
-                    '''
+                    ]
+                ]
 
-                    sh """
-                        curl -X POST \
-                        -H 'Content-Type: application/json; charset=utf-8' \
-                        -d '{"chat_id":"${env.chatId}","text":"${messageText}","reply_markup":${keyboard}}' \
-                        https://api.telegram.org/bot${env.botToken}/sendMessage
-                    """
+                def jsonBody = groovy.json.JsonOutput.toJson([
+                    chat_id: "${env.chatId}",
+                    text: messageText,
+                    reply_markup: keyboard
+                ])
+                echo "JSON Body: ${jsonBody}"
 
-                    input 'Ожидание действия от Telegram...'
+                try {
+                    def response = httpRequest(
+                        url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
+                        httpMode: 'POST',
+                        requestBody: jsonBody,
+                        contentType: 'APPLICATION_JSON',
+                        customHeaders: [[name: 'Content-Type', value: 'application/json; charset=utf-8']]
+                    )
+                    echo "Response: ${response.content}"
+                } catch (Exception e) {
+                    echo "Error: ${e.message}"
+                    throw e
+                }
+
+                input 'Ожидание действия от Telegram...'
                 }
             }
         }
