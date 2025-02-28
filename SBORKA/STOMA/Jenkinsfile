@@ -149,8 +149,7 @@ pipeline {
                     echo "Generated Job Path: ${jobPath}"
                     echo "Current encoding: ${System.getProperty('file.encoding')}"
 
-                    // Явно задаём текст в UTF-8
-                    def messageText = new String("Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор".getBytes(), "UTF-8")
+                    def messageText = "Сборка приостановлена. Необходимо создать внешнюю обработку, удалить Helix и fresh, выгрузить идентификатор"
                     echo "Message to send: ${messageText}"
 
                     def keyboard = '''
@@ -161,17 +160,12 @@ pipeline {
                     }
                     '''
 
-                    def response = httpRequest(
-                        url: "https://api.telegram.org/bot${env.botToken}/sendMessage",
-                        httpMode: 'POST',
-                        requestBody: """{
-                            "chat_id": "${env.chatId}",
-                            "text": "${messageText}",
-                            "reply_markup": ${keyboard}
-                        }""",
-                        contentType: 'APPLICATION_JSON',
-                        customHeaders: [[name: 'Content-Type', value: 'application/json; charset=utf-8']]
-                    )
+                    sh """
+                        curl -X POST \
+                        -H 'Content-Type: application/json; charset=utf-8' \
+                        -d '{"chat_id":"${env.chatId}","text":"${messageText}","reply_markup":${keyboard}}' \
+                        https://api.telegram.org/bot${env.botToken}/sendMessage
+                    """
 
                     input 'Ожидание действия от Telegram...'
                 }
