@@ -57,21 +57,21 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
-                        powershell "python ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseFitness} ${repUser}"
+                        powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseFitness} ${repUser}"
                     }
                     if (params.dbName.contains('VASPA')) {
                         def vaBase = "localhost/VASPA"
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
-                        powershell "python ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseSalon} ${repUser}"
+                        powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseSalon} ${repUser}"
                     }
                     if (params.dbName.contains('VAStoma')) {
                         def vaBase = "localhost/VAStoma"
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
-                        powershell "python ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseStom} ${repUser}"
+                        powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseStom} ${repUser}"
                 }
             }
         }
@@ -85,7 +85,7 @@ pipeline {
                      httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
                     // Формируем VAParams.json
                     def script = 'SERVER-71/replace_words.py'
-                    powershell "python ${script} ${params.TestPathPlaceholder} ${allureResultsDir} ${workSpaceDir} ${sourceFile} ${vaParamsjson}"
+                    powershell "python -X utf8 ${script} ${params.TestPathPlaceholder} ${allureResultsDir} ${workSpaceDir} ${sourceFile} ${vaParamsjson}"
                 }
             }
         }
