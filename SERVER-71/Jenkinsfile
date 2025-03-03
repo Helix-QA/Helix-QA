@@ -1,0 +1,81 @@
+pipeline {
+    agent {
+        label "${params.jenkinsAgent}"
+    }
+    environment {
+        VRUNNER_PATH = 'vrunner' // Путь к исполняемому файлу Vanessa Runner
+		dbrelease = 'VAFitness'
+		db_userrelease = 'Админ'
+		
+    }
+    stages {
+        stage('Обновление в релизном хранилище') {
+                steps {
+                    script {
+                        bat """
+                        chcp 65001
+						@call ${VRUNNER_PATH} session kill --with-nolock --db ${dbrelease} --db-user ${db_userrelease}
+						@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseFitness} --storage-user VATest --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
+						@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
+                        """
+                    }
+                 }
+		}
+		stage('Выгрузка и создание базы') {
+			parallel {
+				stage('Выгрузка .cf'){
+					steps {
+						script {
+							bat """
+							chcp 65001
+
+							"""
+						}
+					}
+				}
+				stage('Создание пустой базы') {
+						steps {
+							script {
+								bat """
+								chcp 65001
+
+								"""
+							}
+						}
+					}	
+				}
+		}
+		stage('Загрузка .cf') {
+			steps {
+				script {
+					bat """
+					chcp 65001
+
+					"""
+				}
+			}
+		}
+		stage('Первоначальное заполнение') {
+			steps {
+				script {
+					bat """
+					chcp 65001
+
+					"""
+				}
+			}
+		}
+		stage('Заполнение базы') {
+			steps {
+				script {
+					//удалять сеансы тут будем
+					bat """
+					chcp 65001
+						
+					"""
+				}
+			}
+		}
+    }
+}
+
