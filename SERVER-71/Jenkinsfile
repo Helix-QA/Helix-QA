@@ -6,7 +6,8 @@ pipeline {
         VRUNNER_PATH = 'vrunner' // Путь к исполняемому файлу Vanessa Runner
 		dbrelease = 'VAFitness'
 		db_userrelease = 'Админ'
-		
+		cf = 'D:\\cf'
+		dbnew = 'AvtotestQA'
     }
     stages {
         stage('Обновление в релизном хранилище') {
@@ -28,7 +29,7 @@ pipeline {
 						script {
 							bat """
 							chcp 65001
-
+							@call ${VRUNNER_PATH} unload ${cf}\\1Cv8.cf --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
 							"""
 						}
 					}
@@ -38,7 +39,7 @@ pipeline {
 							script {
 								bat """
 								chcp 65001
-
+								call ${VRUNNER_PATH} create --db-server localhost --name ${dbnew} --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
 								"""
 							}
 						}
@@ -50,7 +51,7 @@ pipeline {
 				script {
 					bat """
 					chcp 65001
-
+                    @call ${VRUNNER_PATH} load --src ${cf}\\1Cv8.cf --ibconnection /Slocalhost/${dbnew}
 					"""
 				}
 			}
