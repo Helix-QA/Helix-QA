@@ -24,7 +24,6 @@ products:
     sbor: "D:\\Release_build\\FITNESSCORP\\Sbor"
     netlenka: "D:\\Release_build\\FITNESSCORP\\Netlenka1c"
     archive_name: "D:\\Release_build\\FITNESSCORP"
-    
 
   stoma:
     product_name: "Stomatology"

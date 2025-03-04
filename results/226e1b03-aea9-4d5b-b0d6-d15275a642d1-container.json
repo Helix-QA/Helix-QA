@@ -1,0 +1,33 @@
+{
+	"uuid": "a5ea447d-7b1f-4577-9b29-79e1c880fbee",
+	"name": "Контекст_01. Проверка заполнения",
+	"description": "",
+	"children": [
+		"226e1b03-aea9-4d5b-b0d6-d15275a642d1"
+	],
+	"befores": [
+		{
+			"name": "Дано Я подключаю клиент тестирования с параметрами:",
+			"start": 1741005198150,
+			"stop": 1741005221946,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [],
+			"attachments": [
+				{
+					"name": "table",
+					"source": "da15b85c-7e37-4363-8bad-55f2c0270e74-attachment.csv",
+					"type": "text/csv"
+				}
+			],
+			"steps": []
+		}
+	],
+	"start": null,
+	"stop": null
+}

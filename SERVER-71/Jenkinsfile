@@ -1,0 +1,83 @@
+pipeline {
+    agent {
+        label "${params.jenkinsAgent}"
+    }
+    environment {
+        VRUNNER_PATH = 'vrunner' // Путь к исполняемому файлу Vanessa Runner
+		dbrelease = 'VAFitness'
+		db_userrelease = 'Админ'
+		cf = 'D:\\cf'
+		dbnew = 'AvtotestQA'
+    }
+    stages {
+        stage('Обновление в релизном хранилище') {
+                steps {
+                    script {
+                        bat """
+                        chcp 65001
+						@call ${VRUNNER_PATH} session kill --with-nolock --db ${dbrelease} --db-user ${db_userrelease}
+						@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseFitness} --storage-user VATest --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
+						@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
+                        """
+                    }
+                 }
+		}
+		stage('Выгрузка и создание базы') {
+			parallel {
+				stage('Выгрузка .cf'){
+					steps {
+						script {
+							bat """
+							chcp 65001
+							@call ${VRUNNER_PATH} unload ${cf}\\1Cv8.cf --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
+							"""
+						}
+					}
+				}
+				stage('Создание пустой базы') {
+						steps {
+							script {
+								bat """
+								chcp 65001
+								call ${VRUNNER_PATH} create --db-server localhost --name ${dbnew} --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+								"""
+							}
+						}
+					}	
+				}
+		}
+		stage('Загрузка .cf') {
+			steps {
+				script {
+					bat """
+					chcp 65001
+                    @call ${VRUNNER_PATH} load --src ${cf}\\1Cv8.cf --ibconnection /Slocalhost/${dbnew}
+					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${dbnew}
+					"""
+				}
+			}
+		}
+		stage('Первоначальное заполнение') {
+			steps {
+				script {
+					bat """
+					chcp 65001
+                    @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\fitness.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/MenageTest --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
+					"""
+				}
+			}
+		}
+		stage('Заполнение базы') {
+			steps {
+				script {
+					//удалять сеансы тут будем
+					bat """
+					chcp 65001
+						
+					"""
+				}
+			}
+		}
+    }
+}
+

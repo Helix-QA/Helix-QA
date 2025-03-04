@@ -1,0 +1,915 @@
+{
+	"uuid": "226e1b03-aea9-4d5b-b0d6-d15275a642d1",
+	"historyId": "Проверка заполнения первоначальной настройки при обновлении.01. Проверка заполнения",
+	"name": "01. Проверка заполнения",
+	"fullName": "vanessa-runner/feature/fitness.feature_01. проверка заполнения",
+	"testCaseId": "2fb9bf990aef917a5b94d100e6162d18",
+	"start": 1741005198149,
+	"stop": 1741005227227,
+	"statusDetails": {
+		"known": false,
+		"muted": false,
+		"flaky": false
+	},
+	"status": "passed",
+	"stage": "finished",
+	"steps": [
+		{
+			"name": "И я удаляю все переменные",
+			"start": 1741005222284,
+			"stop": 1741005222285,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я жду открытия окна \"Первоначальная настройка\" в течение 3600 секунд",
+			"start": 1741005222285,
+			"stop": 1741005222526,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Первоначальная настройка"
+				},
+				{
+					"name": "Парам2",
+					"value": 3600
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПользовательИмя' я ввожу текст \"admin\"",
+			"start": 1741005222527,
+			"stop": 1741005222696,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПользовательИмя"
+				},
+				{
+					"name": "Парам2",
+					"value": "admin"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку с именем 'ВремяТекущегоСеанса'",
+			"start": 1741005222697,
+			"stop": 1741005222949,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ВремяТекущегоСеанса"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку с именем 'Button0'",
+			"start": 1741005222949,
+			"stop": 1741005223033,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Button0"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И из выпадающего списка с именем 'ЧасовойПоясПрограммы' я выбираю точное значение \"Europe/Chisinau\"",
+			"start": 1741005223033,
+			"stop": 1741005223255,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ЧасовойПоясПрограммы"
+				},
+				{
+					"name": "Парам2",
+					"value": "Europe/Chisinau"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку создать поля с именем 'СтранаУчета'",
+			"start": 1741005223256,
+			"stop": 1741005223387,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "СтранаУчета"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'Наименование' я ввожу текст \"Россия\"",
+			"start": 1741005223387,
+			"stop": 1741005225017,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Наименование"
+				},
+				{
+					"name": "Парам2",
+					"value": "Россия"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'НаименованиеПолное' я ввожу текст \"Россия\"",
+			"start": 1741005225017,
+			"stop": 1741005225030,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "НаименованиеПолное"
+				},
+				{
+					"name": "Парам2",
+					"value": "Россия"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я запоминаю случайное число в диапазоне от \"100\" до \"999\" в переменную \"КодСтраны\"",
+			"start": 1741005225030,
+			"stop": 1741005225574,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "100"
+				},
+				{
+					"name": "Парам2",
+					"value": "999"
+				},
+				{
+					"name": "Парам3",
+					"value": "КодСтраны"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'Код' я ввожу текст \"272\"",
+			"start": 1741005225574,
+			"stop": 1741005225589,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Код"
+				},
+				{
+					"name": "Парам2",
+					"value": "272"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'КодАльфа2' я ввожу текст \"MD\"",
+			"start": 1741005225589,
+			"stop": 1741005225609,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "КодАльфа2"
+				},
+				{
+					"name": "Парам2",
+					"value": "MD"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'КодАльфа3' я ввожу текст \"MDA\"",
+			"start": 1741005225609,
+			"stop": 1741005225623,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "КодАльфа3"
+				},
+				{
+					"name": "Парам2",
+					"value": "MDA"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку создать поля с именем 'ВалютаУчета'",
+			"start": 1741005225624,
+			"stop": 1741005225670,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ВалютаУчета"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я активизирую окно \"Валюта (создание)*\"",
+			"start": 1741005225670,
+			"stop": 1741005225873,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Валюта (создание)*"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'НаименованиеПолное' я ввожу текст \"ru\"",
+			"start": 1741005225873,
+			"stop": 1741005225881,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "НаименованиеПолное"
+				},
+				{
+					"name": "Парам2",
+					"value": "ru"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я запоминаю случайное число в диапазоне от \"100\" до \"999\" в переменную \"КодВалюты\"",
+			"start": 1741005225881,
+			"stop": 1741005225883,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "100"
+				},
+				{
+					"name": "Парам2",
+					"value": "999"
+				},
+				{
+					"name": "Парам3",
+					"value": "КодВалюты"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'Код' я ввожу текст \"468\"",
+			"start": 1741005225883,
+			"stop": 1741005225903,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Код"
+				},
+				{
+					"name": "Парам2",
+					"value": "468"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'Наименование' я ввожу текст \"L\"",
+			"start": 1741005225903,
+			"stop": 1741005225927,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Наименование"
+				},
+				{
+					"name": "Парам2",
+					"value": "L"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'СимвольноеПредставление' я ввожу текст \"ISO\"",
+			"start": 1741005225927,
+			"stop": 1741005225949,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "СимвольноеПредставление"
+				},
+				{
+					"name": "Парам2",
+					"value": "ISO"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на гиперссылку с именем 'ПараметрыПрописиВалюты'",
+			"start": 1741005225949,
+			"stop": 1741005225973,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПараметрыПрописиВалюты"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И из выпадающего списка с именем 'ПолеПрописи4наРусском' я выбираю точное значение \"Мужской\"",
+			"start": 1741005225974,
+			"stop": 1741005226215,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи4наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Мужской"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПолеПрописи1наРусском' я ввожу текст \"Лей\"",
+			"start": 1741005226216,
+			"stop": 1741005226306,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи1наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Лей"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПолеПрописи2наРусском' я ввожу текст \"Лея\"",
+			"start": 1741005226306,
+			"stop": 1741005226334,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи2наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Лея"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПолеПрописи3наРусском' я ввожу текст \"Лей\"",
+			"start": 1741005226335,
+			"stop": 1741005226374,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи3наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Лей"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И из выпадающего списка с именем 'ПолеПрописи8наРусском' я выбираю точное значение \"Мужской\"",
+			"start": 1741005226374,
+			"stop": 1741005226414,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи8наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Мужской"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПолеПрописи5наРусском' я ввожу текст \"Лей\"",
+			"start": 1741005226414,
+			"stop": 1741005226478,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи5наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Лей"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПолеПрописи6наРусском' я ввожу текст \"Лея\"",
+			"start": 1741005226478,
+			"stop": 1741005226505,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи6наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Лея"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ПолеПрописи7наРусском' я ввожу текст \"Лей\"",
+			"start": 1741005226505,
+			"stop": 1741005226533,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ПолеПрописи7наРусском"
+				},
+				{
+					"name": "Парам2",
+					"value": "Лей"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку с именем 'ФормаУстановить'",
+			"start": 1741005226533,
+			"stop": 1741005226559,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ФормаУстановить"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку с именем 'ФормаКнопкаСохранитьИЗакрыть'",
+			"start": 1741005226559,
+			"stop": 1741005226616,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ФормаКнопкаСохранитьИЗакрыть"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'ТелефонныйКод' я ввожу текст \"373\"",
+			"start": 1741005226617,
+			"stop": 1741005226905,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ТелефонныйКод"
+				},
+				{
+					"name": "Парам2",
+					"value": "373"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку с именем 'ФормаКнопкаСохранитьИЗакрыть'",
+			"start": 1741005226905,
+			"stop": 1741005226947,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ФормаКнопкаСохранитьИЗакрыть"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И в поле с именем 'НазваниеФитнесЦентра' я ввожу текст \"ФитнесБобёр\"",
+			"start": 1741005226947,
+			"stop": 1741005227045,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "НазваниеФитнесЦентра"
+				},
+				{
+					"name": "Парам2",
+					"value": "ФитнесБобёр"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И из выпадающего списка с именем 'СтавкаНДС' я выбираю точное значение \"Без НДС\"",
+			"start": 1741005227045,
+			"stop": 1741005227077,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "СтавкаНДС"
+				},
+				{
+					"name": "Парам2",
+					"value": "Без НДС"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И из выпадающего списка с именем 'ВремяНачалаРаботы' я выбираю точное значение \"06:00\"",
+			"start": 1741005227077,
+			"stop": 1741005227130,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ВремяНачалаРаботы"
+				},
+				{
+					"name": "Парам2",
+					"value": "06:00"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И из выпадающего списка с именем 'ВремяОкончанияРаботы' я выбираю точное значение \"22:00\"",
+			"start": 1741005227130,
+			"stop": 1741005227194,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "ВремяОкончанияРаботы"
+				},
+				{
+					"name": "Парам2",
+					"value": "22:00"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		},
+		{
+			"name": "И я нажимаю на кнопку с именем 'Вперед'",
+			"start": 1741005227195,
+			"stop": 1741005227227,
+			"status": "passed",
+			"stage": "finished",
+			"statusDetails": {
+				"known": false,
+				"muted": false,
+				"flaky": false
+			},
+			"parameters": [
+				{
+					"name": "Парам1",
+					"value": "Вперед"
+				}
+			],
+			"attachments": [],
+			"steps": []
+		}
+	],
+	"parameters": [],
+	"labels": [
+		{
+			"name": "story",
+			"value": "01. Проверка заполнения"
+		},
+		{
+			"name": "feature",
+			"value": "01. Проверка заполнения"
+		},
+		{
+			"name": "tag",
+			"value": "tree"
+		},
+		{
+			"name": "package",
+			"value": "feature"
+		},
+		{
+			"name": "host",
+			"value": "slab-build"
+		}
+	],
+	"links": [],
+	"attachments": [],
+	"description": null
+}

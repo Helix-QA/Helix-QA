@@ -25,12 +25,11 @@ pipeline {
                     } else {
                         error "Неизвестный продукт: ${params.Product}. Ожидается 'FITNESSCORP' или 'STOMA'."
                     }
-                    def messageStart = "Запущен процесс сборки «${params.Product}»"  // Отпарвка сообщение в телеграмм о запуске сборки 
-                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
+                   def messageStart = "Запущен процесс сборки «${params.Product}»"  // Отпарвка сообщение в телеграмм о запуске сборки 
+                   def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messageStart, 'UTF-8')}")
                 }
             }
         }
-
         stage('Обновление документации') {
             steps {
                 script {
@@ -64,12 +63,12 @@ pipeline {
                         @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release --storage-user МихаилБ --extension ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                         @call ${VRUNNER_PATH} updateext ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                         """
-					}else if (params.Product.contains('FITNESS')) {
-                        //
-					}else if (params.Product.contains('SPASALON')) {
-                        //
+					}else if (params.Product.contains('PROF')) {
+
+					}else if (params.Product.contains('SPA')) {
+
 					}else if (params.Product.contains('SALON')) {
-                        //
+
 					}else if (params.Product.contains('STOMA')) {
                         bat """
                         chcp 65001
@@ -86,8 +85,8 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ${config.products[product].extensionNamejurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
-                    @call ${VRUNNER_PATH} updateext ${config.products[product].extensionNamejurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+                    @call ${VRUNNER_PATH} loadrepo --storage-name http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule --storage-user МихаилБ --extension ${config.products[product].extension_name_jurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+                    @call ${VRUNNER_PATH} updateext ${config.products[product].extension_name_jurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                     """
                     }
                 }
@@ -103,10 +102,9 @@ pipeline {
                     if (params.Product.contains('STOMA')) {
                         bat """
                         chcp 65001
-                        @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\jurnal.cfe ${config.products[product].extensionNamejurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+                        @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\jurnal.cfe ${config.products[product].extension_name_jurnal} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                         """
 					}
-
                 }
             }
         }
