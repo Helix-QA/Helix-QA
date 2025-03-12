@@ -8,6 +8,10 @@ pipeline {
 		db_userrelease = 'Админ'
 		cf = 'D:\\cf'
 		dbnew = 'AvtotestQA'
+		allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+		allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
+        workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
+		vaParamsjson = 'SERVER-71/VAParams.json'    
     }
     stages {
         stage('Обновление в релизном хранилище') {
@@ -70,14 +74,34 @@ pipeline {
 		stage('Заполнение базы') {
 			steps {
 				script {
-					//удалять сеансы тут будем
 					bat """
 					chcp 65001
-						
+					@call ${VRUNNER_PATH} session kill --with-nolock --db AvtotestQA --db-user ${db_userrelease}
+					@call ${VRUNNER_PATH} loadext --file SERVER-71\\FITNESS\\buildsAll\\VAExtension.1.12.cfe --extension VAExtension --updatedb --db AvtotestQA --db-user ${db_userrelease}
+					@call ${VRUNNER_PATH} loadext --file SERVER-71\\FITNESS\\buildsAll\\РазблокированнаяХрень.cfe --extension ПодключаемоеОборудование --updatedb --db AvtotestQA --db-user ${db_userrelease}
+					@call ${VRUNNER_PATH} vanessa --path SERVER-71\\FITNESS\\buildsAll\\ЗаполнениеИБФитнес.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/MenageTest --vanessasettings ${vaParamsjson}
 					"""
 				}
 			}
 		}
     }
+	  post {
+            always {
+
+                script {
+                    def reportMessage = """
+Автотестирование завершено.
+
+Allure отчет доступен по ссылке:
+${allureReportUrl}
+
+Проект: ${JOB_NAME}
+Сборка: #${BUILD_NUMBER}
+                        """
+                        
+                       httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
+                    }
+                }
+            }
 }
 
