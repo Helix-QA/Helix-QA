@@ -83,6 +83,18 @@ pipeline {
 				}
 			}
 		}
+		stage('Генерация Allure отчета') {
+            steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        results: [[path: "results"]]
+                    ])
+                    
+                }
+            }
+        }
     }
 	  post {
             always {
