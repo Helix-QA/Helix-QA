@@ -77,7 +77,7 @@ pipeline {
 					bat """
 					chcp 65001
 					@call ${VRUNNER_PATH} session kill --with-nolock --db AvtotestQA --db-user ${db_userrelease}
-					@call ${VRUNNER_PATH} loadext --file SERVER-71\\FITNESS\\buildsAll\\РазблокированнаяХрень.cfe --extension ПодключаемоеОборудование -ibconnection /Slocalhost/AvtotestQA --db-user ${db_userrelease}
+					@call ${VRUNNER_PATH} loadext --file SERVER-71\\FITNESS\\buildsAll\\РазблокированнаяХрень.cfe --extension ПодключаемоеОборудование --updatedb -ibconnection /Slocalhost/AvtotestQA --db-user ${db_userrelease}
 					@call ${VRUNNER_PATH} vanessa --path SERVER-71\\FITNESS\\buildsAll\\ЗаполнениеИБФитнес.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/MenageTest --vanessasettings ${vaParamsjson}
 					"""
 				}
