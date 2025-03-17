@@ -7,7 +7,8 @@ pipeline {
         allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
         cfsrc = "D:\\cf\\cf.cf"
-    } 
+        platform = "8.3.24.1368"
+    }   
     stages {
         stage('Инициализация параметров'){
             steps{
@@ -34,9 +35,9 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
-                    @call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
-                    @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+                    @call ${VRUNNER_PATH} session kill --v8version ${platform} --with-nolock --db ${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+                    @call ${VRUNNER_PATH} loadrepo  --v8version ${platform} --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+                    @call ${VRUNNER_PATH} updatedb --v8version ${platform} --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
                     """
                 }
             }
@@ -48,7 +49,7 @@ pipeline {
                         script {
                             bat """
                             chcp 65001
-                            @call ${VRUNNER_PATH} unload ${cfsrc} --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+                            @call ${VRUNNER_PATH} unload ${cfsrc} --v8version ${platform} --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
                             """
                         }
                     }
@@ -58,7 +59,7 @@ pipeline {
                         script {
                             bat """
                             chcp 65001
-                            @call ${VRUNNER_PATH} create --db-server localhost --name udd --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+                            @call ${VRUNNER_PATH} create --v8version ${platform} --db-server localhost --name udd --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
                             """
                         }
                     }
@@ -70,8 +71,8 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} load --src ${cfsrc} --ibconnection /Slocalhost/udd
-                    @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/udd
+                    @call ${VRUNNER_PATH} load --src ${cfsrc} --v8version ${platform} --ibconnection /Slocalhost/udd
+                    @call ${VRUNNER_PATH} updatedb --v8version ${platform} --ibconnection /Slocalhost/udd
                     """
                 }
             }
@@ -81,7 +82,7 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\${env.namefeature}.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/pusto --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
+                    @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\${env.namefeature}.feature --pathvanessa --v8version ${platform} "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/pusto --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
                     """
                 }
             }
@@ -91,8 +92,8 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db udd --db-user admin
-                    @call ${VRUNNER_PATH} remove --name udd --drop-database --clear-database --db-user admin
+                    @call ${VRUNNER_PATH} session kill --v8version ${platform} --with-nolock --db udd --db-user admin
+                    @call ${VRUNNER_PATH} remove --name udd --v8version ${platform} --drop-database --clear-database --db-user admin
                     """
                 }
             }

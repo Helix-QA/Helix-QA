@@ -135,7 +135,7 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH}  run --command ЗавершитьРаботуСистемы; --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
+                    @call ${VRUNNER_PATH} run --command ЗавершитьРаботуСистемы; --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
                     """
                 }
             }
