@@ -126,6 +126,20 @@ pipeline {
             always {
                //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\FITNESS_debug\\results\\junit.xml"
                 script {
+                    // Читаем summary.json из папки allure-results
+                    def summaryFile = "${WORKSPACE}/allure-report/widgets/summary.json"
+                    def summaryData = readJSON file: summaryFile
+                    
+                    // Извлекаем статистику
+                    def totalTests = summaryData.statistic.total
+                    def passedTests = summaryData.statistic.passed
+                    def failedTests = summaryData.statistic.failed
+                    def skippedTests = summaryData.statistic.skipped
+                    
+                    // Рассчитываем проценты
+                    def passedPercentage = totalTests > 0 ? (passedTests / totalTests * 100).round(2) : 0
+                    def failedPercentage = totalTests > 0 ? (failedTests / totalTests * 100).round(2) : 0
+                    def skippedPercentage = totalTests > 0 ? (skippedTests / totalTests * 100).round(2) : 0
                     def reportMessage = """
 Автотестирование завершено.
 
@@ -134,6 +148,11 @@ ${allureReportUrl}
 
 Проект: ${JOB_NAME}
 Сборка: #${BUILD_NUMBER}
+
+Статистика тестов:
+- Успешно: ${passedPercentage}%
+- Провалено: ${failedPercentage}%
+- Пропущено: ${skippedPercentage}%
                         """
                         
                        httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
