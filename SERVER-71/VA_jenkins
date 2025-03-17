@@ -136,10 +136,10 @@ pipeline {
                     def failedTests = summaryData.statistic.failed
                     def skippedTests = summaryData.statistic.skipped
                     
-                    // Рассчитываем проценты
-                    def passedPercentage = totalTests > 0 ? (passedTests / totalTests * 100).round(2) : 0
-                    def failedPercentage = totalTests > 0 ? (failedTests / totalTests * 100).round(2) : 0
-                    def skippedPercentage = totalTests > 0 ? (skippedTests / totalTests * 100).round(2) : 0
+                    // Рассчитываем проценты с правильным округлением
+                    def passedPercentage = totalTests > 0 ? String.format("%.2f", (passedTests / totalTests * 100)) : "0.00"
+                    def failedPercentage = totalTests > 0 ? String.format("%.2f", (failedTests / totalTests * 100)) : "0.00"
+                    def skippedPercentage = totalTests > 0 ? String.format("%.2f", (skippedTests / totalTests * 100)) : "0.00"
                     def reportMessage = """
 Автотестирование завершено.
 
