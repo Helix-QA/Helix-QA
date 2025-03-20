@@ -124,7 +124,7 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${config.products[product].base_build} --db-user ${config.products[product].build_user}
+                    @call ${VRUNNER_PATH} session kill --with-nolock --db ${config.products[product].base_name_inf} --db-user ${config.products[product].build_user}
                     @call ${VRUNNER_PATH} load --src ${config.products[product].fbrb}\\1Cv8.cf --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}"
                     @call ${VRUNNER_PATH} updatedb --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}"
                     """
