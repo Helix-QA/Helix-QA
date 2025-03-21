@@ -124,20 +124,25 @@ pipeline {
     }
         post {
             always {
-               //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
+                    // Читаем config.json
                     def configJson = readFile(file: 'SERVER-71/notifications/config.json')
                     
-                     // Заменяем "${allureReportUrl}" и "${allureResultsDir}" на актуальные значения
+                    // Заменяем "${allureReportUrl}" и "${JOB_NAME}" на актуальные значения
                     def updatedConfigJson = configJson
                         .replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
-
-                    // Записываем обновленный JSON обратно в файл
-                    writeFile(file: 'config.json', text: updatedConfigJson)
+                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+                    
+                    // Записываем обновленный JSON в тот же файл
+                    writeFile(file: 'SERVER-71/notifications/config.json', text: updatedConfigJson)
+                    
+                    echo "Updated config.json with allureReportUrl: ${env.allureReportUrl} and JOB_NAME: ${env.JOB_NAME}"
+                    
+                    // Запускаем allure-notifications
                     bat'''
                     java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
                     '''
-                    }
                 }
             }
+        }
 }
