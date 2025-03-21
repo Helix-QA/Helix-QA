@@ -57,6 +57,7 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
+                        env.logo = "SERVER-71\\\\notifications\\\\logo.png"
                         powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseFitness} ${repUser}"
                     }
                     if (params.dbName.contains('VASPA')) {
@@ -64,6 +65,7 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
+                        env.logo = "SERVER-71\\\\notifications\\\\logo1.png"
                         powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseSalon} ${repUser}"
                     }
                     if (params.dbName.contains('VAStoma')) {
@@ -71,6 +73,7 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
+                        env.logo = "SERVER-71\\\\notifications\\\\logo2.png"
                         powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseStom} ${repUser}"
                 }
             }
@@ -124,19 +127,26 @@ pipeline {
     }
         post {
             always {
-               //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
+                    // Читаем config.json
                     def configJson = readFile(file: 'SERVER-71/notifications/config.json')
                     
-                    // Заменяем "${allureReportUrl}" на актуальное значение переменной
-                    def updatedConfigJson = configJson.replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
+                    // Заменяем "${allureReportUrl}" и "${JOB_NAME}" на актуальные значения
+                    def updatedConfigJson = configJson
+                        .replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
+                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+                        .replace('"${logo}"', "\"${env.logo}\"")
                     
-                    // Записываем обновленный JSON обратно в файл
-                    writeFile(file: 'config.json', text: updatedConfigJson)
-                    bat'''
+                    // Записываем обновленный JSON в тот же файл
+                    writeFile(file: 'SERVER-71/notifications/config.json', text: updatedConfigJson)
+                    
+                    echo "Updated config.json with allureReportUrl: ${env.allureReportUrl} and JOB_NAME: ${env.JOB_NAME}"
+                    
+                    // Запускаем allure-notifications
+                    sh '''
                     java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
                     '''
-                    }
                 }
             }
+        }
 }
