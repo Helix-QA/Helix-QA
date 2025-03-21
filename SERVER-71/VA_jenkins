@@ -126,6 +126,13 @@ pipeline {
             always {
                //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
+                    def configJson = readFile(file: 'config.json')
+                    
+                    // Заменяем "${allureReportUrl}" на актуальное значение переменной
+                    def updatedConfigJson = configJson.replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
+                    
+                    // Записываем обновленный JSON обратно в файл
+                    writeFile(file: 'config.json', text: updatedConfigJson)
                     bat'''
                     java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
                     '''
