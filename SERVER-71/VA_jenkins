@@ -143,7 +143,7 @@ pipeline {
                     echo "Updated config.json with allureReportUrl: ${env.allureReportUrl} and JOB_NAME: ${env.JOB_NAME}"
                     
                     // Запускаем allure-notifications
-                    bat'''
+                    sh '''
                     java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
                     '''
                 }
