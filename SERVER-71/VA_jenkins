@@ -124,8 +124,11 @@ pipeline {
     }
         post {
             always {
+               //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
-                    
+                    bat'''
+                    java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
+                    '''
                     }
                 }
             }
