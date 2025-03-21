@@ -1,6 +1,6 @@
 {
 	"base": {
-	  "logo": "SERVER-71\\notifications\\logo.png",
+	  "logo": "${logo}",
 	  "project": "${JOB_NAME}",
 	  "environment": "",
 	  "comment": "",
