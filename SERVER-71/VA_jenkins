@@ -126,7 +126,7 @@ pipeline {
             always {
                //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
-                    def configJson = readFile(file: 'config.json')
+                    def configJson = readFile(file: 'SERVER-71/notifications/config.json')
                     
                     // Заменяем "${allureReportUrl}" на актуальное значение переменной
                     def updatedConfigJson = configJson.replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
