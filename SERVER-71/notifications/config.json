@@ -1,12 +1,12 @@
 {
 	"base": {
 	  "logo": "",
-	  "project": "${JOB_NAME}",
+	  "project": "$JOB_NAME",
 	  "environment": "",
 	  "comment": "",
-	  "reportLink": "",
+	  "reportLink": "${allureReportUrl}",
 	  "language": "ru",
-	  "allureFolder": "${allureReportUrl}",
+	  "allureFolder": "${allureResultsDir}",
 	  "enableChart": false,
 	  "enableSuitesPublishing": false,
 	  "customData": {}
