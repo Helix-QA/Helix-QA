@@ -1,15 +1,10 @@
 {
 	"base": {
-	  "logo": "",
 	  "project": "${JOB_NAME}",
-	  "environment": "",
-	  "comment": "",
 	  "reportLink": "${allureReportUrl}",
 	  "language": "ru",
 	  "allureFolder": "allure-report",
-	  "enableChart": true,
-	  "enableSuitesPublishing": false,
-	  "customData": {}
+	  "enableChart": true
 	},
 	"telegram": {
 	  "token": "7117726988:AAFJFXz3rF7XyNXK23vtcy6MQG1E9x3DmRc",
