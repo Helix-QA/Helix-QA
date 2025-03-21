@@ -124,38 +124,18 @@ pipeline {
     }
         post {
             always {
-               //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\FITNESS_debug\\results\\junit.xml"
+               //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
-                    // Читаем summary.json из папки allure-results
-                    def summaryFile = "${WORKSPACE}/allure-report/widgets/summary.json"
-                    def summaryData = readJSON file: summaryFile
+                    def configJson = readFile(file: 'SERVER-71/notifications/config.json')
                     
-                    // Извлекаем статистику
-                    def totalTests = summaryData.statistic.total
-                    def passedTests = summaryData.statistic.passed
-                    def failedTests = summaryData.statistic.failed
-                    def skippedTests = summaryData.statistic.skipped
+                    // Заменяем "${allureReportUrl}" на актуальное значение переменной
+                    def updatedConfigJson = configJson.replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
                     
-                    // Рассчитываем проценты с правильным округлением
-                    def passedPercentage = totalTests > 0 ? String.format("%.2f", (passedTests / totalTests * 100)) : "0.00"
-                    def failedPercentage = totalTests > 0 ? String.format("%.2f", (failedTests / totalTests * 100)) : "0.00"
-                    def skippedPercentage = totalTests > 0 ? String.format("%.2f", (skippedTests / totalTests * 100)) : "0.00"
-                    def reportMessage = """
-Автотестирование завершено.
-
-Allure отчет доступен по ссылке:
-${allureReportUrl}
-
-Проект: ${JOB_NAME}
-Сборка: #${BUILD_NUMBER}
-
-Статистика тестов:
-- Успешно: ${passedPercentage}%
-- Провалено: ${failedPercentage}%
-- Пропущено: ${skippedPercentage}%
-                        """
-                        
-                       httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
+                    // Записываем обновленный JSON обратно в файл
+                    writeFile(file: 'config.json', text: updatedConfigJson)
+                    bat'''
+                    java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
+                    '''
                     }
                 }
             }
