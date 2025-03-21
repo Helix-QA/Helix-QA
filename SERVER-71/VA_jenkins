@@ -57,7 +57,7 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
-                        env.logo = "SERVER-71\\notifications\\logo.png"
+                        env.logo = "SERVER-71\\\\notifications\\\\logo.png"
                         powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseFitness} ${repUser}"
                     }
                     if (params.dbName.contains('VASPA')) {
@@ -65,7 +65,7 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
-                        env.logo = "SERVER-71\\notifications\\logo1.png"
+                        env.logo = "SERVER-71\\\\notifications\\\\logo1.png"
                         powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseSalon} ${repUser}"
                     }
                     if (params.dbName.contains('VAStoma')) {
@@ -73,7 +73,7 @@ pipeline {
                         def vaUser = "Админ"
                         def repUser = "VATest"
                         def updateBase = 'SERVER-71/updateBase.py'
-                        env.logo = "SERVER-71\\notifications\\logo2.png"
+                        env.logo = "SERVER-71\\\\notifications\\\\logo2.png"
                         powershell "python -X utf8 ${updateBase} '${platformPath}' ${vaBase} ${vaUser} ${repositoryReleaseStom} ${repUser}"
                 }
             }
