@@ -6,7 +6,6 @@ pipeline {
 
     environment {
         allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
-        allurereport = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\allure-report"
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         sourceFile = "SERVER-71/Sample_${params.dbName}.json"
         vaParamsjson = 'SERVER-71/VAParams.json'    
@@ -127,13 +126,12 @@ pipeline {
             always {
                //junit allowEmptyResults: true, testResults: "${WORKSPACE}\\results\\junit.xml"
                 script {
-                    def configJson = readFile(file: 'config.json')
+                    def configJson = readFile(file: 'SERVER-71/notifications/config.json')
                     
                      // Заменяем "${allureReportUrl}" и "${allureResultsDir}" на актуальные значения
                     def updatedConfigJson = configJson
                         .replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
-                        .replace('"${allurereport}"', "\"${env.allurereport}\"")
-                    
+
                     // Записываем обновленный JSON обратно в файл
                     writeFile(file: 'config.json', text: updatedConfigJson)
                     bat'''
