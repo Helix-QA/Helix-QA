@@ -1,6 +1,6 @@
 {
 	"base": {
-	  "logo": "${logo}",
+	  "logo": "",
 	  "project": "${JOB_NAME}",
 	  "environment": "",
 	  "comment": "",
