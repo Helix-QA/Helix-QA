@@ -137,7 +137,10 @@ pipeline {
 
                     // Запускаем allure-notifications
                     sh '''
-                    java "-DconfigFile=SERVER-71/notifications/config.json" -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
+                    java "-DconfigFile=SERVER-71/notifications/config.json" \
+                    "-Dhttp.connection.timeout=30000" \
+                    "-Dhttp.socket.timeout=60000" \
+                    -jar SERVER-71/notifications/allure-notifications-4.8.0.jar
                     '''
                 }
             }
