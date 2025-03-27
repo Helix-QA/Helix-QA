@@ -12,13 +12,15 @@ pipeline {
     }
     stages {
 		stage("Инициализация параметров"){
-			steps{
-				def configJson = readFile(file: '${vaParamsjson}')
-				def updatedConfigJson = configJson
-					.replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-					.replace('"workSpaceDir"', "\"${env.workSpaceDir}\"")
-                writeFile(file: '${vaParamsjson}', text: updatedConfigJson)
-				}
+			steps {
+            script {
+                def configJson = readFile(file: vaParamsjson) 
+                def updatedConfigJson = configJson
+                    .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+                    .replace('"workSpaceDir"', "\"${workSpaceDir}\"") 
+                writeFile(file: vaParamsjson, text: updatedConfigJson)
+            }
+        }
 			}
 		stage('Обновление в релизном хранилище') {
 			steps {
