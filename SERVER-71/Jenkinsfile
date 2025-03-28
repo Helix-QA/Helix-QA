@@ -11,7 +11,7 @@ pipeline {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
                 script {
-                    sh "vrunner session kill --with-nolock --db ${params.dbName} --db-user ${env.VATest}"
+                    sh "vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
                     if (params.dbName.contains('VAFitness')) {
                         env.nameProduct = "FITNESS"
                         env.supplierName = "ФитнесКлуб_КОРП"
