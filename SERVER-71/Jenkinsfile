@@ -3,85 +3,67 @@ pipeline {
         label "${params.jenkinsAgent}"
     }
     environment {
-        allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
-        workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
-        sourceFile = "SERVER-71/Sample_${params.dbName}.json"
-        vaParamsjson = 'SERVER-71/VAParams.json'    
+    	allureResultsDir = "${env.WORKSPACE}\\results"
+        vaParamsjson = 'SERVER-71/env/VAParams.json'    
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 
     }
-    stages {
-		stage("Инициализация параметров"){
+	stages {
+		stage('Обновление информационной базы из релизного хранилища') {
 			steps {
-            script {
-                def configJson = readFile(file: vaParamsjson) 
-                def updatedConfigJson = configJson
-                    .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-                    .replace('"workSpaceDir"', "\"${workSpaceDir}\"") 
-                writeFile(file: vaParamsjson, text: updatedConfigJson)
+					sh " python -X utf8 @call vrunner session kill --with-nolock --db ${params.dbName} --db-user ${env.VATest} "
+					if (params.dbName.contains('VAFitness')) {
+						env.nameProduct = "FITNESS"
+						env.supplierName ="ФитнесКлуб_КОРП"
+						env.repository = "${env.repositoryReleaseFitness}"
+						env.logo = "SERVER-71/notifications/logo.png"
+					}
+					if (params.dbName.contains('VASPA')) {
+						env.nameProduct = "SALON"
+						env.supplierName = "СалонКрасоты_SPA"
+						env.repository = "${env.repositoryReleaseSalon}"
+						env.logo = "SERVER-71/notifications/logo1.png"
+					}
+					if (params.dbName.contains('VAStoma')) {
+						env.nameProduct = "STOMA"
+						env.supplierName = "Стоматология"
+						env.repository = "${env.repositoryReleaseStom}"
+						env.logo = "SERVER-71/notifications/logo2.png"
+					}
+					sh "python -X utf8 @call vrunner loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+					sh "python -X utf8 @call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+			}
+		}
+		stage("Инициализация параметров"){
+				steps {
+						def configJson = readFile(file: vaParamsjson) 
+						def updatedConfigJson = configJson
+							.replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+							.replace('"workSpaceDir"', "\"${workSpaceDir}\"") 
+							.replace('"nameProduct"', "\"${env.nameProduct}\"") 
+							.replace('"allureResultsDir"', "\"${env.nameProduct}\"")
+							.replace('"supplierName"', "\"${env.supplierName}\"")
+						writeFile(file: vaParamsjson, text: updatedConfigJson)
+				}
+			}
+        stage('Отправка сообщения в телеграмм и подготавка JSON') {
+            steps {
+                script {
+                    // Оповещение о начале тестирования
+                    // def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+                    // httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+                }
             }
         }
-			}
-		stage('Обновление в релизном хранилище') {
-			steps {
-					relUpdateRep(
-						"${VRUNNER_PATH}", 
-						"${dbrelease}", 
-						"${db_user_release}", 
-						"${env.repositoryReleaseFitness}"
-					)
-				}
+        stage('Выполнение тестирования') {
+            steps {
+				sh "python -X utf8 @call vrunner vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam "--allurereport""
+					// powershell """
+                    // chcp 65001
+                    // & "${env.platformPath}" /N"Админ" /TestManager /Execute "C:\\VA_Test\\vanessa-automation\\vanessa-automation.epf" /IBConnectionString "Srvr=""localhost"";Ref=""${params.dbName}"";" /C"StartFeaturePlayer;QuietInstallVanessaExt;VAParams=${vaParamsjson}"
+                    // """
             }
-    //     stage('Обновление информационной базы из релизного хранилища') {
-    //         steps {
-    //             script {
-    //                 if (params.dbName.contains('VAFitness')) {
-    //                     env.vaBase = "localhost/VAFitness"
-    //                     env.vaUser = "Админ"
-    //                     env.repUser = "VATest"
-    //                     env.updateBase = 'SERVER-71/updateBase.py'
-    //                     env.logo = "SERVER-71\\\\notifications\\\\logo.png"
-    //                 }
-    //                 if (params.dbName.contains('VASPA')) {
-    //                     def vaBase = "localhost/VASPA"
-    //                     def vaUser = "Админ"
-    //                     def repUser = "VATest"
-    //                     def updateBase = 'SERVER-71/updateBase.py'
-    //                     env.logo = "SERVER-71\\\\notifications\\\\logo1.png"
-
-    //                 }
-    //                 if (params.dbName.contains('VAStoma')) {
-    //                     def vaBase = "localhost/VAStoma"
-    //                     def vaUser = "Админ"
-    //                     def repUser = "VATest"
-    //                     env.logo = "SERVER-71\\\\notifications\\\\logo2.png"
-
-    //             }
-    //         }
-	// 	}
-	// }
-    //     stage('Отправка сообщения в телеграмм и подготавка JSON') {
-    //         steps {
-    //             script {
-    //                 //Отправвка сообщения в телеграмм
-    //                  def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
-    //                  httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
-    //                 // Формируем VAParams.json
-    //                 def script = 'SERVER-71/replace_words.py'
-    //                 powershell "python -X utf8 ${script} ${params.TestPathPlaceholder} ${allureResultsDir} ${workSpaceDir} ${sourceFile} ${vaParamsjson}"
-    //             }
-    //         }
-    //     }
-    //     stage('Выполнение тестирования') {
-    //         steps {
-    //             script {
-    //                 powershell """
-    //                 chcp 65001
-    //                 & "${env.platformPath}" /N"Админ" /TestManager /Execute "C:\\VA_Test\\vanessa-automation\\vanessa-automation.epf" /IBConnectionString "Srvr=""localhost"";Ref=""${params.dbName}"";" /C"StartFeaturePlayer;QuietInstallVanessaExt;VAParams=${vaParamsjson}"
-    //                 """
-    //             }
-    //         }
-    //     }
+        }
     //     stage('Генерация Allure отчета') {
     //         steps {
     //             script {
@@ -94,27 +76,28 @@ pipeline {
     //             }
     //         }
 	// 	}
-	}
-	// 	post {
-	// 		always {
-	// 			script {
-	// 				def configJson = readFile(file: 'SERVER-71/notifications/config.json')
-	// 				def updatedConfigJson = configJson
-	// 					.replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
-	// 					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-	// 					.replace('"${logo}"', "\"${env.logo}\"")
-	// 				writeFile(file: 'SERVER-71/notifications/config.json', text: updatedConfigJson)
+	// }
+		// post {
+		// 	always {
+		// 		script {
+		// 			def configJson = readFile(file: 'SERVER-71/notifications/config.json')
+		// 			def updatedConfigJson = configJson
+		// 				.replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
+		// 				.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+		// 				.replace('"${logo}"', "\"${env.logo}\"")
+		// 			writeFile(file: 'SERVER-71/notifications/config.json', text: updatedConfigJson)
 
-	// 				// Запускаем allure-notifications
-	// 				sh '''
-	// 				java "-DconfigFile=SERVER-71/notifications/config.json" \
-	// 				"-Dhttp.connection.timeout=30000" \
-	// 				"-Dhttp.socket.timeout=60000" \
-	// 				-jar SERVER-71/notifications/allure-notifications-4.8.0.jar
-	// 				'''
-	// 			}
-	// 		}
-	// 	}
+		// 			// Запускаем allure-notifications
+		// 			sh '''
+		// 			java "-DconfigFile=SERVER-71/notifications/config.json" \
+		// 			"-Dhttp.connection.timeout=30000" \
+		// 			"-Dhttp.socket.timeout=60000" \
+		// 			-jar SERVER-71/notifications/allure-notifications-4.8.0.jar
+		// 			'''
+		// 		}
+		// 	}
+		// }
+	}
 }
 
 
