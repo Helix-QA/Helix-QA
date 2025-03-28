@@ -49,15 +49,15 @@ pipeline {
                 }
             }
         }
-        stage('Отправка сообщения в телеграмм и подготавка JSON') {
-            steps {
-                script {
-                    // Оповещение о начале тестирования
-                    // def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
-                    // httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
-                }
-            }
-        }
+        // stage('Отправка сообщения в телеграмм и подготавка JSON') {
+        //     steps {
+        //         script {
+        //             Оповещение о начале тестирования
+        //             def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+        //             httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+        //         }
+        //     }
+        // }
         stage('Выполнение тестирования') {
             steps {
                 sh "python -X utf8 @call vrunner vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam \"--allurereport\""
