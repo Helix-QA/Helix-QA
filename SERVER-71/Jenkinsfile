@@ -11,6 +11,7 @@ pipeline {
 	stages {
 		stage('Обновление информационной базы из релизного хранилища') {
 			steps {
+				script{
 					sh " python -X utf8 @call vrunner session kill --with-nolock --db ${params.dbName} --db-user ${env.VATest} "
 					if (params.dbName.contains('VAFitness')) {
 						env.nameProduct = "FITNESS"
@@ -32,6 +33,7 @@ pipeline {
 					}
 					sh "python -X utf8 @call vrunner loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
 					sh "python -X utf8 @call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+				}
 			}
 		}
 		stage("Инициализация параметров"){
