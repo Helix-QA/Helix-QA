@@ -11,7 +11,7 @@ pipeline {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
                 script {
-                    sh "python -X utf8 vrunner session kill --with-nolock --db ${params.dbName} --db-user ${env.VATest}"
+                    sh "vrunner session kill --with-nolock --db ${params.dbName} --db-user ${env.VATest}"
                     if (params.dbName.contains('VAFitness')) {
                         env.nameProduct = "FITNESS"
                         env.supplierName = "ФитнесКлуб_КОРП"
@@ -30,8 +30,8 @@ pipeline {
                         env.repository = "${env.repositoryReleaseStom}"
                         env.logo = "SERVER-71/notifications/logo2.png"
                     }
-                    sh "python -X utf8 vrunner loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
-                    sh "python -X utf8 vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+                    sh "vrunner loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+                    sh "vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
                 }
             }
         }
@@ -60,7 +60,7 @@ pipeline {
         // }
         stage('Выполнение тестирования') {
             steps {
-                sh "python -X utf8 vrunner vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam \"--allurereport\""
+                sh "vrunner vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam \"--allurereport\""
             }
         }
     }
