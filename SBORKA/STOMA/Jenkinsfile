@@ -98,6 +98,7 @@ pipeline {
                     chcp 65001
                     @call ${VRUNNER_PATH} unload ${config.products[product].fbrb}\\1Cv8.cf --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
                     @call ${VRUNNER_PATH} unloadext ${config.products[product].fbrb}\\messenger.cfe ${config.products[product].extension_name_mess} --ibconnection /Slocalhost/${config.products[product].release_server} --db-user ${config.products[product].release_user}
+                    
                     """
                     if (params.Product.contains('STOMA')) {
                         bat """
@@ -108,6 +109,24 @@ pipeline {
                 }
             }
         }
+        // stage("Создание Helix.epf"){
+        //     steps{
+        //         script{
+        //             // Разбираем .cf на файлы-бинарники
+        //             bat """
+        //             @call ${VRUNNER_PATH} vrunner decompile --out ${config.products[product].archive_name}\\sources --in ${config.products[product].fbrb}\\1Cv8.cf
+        //             """
+        //             //Переносим модуль Helix в отдельную папку
+        //             def helixepf = 'SBORKA/STOMA/Helixepf.py'
+        //             sh "python -X utf8 ${helixepf} \"${config.products[product].archive_name}\""
+                    
+        //             // Собираем из исходниокв Helix.epf
+        //             bat"""
+        //             @call ${VRUNNER_PATH} compileepf ${config.products[product].fbrb} ${config.products[product].archive_name}\\Helix
+        //             """
+        //         }
+        //     }
+        // }
         stage('Шифрование расширения') {
             when { expression {params.Product.contains('STOMA') } }
             steps {
@@ -137,6 +156,7 @@ pipeline {
                     bat """
                     chcp 65001
                     @call ${VRUNNER_PATH} run --command ЗавершитьРаботуСистемы; --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
+                    @call ${VRUNNER_PATH} run --command ЗавершитьРаботуСистемы; --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\УбратьОкноПеремещенияИБ.epf"
                     """
                 }
             }
