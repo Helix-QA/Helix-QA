@@ -3,116 +3,66 @@ pipeline {
         label "${params.jenkinsAgent}"
     }
     environment {
-        VRUNNER_PATH = 'vrunner' // Путь к исполняемому файлу Vanessa Runner
-		dbrelease = 'VAFitness'
-		db_userrelease = 'Админ'
-		cf = 'D:\\cf'
-		dbnew = 'AvtotestQA'
-		allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-		allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
-        workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
-		vaParamsjson = 'SERVER-71/VAParams.json'
+        allureResultsDir = "${env.WORKSPACE}\\results"
+        vaParamsjson = 'SERVER-71/env/VAParams.json'    
+        allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+		VRUNNER_PATH = 'vrunner'
     }
     stages {
-        // stage('Обновление в релизном хранилище') {
-        //         steps {
-        //             script {
-        //                 bat """
-        //                 chcp 65001
-		// 				@call ${VRUNNER_PATH} session kill --with-nolock --db ${dbrelease} --db-user ${db_userrelease}
-		// 				@call ${VRUNNER_PATH} loadrepo --storage-name ${env.repositoryReleaseFitness} --storage-user VATest --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
-		// 				@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
-        //                 """
-        //             }
-        //          }
-		// }
-		// stage('Выгрузка и создание базы') {
-		// 	parallel {
-		// 		stage('Выгрузка .cf'){
-		// 			steps {
-		// 				script {
-		// 					bat """
-		// 					chcp 65001
-		// 					@call ${VRUNNER_PATH} unload ${cf}\\1Cv8.cf --ibconnection /Slocalhost/${dbrelease} --db-user ${db_userrelease}
-		// 					"""
-		// 				}
-		// 			}
-		// 		}
-		// 		stage('Создание пустой базы') {
-		// 				steps {
-		// 					script {
-		// 						bat """
-		// 						chcp 65001
-		// 						call ${VRUNNER_PATH} create --db-server localhost --name ${dbnew} --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
-		// 						"""
-		// 					}
-		// 				}
-		// 			}	
-		// 		}
-		// }
-		// stage('Загрузка .cf') {
-		// 	steps {
-		// 		script {
-		// 			bat """
-		// 			chcp 65001
-        //             @call ${VRUNNER_PATH} load --src ${cf}\\1Cv8.cf --ibconnection /Slocalhost/${dbnew}
-		// 			@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${dbnew}
-		// 			"""
-		// 		}
-		// 	}
-		// }
-		// stage('Первоначальное заполнение') {
-		// 	steps {
-		// 		script {
-		// 			bat """
-		// 			chcp 65001
-        //             @call ${VRUNNER_PATH} vanessa --path vanessa-runner\\feature\\fitness.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/MenageTest --vanessasettings vanessa-runner\\UpdatingdDemoDatabase\\VAParams.json
-		// 			"""
-		// 		}
-		// 	}
-		// }
-		stage('Заполнение базы') {
-			steps {
-				script {
-					bat """
-					chcp 65001
-					@call ${VRUNNER_PATH} session kill --with-nolock --db AvtotestQA --db-user ${db_userrelease}
-					@call ${VRUNNER_PATH} loadext --file SERVER-71\\FITNESS\\buildsAll\\РазблокированнаяХрень.cfe --extension ПодключаемоеОборудование --updatedb --ibconnection /Slocalhost/AvtotestQA --db-user ${db_userrelease}
-					@call ${VRUNNER_PATH} vanessa --path SERVER-71\\FITNESS\\buildsAll\\ЗаполнениеИБФитнес.feature --pathvanessa "C:\\VA_test\\vanessa-automation\\vanessa-automation.epf" --ibconnection /Slocalhost/MenageTest --vanessasettings ${vaParamsjson}
-					"""
-				}
-			}
-		}
-		stage('Генерация Allure отчета') {
+        stage('Обновление информационной базы из релизного хранилища') {
             steps {
                 script {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        results: [[path: "results"]]
-                    ])
-                    
+                    sh "${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
+                    if (params.dbName.contains('VAFitness')) {
+                        env.nameProduct = "FITNESS"
+                        env.supplierName = "ФитнесКлуб_КОРП"
+                        env.repository = "${env.repositoryReleaseFitness}"
+                        env.logo = "SERVER-71/notifications/logo.png"
+                    }
+                    if (params.dbName.contains('VASPA')) {
+                        env.nameProduct = "SALON"
+                        env.supplierName = "СалонКрасоты_SPA"
+                        env.repository = "${env.repositoryReleaseSalon}"
+                        env.logo = "SERVER-71/notifications/logo1.png"
+                    }
+                    if (params.dbName.contains('VAStoma')) {
+                        env.nameProduct = "STOMA"
+                        env.supplierName = "Стоматология"
+                        env.repository = "${env.repositoryReleaseStom}"
+                        env.logo = "SERVER-71/notifications/logo2.png"
+                    }
+                    sh "${VRUNNER_PATH} loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+                    sh "${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
                 }
             }
         }
-    }
-	  post {
-            always {
-
+        stage("Инициализация параметров") {
+            steps {
                 script {
-                    def reportMessage = """
-Автотестирование завершено.
-
-Allure отчет доступен по ссылке:
-${allureReportUrl}
-
-Проект: ${JOB_NAME}
-Сборка: #${BUILD_NUMBER}
-                        """
-                        
-                       httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
-                    }
+                    def configJson = readFile(file: vaParamsjson)
+                    def updatedConfigJson = configJson
+                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+                        .replace('"workSpaceDir"', "\"${workSpaceDir}\"")
+                        .replace('"nameProduct"', "\"${env.nameProduct}\"")
+                        .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
+                        .replace('"supplierName"', "\"${env.supplierName}\"")
+                    writeFile(file: vaParamsjson, text: updatedConfigJson)
                 }
             }
+        }
+        // stage('Отправка сообщения в телеграмм и подготавка JSON') {
+        //     steps {
+        //         script {
+        //             Оповещение о начале тестирования
+        //             def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+        //             httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+        //         }
+        //     }
+        // }
+        stage('Выполнение тестирования') {
+            steps {
+                sh "${VRUNNER_PATH} vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam \"--allurereport\""
+            }
+        }
+    }
 }
-
