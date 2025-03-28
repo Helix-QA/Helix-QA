@@ -6,12 +6,13 @@ pipeline {
         allureResultsDir = "${env.WORKSPACE}\\results"
         vaParamsjson = 'SERVER-71/env/VAParams.json'    
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+		VRUNNER_PATH = 'vrunner'
     }
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
                 script {
-                    sh "vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
+                    sh "${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
                     if (params.dbName.contains('VAFitness')) {
                         env.nameProduct = "FITNESS"
                         env.supplierName = "ФитнесКлуб_КОРП"
@@ -30,8 +31,8 @@ pipeline {
                         env.repository = "${env.repositoryReleaseStom}"
                         env.logo = "SERVER-71/notifications/logo2.png"
                     }
-                    sh "vrunner loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
-                    sh "vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+                    sh "${VRUNNER_PATH} loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+                    sh "${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
                 }
             }
         }
@@ -60,7 +61,7 @@ pipeline {
         // }
         stage('Выполнение тестирования') {
             steps {
-                sh "vrunner vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam \"--allurereport\""
+                sh "${VRUNNER_PATH} vanessa --ibconnection /Slocalhost/${params.dbName} --vanessasettings ${vaParamsjson} --addparam \"--allurereport\""
             }
         }
     }
