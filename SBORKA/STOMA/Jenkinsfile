@@ -36,9 +36,11 @@ pipeline {
                     def scriptPath = 'SBORKA/records/delete_folders_and_files.py'
                     def scriptPath1 = 'SBORKA/records/update_files_and_contents.py'
                     def scriptPath2 = 'SBORKA/records/process_files.py'
+                    def delete_folders_and_files = 'SBORKA/STOMA/del.py'
                     sh "python -X utf8 ${scriptPath} \"${config.products[product].target_path}\""
                     sh "python -X utf8 ${scriptPath1} \"${config.products[product].source_directory}\" \"${config.products[product].target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${config.products[product].sbor}\""
                     sh "python -X utf8 ${scriptPath2} \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${config.products[product].sample_edf}\" \"${config.products[product].fbrb}\""
+                    sh "python -X utf8 ${delete_folders_and_files} \"${archive_name}\"" // удаление папки основной и поставки обновления
                 }
             }
         }
@@ -156,7 +158,7 @@ pipeline {
                     bat """
                     chcp 65001
                     @call ${VRUNNER_PATH} run --command ЗавершитьРаботуСистемы; --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
-                    @call ${VRUNNER_PATH} run --command ЗавершитьРаботуСистемы; --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\УбратьОкноПеремещенияИБ.epf"
+                    @call ${VRUNNER_PATH} run --ibconnection /S${config.products[product].base_build} --db-user "${config.products[product].build_user}" --execute "${env.epfvrunner}\\УбратьОкноПеремещенияИБ.epf"
                     """
                 }
             }
