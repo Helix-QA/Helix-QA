@@ -2,8 +2,9 @@ import shutil
 import os
 import sys
 
-version = sys.argv[1]
-foldername = sys.argv[2]
+foldername = sys.argv[1]
+version = sys.argv[2]
+
 
 # Исходная папка и имя файла
 source_folder = rf"{foldername}\Old_versions_cf"
