@@ -7,7 +7,7 @@ version = sys.argv[2]
 
 
 # Исходная папка и имя файла
-source_folder = rf"{foldername}\Old_versions_cf"
+source_folder = rf"{foldername}"
 file_name = rf"{version}.cf"  # Укажите имя файла, который нужно скопировать
 
 # Целевая папка
