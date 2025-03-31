@@ -1,6 +1,14 @@
 pipeline {
     agent { label "${params.jenkinsAgent}" }
     stages {
+        stage("Очистка данных перед отправкой"){
+            steps{
+                script {
+                    def cleaning = 'GRM/cleaning.py'
+                    sh "python -X utf8 ${cleaning}" // Очистка
+                }
+            }
+        }
         stage('Получение предподписанной ссылки') {
             steps {
                 script {
