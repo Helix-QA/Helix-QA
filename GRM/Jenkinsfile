@@ -5,7 +5,7 @@ pipeline {
             steps{
                 script {
                     def cleaning = 'GRM/cleaning.py'
-                    sh "python -X utf8 ${cleaning}" // Очистка //
+                    sh "python -X utf8 ${cleaning}" // Очистка 
                 }
             }
         }
