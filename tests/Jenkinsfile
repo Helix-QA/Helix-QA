@@ -8,6 +8,7 @@ pipeline {
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
+		vaParamsjson = 'tests\\tools\\VAParams.json'
 
     }
     stages {
@@ -28,50 +29,13 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
- 					def vaParamsjson = 'tests/tools/VAParams.json'
-
-                    echo "Рабочая директория: ${env.WORKSPACE}"
-
-                    // Чтение JSON-файла
-                    def configJson = readJSON file: vaParamsjson
-                    echo "Содержимое configJson после чтения: ${configJson}"
-
-                    // Вывод значений параметров
-                    echo "Значение params.TestPathPlaceholder: ${params.TestPathPlaceholder}"
-                    echo "Значение params.supplierName: ${params.supplierName}"
-                    echo "Значение params.nameProduct: ${params.nameProduct}"
-
-                    // Обновление значений (убедитесь в правильности ключей!)
-                    if (configJson.containsKey('TestPathPlaceholder')) {
-                        configJson.TestPathPlaceholder = params.TestPathPlaceholder
-                    } else {
-                        echo "Внимание: Ключ 'TestPathPlaceholder' не найден в JSON."
-                    }
-
-                    if (configJson.containsKey('workSpaceDir')) {
-                        configJson.workSpaceDir = env.WORKSPACE.replace('\\', '\\\\')
-                    } else {
-                        echo "Внимание: Ключ 'workSpaceDir' не найден в JSON."
-                    }
-
-                    if (configJson.containsKey('allureResultsDir')) {
-                        configJson.allureResultsDir = params.nameProduct
-                    } else {
-                        echo "Внимание: Ключ 'allureResultsDir' не найден в JSON."
-                    }
-
-                    if (configJson.containsKey('supplierName')) {
-                        configJson.supplierName = params.supplierName
-                    } else {
-                        echo "Внимание: Ключ 'supplierName' не найден в JSON."
-                    }
-
-                    echo "Содержимое configJson перед записью: ${configJson}"
-
-                    // Запись обновленного JSON-файла
-                    writeFile file: vaParamsjson, text: groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(configJson))
-
-                    echo "Файл ${vaParamsjson} успешно обновлен."
+                    def configJson = readFile(file: env.vaParamsjson)
+                    def updatedConfigJson = configJson
+                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+                        .replace('"workSpaceDir"', "\"${workSpaceDir}\"") // Используем определенную переменную
+                        .replace('"allureResultsDir"', "\"${allureResultsDir}\"") // Исправлено на правильную переменную
+                        .replace('"supplierName"', "\"${params.supplierName}\"")
+                    writeFile(file: env.vaParamsjson, text: updatedConfigJson)
                 }
             }
         }
