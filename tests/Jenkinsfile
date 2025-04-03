@@ -8,7 +8,7 @@ pipeline {
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
-		vaParamsjson = 'tests\\tools\\VAParams.json'  
+
     }
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
@@ -28,27 +28,20 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
-					// Читаем файл как строку
-					def configJson = readFile(file: vaParamsjson)
-					
-					// Парсим JSON в объект, используя JsonSlurper без сохранения в переменную
-					def config = new groovy.json.JsonSlurper().parseText(configJson)
+                    def vaParamsjson = 'tests/tools/VAParams.json' // Рекомендуется использовать '/' для кроссплатформенности
 
-					// Обновляем значения в нужных полях
-					config.КаталогФич = "${env.workSpaceDir}\\${params.TestPathPlaceholder}"
-					config.КаталогПроекта = "${env.workSpaceDir}\\${params.TestPathPlaceholder}"
-					config.КаталогВыгрузкиСкриншотов = "${env.nameProduct}\\screenshots"
-					// Если нужно добавить supplierName:
-					// config.supplierName = params.supplierName
+                    // Чтение JSON-файла
+                    def configJson = readJSON file: vaParamsjson
 
-					// Преобразуем объект обратно в JSON-строку
-					def updatedConfigJson = groovy.json.JsonOutput.toJson(config)
-					
-					// Записываем обновлённый JSON в файл
-					writeFile(file: vaParamsjson, text: updatedConfigJson)
-					
-					// Для отладки: выводим содержимое файла после записи
-					echo "Updated file content: ${readFile(file: vaParamsjson)}"
+                    // Обновление значений
+                    configJson.TestPathPlaceholder = params.TestPathPlaceholder
+                    configJson.workSpaceDir = env.WORKSPACE.replace('\\', '\\\\') // Получаем актуальный WORKSPACE
+                    configJson.allureResultsDir = params.nameProduct // Используем параметр
+                    configJson.supplierName = params.supplierName
+					                    // Запись обновленного JSON-файла
+                    writeFile file: vaParamsjson, text: groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(configJson))
+
+                    echo "Файл ${vaParamsjson} успешно обновлен."
                 }
             }
         }
