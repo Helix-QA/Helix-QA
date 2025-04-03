@@ -29,6 +29,10 @@ pipeline {
             steps {
                 script {
                     def configJson = readFile(file: vaParamsjson)
+					echo "TestPathPlaceholder: ${params.TestPathPlaceholder}"
+					echo "workSpaceDir: ${env.workSpaceDir}"
+					echo "nameProduct: ${env.nameProduct}"
+					echo "supplierName: ${params.supplierName}"
                     def updatedConfigJson = configJson
                         .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
                         .replace('"workSpaceDir"', "\"${env.workSpaceDir}\"")
