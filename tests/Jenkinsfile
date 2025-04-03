@@ -10,60 +10,61 @@ pipeline {
 		VRUNNER_PATH = 'vrunner'
 		vaParamsjson = 'tests/tools/VAParams.json'  
     }
-    stage("Инициализация параметров") {
-    steps {
-        script {
-            // Читаем исходный файл
-            def configJson = readFile(file: vaParamsjson)
-            echo "Исходный configJson прочитан из ${vaParamsjson}:"
-            echo "${configJson}"
-            
-            // Сохраняем промежуточные результаты
-            def updatedConfigJson = configJson
-            echo "Начинаем замену placeholder'ов:"
-            
-            updatedConfigJson = updatedConfigJson
-                .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-            echo "Заменен 'TestPathPlaceholder' на '${params.TestPathPlaceholder}'"
-            
-            updatedConfigJson = updatedConfigJson
-                .replace('"workSpaceDir"', "\"${workSpaceDir}\"")
-            echo "Заменен 'workSpaceDir' на '${workSpaceDir}'"
-            
-            updatedConfigJson = updatedConfigJson
-                .replace('"nameProduct"', "\"${params.nameProduct}\"")
-            echo "Заменен 'nameProduct' на '${params.nameProduct}'"
-            
-            updatedConfigJson = updatedConfigJson
-                .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
-            echo "Заменен 'allureResultsDir' на '${env.nameProduct}'"
-            
-            updatedConfigJson = updatedConfigJson
-                .replace('"supplierName"', "\"${params.supplierName}\"")
-            echo "Заменен 'supplierName' на '${params.supplierName}'"
-            
-            echo "Итоговый updatedConfigJson:"
-            echo "${updatedConfigJson}"
-            
-            // Записываем результат
-            echo "Записываем обновленный конфиг в ${vaParamsjson}"
-            writeFile(file: vaParamsjson, text: updatedConfigJson)
-            echo "Запись успешно завершена"
+    stages {
+        stage('Обновление информационной базы из релизного хранилища') {
+            steps {
+                script {
+					bat """
+					chcp 65001
+					@call ${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
+					@call ${VRUNNER_PATH} loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+                    """
+//                    def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+//                    httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+                }
+            }
         }
-    }
-}
 		stage("Инициализация параметров") {
             steps {
                 script {
-                    def configJson = readFile(file: vaParamsjson)
-                    def updatedConfigJson = configJson
-                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-                        .replace('"workSpaceDir"', "\"${workSpaceDir}\"")
-                        .replace('"nameProduct"', "\"${params.nameProduct}\"")
-                        .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
-                        .replace('"supplierName"', "\"${params.supplierName}\"")
-                    writeFile(file: vaParamsjson, text: updatedConfigJson)
-                }
+					// Читаем исходный файл
+					def configJson = readFile(file: vaParamsjson)
+					echo "Исходный configJson прочитан из ${vaParamsjson}:"
+					echo "${configJson}"
+					
+					// Сохраняем промежуточные результаты
+					def updatedConfigJson = configJson
+					echo "Начинаем замену placeholder'ов:"
+					
+					updatedConfigJson = updatedConfigJson
+						.replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+					echo "Заменен 'TestPathPlaceholder' на '${params.TestPathPlaceholder}'"
+					
+					updatedConfigJson = updatedConfigJson
+						.replace('"workSpaceDir"', "\"${workSpaceDir}\"")
+					echo "Заменен 'workSpaceDir' на '${workSpaceDir}'"
+					
+					updatedConfigJson = updatedConfigJson
+						.replace('"nameProduct"', "\"${params.nameProduct}\"")
+					echo "Заменен 'nameProduct' на '${params.nameProduct}'"
+					
+					updatedConfigJson = updatedConfigJson
+						.replace('"allureResultsDir"', "\"${env.nameProduct}\"")
+					echo "Заменен 'allureResultsDir' на '${env.nameProduct}'"
+					
+					updatedConfigJson = updatedConfigJson
+						.replace('"supplierName"', "\"${params.supplierName}\"")
+					echo "Заменен 'supplierName' на '${params.supplierName}'"
+					
+					echo "Итоговый updatedConfigJson:"
+					echo "${updatedConfigJson}"
+					
+					// Записываем результат
+					echo "Записываем обновленный конфиг в ${vaParamsjson}"
+					writeFile(file: vaParamsjson, text: updatedConfigJson)
+					echo "Запись успешно завершена"
+        		}
             }
         }
         stage('Выполнение тестирования') {
