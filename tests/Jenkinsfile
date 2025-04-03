@@ -13,9 +13,9 @@ pipeline {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
                 script {
-					powershell "python -X utf8 @call ${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
-					powershell "python -X utf8 @call ${VRUNNER_PATH} loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
-                    powershell "python -X utf8 @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+					sh "python -X utf8 @call ${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
+					sh "python -X utf8 @call ${VRUNNER_PATH} loadrepo --storage-name ${repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
+                    sh "python -X utf8 @call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
 
 //                    def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
 //                    httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
