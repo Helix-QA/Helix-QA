@@ -8,6 +8,7 @@ pipeline {
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
+		vaParamsjson = 'tests/tools/VAParams.json'  
     }
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
@@ -31,9 +32,9 @@ pipeline {
                     def updatedConfigJson = configJson
                         .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
                         .replace('"workSpaceDir"', "\"${workSpaceDir}\"")
-                        .replace('"nameProduct"', "\"${env.nameProduct}\"")
+                        .replace('"nameProduct"', "\"${params.nameProduct}\"")
                         .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
-                        .replace('"supplierName"', "\"${env.supplierName}\"")
+                        .replace('"supplierName"', "\"${params.supplierName}\"")
                     writeFile(file: vaParamsjson, text: updatedConfigJson)
                 }
             }
