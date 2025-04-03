@@ -15,7 +15,7 @@ pipeline {
                 script {
 					bat """
 					chcp 65001
-					@call ${VRUNNER_PATH} session kill session kill --with-nolock --db ${params.dbName} --db-user Админ"
+					@call ${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
 					@call ${VRUNNER_PATH} loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
 					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user ${env.VATest}"
                     """
