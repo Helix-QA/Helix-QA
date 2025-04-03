@@ -29,12 +29,29 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
+                   // Проверка существования файла
+                    if (!fileExists(env.vaParamsjson)) {
+                        error "Файл ${env.vaParamsjson} не найден!"
+                    }
+
+                    // Чтение и парсинг JSON
                     def configJson = readFile(file: env.vaParamsjson)
-                    def updatedConfigJson = configJson
-                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-                        .replace('"workSpaceDir"', "\"${workSpaceDir}\"") // Используем определенную переменную
-                        .replace('"allureResultsDir"', "\"${allureResultsDir}\"") // Исправлено на правильную переменную
-                        .replace('"supplierName"', "\"${params.supplierName}\"")
+                    def jsonSlurper = new groovy.json.JsonSlurper()
+                    def config = jsonSlurper.parseText(configJson)
+
+                    // Замена значений в нужных полях
+                    config.КаталогФич = "${workSpaceDir}/tests/features"  // Обновляем путь к фичам
+                    config.КаталогПроекта = "${workSpaceDir}\\${params.TestPathPlaceholder}"  // Заменяем workSpaceDir\TestPathPlaceholder
+                    config.ОтчетAllure.КаталогВыгрузкиAllure = "${allureResultsDir}"  // Заменяем allureResultsDir
+                    config.ОтчетJUnit.КаталогВыгрузкиJUnit = "${allureResultsDir}"  // Заменяем allureResultsDir
+                    config.КаталогВыгрузкиСкриншотов = "${allureResultsDir}\\screenshots"  // Заменяем allureResultsDir
+                    config.ДымовыеТесты.ДымовыеТестыКаталогВыходныхФайлов = "${workSpaceDir}\\Smoke\\Fitness\\"  // Заменяем workSpaceDir
+                    config.ДымовыеТесты.ДымовыеТестыКаталогФайловИсключений = "${workSpaceDir}\\Smoke\\Fitness\\"  // Заменяем workSpaceDir
+                    config.ДымовыеТесты.ДымовыеТестыИмяКонфигурацииПоставщика = "${params.supplierName}"  // Заменяем supplierName
+                    config.ДымовыеТесты.ДымовыеТестыПутьКФайлуНастроекСценариев = "${workSpaceDir}\\Smoke\\ВСЕ_справочники_документы.csv"  // Заменяем workSpaceDir
+
+                    // Сериализация обратно в JSON с форматированием
+                    def updatedConfigJson = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(config))
                     writeFile(file: env.vaParamsjson, text: updatedConfigJson)
                 }
             }
