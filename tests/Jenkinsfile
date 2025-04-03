@@ -28,17 +28,19 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
-                    def configJson = readFile(file: vaParamsjson)
-					echo "TestPathPlaceholder: ${params.TestPathPlaceholder}"
-					echo "workSpaceDir: ${env.workSpaceDir}"
-					echo "nameProduct: ${env.nameProduct}"
-					echo "supplierName: ${params.supplierName}"
-                    def updatedConfigJson = configJson
-                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-                        .replace('"workSpaceDir"', "\"${env.workSpaceDir}\"")
-                        .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
-                        .replace('"supplierName"', "\"${params.supplierName}\"")
-                    writeFile(file: vaParamsjson, text: updatedConfigJson)
+					def configJson = readFile(file: vaParamsjson)
+					def jsonSlurper = new groovy.json.JsonSlurper()
+					def config = jsonSlurper.parseText(configJson)
+
+					config.КаталогФич = "${env.workSpaceDir}\\${params.TestPathPlaceholder}"
+					config.КаталогПроекта = "${env.workSpaceDir}\\${params.TestPathPlaceholder}"
+					config.КаталогВыгрузкиСкриншотов = "${env.nameProduct}\\screenshots"
+					def updatedConfigJson = groovy.json.JsonOutput.toJson(config)
+					
+					writeFile(file: vaParamsjson, text: updatedConfigJson)
+					
+					// Для отладки: выводим содержимое файла после записи
+					echo "Updated file content: ${readFile(file: vaParamsjson)}"
                 }
             }
         }
