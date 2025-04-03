@@ -28,7 +28,7 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
-                    def vaParamsjson = 'tests/tools/VAParams.json' // Рекомендуется использовать '/' для кроссплатформенности
+                    def vaParamsjson = 'tests\\tools\\VAParams.json' // Рекомендуется использовать '/' для кроссплатформенности
 
                     // Чтение JSON-файла
                     def configJson = readJSON file: vaParamsjson
