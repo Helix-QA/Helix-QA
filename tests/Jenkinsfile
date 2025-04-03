@@ -28,15 +28,23 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
+					// Читаем файл как строку
 					def configJson = readFile(file: vaParamsjson)
-					def jsonSlurper = new groovy.json.JsonSlurper()
-					def config = jsonSlurper.parseText(configJson)
+					
+					// Парсим JSON в объект, используя JsonSlurper без сохранения в переменную
+					def config = new groovy.json.JsonSlurper().parseText(configJson)
 
+					// Обновляем значения в нужных полях
 					config.КаталогФич = "${env.workSpaceDir}\\${params.TestPathPlaceholder}"
 					config.КаталогПроекта = "${env.workSpaceDir}\\${params.TestPathPlaceholder}"
 					config.КаталогВыгрузкиСкриншотов = "${env.nameProduct}\\screenshots"
+					// Если нужно добавить supplierName:
+					// config.supplierName = params.supplierName
+
+					// Преобразуем объект обратно в JSON-строку
 					def updatedConfigJson = groovy.json.JsonOutput.toJson(config)
 					
+					// Записываем обновлённый JSON в файл
 					writeFile(file: vaParamsjson, text: updatedConfigJson)
 					
 					// Для отладки: выводим содержимое файла после записи
