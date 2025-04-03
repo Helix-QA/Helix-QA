@@ -8,7 +8,7 @@ pipeline {
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
-		vaParamsjson = 'tests/tools/VAParams.json'  
+		vaParamsjson = 'tests\\tools\\VAParams.json'  
     }
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
@@ -28,28 +28,13 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
-                    script {
-						bat "dir %vaParamsjson%"
-						echo "Значение vaParamsjson: ${vaParamsjson}"
-						def configJson = readFile(file: vaParamsjson)
-						def updatedConfigJson = configJson
-						echo "Исходный configJson: ${updatedConfigJson}"
-
-						updatedConfigJson = updatedConfigJson.replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-						echo "После замены TestPathPlaceholder: ${updatedConfigJson}"
-
-						updatedConfigJson = updatedConfigJson.replace('"workSpaceDir"', "\"${workSpaceDir}\"")
-						echo "После замены workSpaceDir: ${updatedConfigJson}"
-
-						updatedConfigJson = updatedConfigJson.replace('"allureResultsDir"', "\"${env.nameProduct}\"")
-						echo "После замены allureResultsDir: ${updatedConfigJson}"
-
-						updatedConfigJson = updatedConfigJson.replace('"supplierName"', "\"${params.supplierName}\"")
-						echo "После замены supplierName: ${updatedConfigJson}"
-
-						writeFile(file: vaParamsjson, text: updatedConfigJson)
-						echo "Файл ${vaParamsjson} был обновлен."
-}
+                    def configJson = readFile(file: vaParamsjson)
+                    def updatedConfigJson = configJson
+                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+                        .replace('"workSpaceDir"', "\"${env.workSpaceDir}\"")
+                        .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
+                        .replace('"supplierName"', "\"${params.supplierName}\"")
+                    writeFile(file: vaParamsjson, text: updatedConfigJson)
                 }
             }
         }
