@@ -1,6 +1,14 @@
 # Проверка и создание документа занятия
 
-Для автотестирования созданы следующие сценарии: ExportZanyatiya, arendaZalaZanyatiya, grupovieZanyatiya, PersonalnieZanyatiya, VizitVSKZanyatiya, VvodniiPaketUslug, VvodnoeChlenstvo.
+Для автотестирования созданы следующие сценарии:
+
+- **`ExportZanyatiya`**
+- **`arendaZalaZanyatiya`**
+- **`grupovieZanyatiya`**
+- **`PersonalnieZanyatiya`**
+- **`VizitVSKZanyatiya`**
+- **`VvodniiPaketUslug`**
+- **`VvodnoeChlenstvo`**
 
 ## Описание автотеста проверки занятий - Аренда зала
 
