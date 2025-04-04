@@ -1,3 +1,8 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import java.nio.file.Files
+import java.nio.file.Paths
+
 pipeline {
     agent {
         label "OneS"
@@ -25,53 +30,50 @@ pipeline {
             }
         }
 		stage("Инициализация параметров") {
-            steps {
-                script {
-                    // Путь к файлу относительно рабочей директории Jenkins
-                    def variables = [
-                        "TestPathPlaceholder": params.TestPathPlaceholder,
-                        "workSpaceDir": params.workSpaceDir,
-                        "allureResultsDir": params.allureResultsDir,
-                        "supplierName": params.supplierName
-                    ]
-                    def filePath = 'tests/tools/VAParams.json'
+			steps {
+				script {
+					def variables = [
+						"TestPathPlaceholder": params.TestPathPlaceholder,
+						"workSpaceDir": params.workSpaceDir,
+						"allureResultsDir": params.allureResultsDir,
+						"supplierName": params.supplierName
+					]
 
-                    // Проверяем существование файла
-                    def file = new File(filePath)
-                    if (!file.exists()) {
-                        error "Ошибка: Файл ${filePath} не найден в директории ${new File('.').absolutePath}"
-                    }
+					def replaceVariables(data, vars) {
+						if (data instanceof Map) {
+							return data.collectEntries { k, v -> [(k): replaceVariables(v, vars)] }
+						} else if (data instanceof List) {
+							return data.collect { replaceVariables(it, vars) }
+						} else if (data instanceof String) {
+							vars.each { k, v -> data = data.replace(k, v) }
+							return data
+						}
+						return data
+					}
 
-                    // Читаем JSON-файл
-                    def jsonData = new groovy.json.JsonSlurper().parse(file)
+					def filePath = 'tests/tools/VAParams.json'
 
-                    // Функция для рекурсивной замены значений
-                    def replaceVariables(data, vars) {
-                        if (data instanceof Map) {
-                            return data.collectEntries { key, value ->
-                                [key, replaceVariables(value, vars)]
-                            }
-                        } else if (data instanceof List) {
-                            return data.collect { replaceVariables(it, vars) }
-                        } else if (data instanceof String) {
-                            def result = data
-                            vars.each { varName, varValue ->
-                                result = result.replace(varName, varValue)
-                            }
-                            return result
-                        }
-                        return data
-                    }
+					// Проверяем существование файла
+					if (!new File(filePath).exists()) {
+						error "Ошибка: Файл ${filePath} не найден в директории ${new File('.').absolutePath}"
+					}
 
-                    // Применяем замену переменных
-                    def modifiedJson = replaceVariables(jsonData, variables)
-                    // Перезаписываем исходный файл с красивым форматированием
-                    def jsonOutput = groovy.json.JsonOutput.toJson(modifiedJson)
-                    file.write(groovy.json.JsonOutput.prettyPrint(jsonOutput), 'UTF-8')
-                    echo "JSON-файл ${filePath} успешно обновлен"
-                }
-            }
-        }
+					// Читаем JSON-файл
+					def jsonSlurper = new groovy.json.JsonSlurper()
+					def jsonData = jsonSlurper.parse(new File(filePath))
+
+					// Применяем замену переменных
+					def modifiedJson = replaceVariables(jsonData, variables)
+
+					// Перезаписываем исходный файл
+					new File(filePath).text = groovy.json.JsonOutput.prettyPrint(
+						groovy.json.JsonOutput.toJson(modifiedJson)
+					)
+
+					echo "JSON-файл ${filePath} успешно обновлен"
+				}
+			}
+		}
 
         stage('Выполнение тестирования') {
             steps {
