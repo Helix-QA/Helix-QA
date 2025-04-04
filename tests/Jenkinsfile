@@ -27,14 +27,14 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
-                   // Путь к файлу относительно рабочей директории Jenkins
-					def variables = [
+                    // Путь к файлу относительно рабочей директории Jenkins
+                    def variables = [
                         "TestPathPlaceholder": params.TestPathPlaceholder,
                         "workSpaceDir": params.workSpaceDir,
                         "allureResultsDir": params.allureResultsDir,
                         "supplierName": params.supplierName
                     ]
-					def filePath = 'tests/tools/VAParams.json'
+                    def filePath = 'tests/tools/VAParams.json'
 
                     // Проверяем существование файла
                     def file = new File(filePath)
@@ -69,6 +69,17 @@ pipeline {
                     def jsonOutput = groovy.json.JsonOutput.toJson(modifiedJson)
                     file.write(groovy.json.JsonOutput.prettyPrint(jsonOutput), 'UTF-8')
                     echo "JSON-файл ${filePath} успешно обновлен"
+                }
+            }
+        }
+
+        stage('Выполнение тестирования') {
+            steps {
+                script {
+                    powershell """
+                    chcp 65001
+                    & "${params.platformPath}" /N"Админ" /TestManager /Execute "C:\\VA_Test\\vanessa-automation\\vanessa-automation.epf" /IBConnectionString "Srvr=\\"localhost\\";Ref=\\"${params.dbName}\\";" /C"StartFeaturePlayer;QuietInstallVanessaExt;VAParams=${env.vaParamsjson}"
+                    """
                 }
             }
         }
