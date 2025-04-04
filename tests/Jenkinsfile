@@ -29,12 +29,12 @@ pipeline {
             steps {
                 script {
                    // Путь к файлу относительно рабочей директории Jenkins
-                    variables = {
-						"TestPathPlaceholder": "${params.TestPathPlaceholder}",
-						"workSpaceDir": "${env.workSpaceDir}",
-						"allureResultsDir": "${allureResultsDir}",
-						"supplierName": "${params.supplierName}"
-					}
+					def variables = [
+                        "TestPathPlaceholder": params.TestPathPlaceholder,
+                        "workSpaceDir": params.workSpaceDir,
+                        "allureResultsDir": params.allureResultsDir,
+                        "supplierName": params.supplierName
+                    ]
 					def filePath = 'tests/tools/VAParams.json'
 
                     // Проверяем существование файла
