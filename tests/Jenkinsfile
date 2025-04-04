@@ -8,12 +8,11 @@ pipeline {
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
-		vaParamsjson = 'tests\\tools\\VAParams.json'
-
     }
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
+
                 script {
 					bat """
 					chcp 65001
@@ -29,30 +28,60 @@ pipeline {
 		stage("Инициализация параметров") {
             steps {
                 script {
-                   // Проверка существования файла
-                    if (!fileExists(env.vaParamsjson)) {
-                        error "Файл ${env.vaParamsjson} не найден!"
+                   // Путь к файлу относительно рабочей директории Jenkins
+                    variables = {
+						"TestPathPlaceholder": "${params.TestPathPlaceholder}",
+						"workSpaceDir": "${env.workSpaceDir}",
+						"allureResultsDir": "${allureResultsDir}",
+						"supplierName": "${params.supplierName}"
+					}
+					def filePath = 'tests/tools/VAParams.json'
+
+                    // Проверяем существование файла
+                    def file = new File(filePath)
+                    if (!file.exists()) {
+                        error "Ошибка: Файл ${filePath} не найден в директории ${new File('.').absolutePath}"
                     }
 
-                    // Чтение и парсинг JSON
-                    def configJson = readFile(file: env.vaParamsjson)
-                    def jsonSlurper = new groovy.json.JsonSlurper()
-                    def config = jsonSlurper.parseText(configJson)
+                    // Читаем JSON-файл
+                    def jsonData = new groovy.json.JsonSlurper().parse(file)
 
-                    // Замена значений в нужных полях
-                    config.КаталогФич = "${workSpaceDir}/tests/features"  // Обновляем путь к фичам
-                    config.КаталогПроекта = "${workSpaceDir}\\${params.TestPathPlaceholder}"  // Заменяем workSpaceDir\TestPathPlaceholder
-                    config.ОтчетAllure.КаталогВыгрузкиAllure = "${allureResultsDir}"  // Заменяем allureResultsDir
-                    config.ОтчетJUnit.КаталогВыгрузкиJUnit = "${allureResultsDir}"  // Заменяем allureResultsDir
-                    config.КаталогВыгрузкиСкриншотов = "${allureResultsDir}\\screenshots"  // Заменяем allureResultsDir
-                    config.ДымовыеТесты.ДымовыеТестыКаталогВыходныхФайлов = "${workSpaceDir}\\Smoke\\Fitness\\"  // Заменяем workSpaceDir
-                    config.ДымовыеТесты.ДымовыеТестыКаталогФайловИсключений = "${workSpaceDir}\\Smoke\\Fitness\\"  // Заменяем workSpaceDir
-                    config.ДымовыеТесты.ДымовыеТестыИмяКонфигурацииПоставщика = "${params.supplierName}"  // Заменяем supplierName
-                    config.ДымовыеТесты.ДымовыеТестыПутьКФайлуНастроекСценариев = "${workSpaceDir}\\Smoke\\ВСЕ_справочники_документы.csv"  // Заменяем workSpaceDir
+                    // Функция для рекурсивной замены значений
+                    def replaceVariables(data, vars) {
+                        if (data instanceof Map) {
+                            return data.collectEntries { key, value ->
+                                [key, replaceVariables(value, vars)]
+                            }
+                        } else if (data instanceof List) {
+                            return data.collect { replaceVariables(it, vars) }
+                        } else if (data instanceof String) {
+                            def result = data
+                            vars.each { varName, varValue ->
+                                result = result.replace(varName, varValue)
+                            }
+                            return result
+                        }
+                        return data
+                    }
 
-                    // Сериализация обратно в JSON с форматированием
-                    def updatedConfigJson = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(config))
-                    writeFile(file: env.vaParamsjson, text: updatedConfigJson)
+                    // Применяем замену переменных
+                    def modifiedJson = replaceVariables(jsonData, variables)
+
+                    // Перезаписываем исходный файл с красивым форматированием
+                    def jsonOutput = groovy.json.JsonOutput.toJson(modifiedJson)
+                    file.write(groovy.json.JsonOutput.prettyPrint(jsonOutput), 'UTF-8')
+
+                    echo "JSON-файл ${filePath} успешно обновлен"
+                }
+            }
+            post {
+                failure {
+                    echo 'Ошибка при обновлении VAParams.json'
+                }
+                success {
+                    echo 'VAParams.json успешно обработан'
+                }
+            }
                 }
             }
         }
