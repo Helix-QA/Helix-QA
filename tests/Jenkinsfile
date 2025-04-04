@@ -26,25 +26,12 @@ pipeline {
                 }
             }
         }
-		stage("Инициализация параметров") {
-            steps {
-                script {
-                    def configJson = readFile(file: vaParamsjson)
-                    def updatedConfigJson = configJson
-                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
-                        .replace('"workSpaceDir"', "\"${env.workSpaceDir}\"")
-                        .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
-                        .replace('"supplierName"', "\"${params.supplierName}\"")
-                    writeFile(file: vaParamsjson, text: updatedConfigJson)
-                }
-            }
-        }
         stage('Выполнение тестирования') {
             steps {
                 script {
-                    powershell """
+                    bat """
                     chcp 65001
-                    & "${env.platformPath}" /N"Админ" /TestManager /Execute "C:\\VA_Test\\vanessa-automation\\vanessa-automation.epf" /IBConnectionString "Srvr=""localhost"";Ref=""${params.dbName}"";" /C"StartFeaturePlayer;QuietInstallVanessaExt;VAParams=${vaParamsjson}"
+                    @call vrunner vanessa --settings ./tests/tools/env.json  
                     """
                 }
             }
