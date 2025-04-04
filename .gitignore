@@ -8,7 +8,7 @@
 #.env
 
 # Игнорировать папку build и всё внутри
-#build/
+tests/build/
 
 # Игнорировать файлы macOS
 #.DS_Store

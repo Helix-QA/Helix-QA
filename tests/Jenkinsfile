@@ -1,0 +1,73 @@
+pipeline {
+    agent {
+        label "OneS"
+    }
+
+    environment {
+        allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
+        //workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
+        allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+		VRUNNER_PATH = 'vrunner'
+		vaParamsjson = 'tests/tools/VAParams.json'  
+    }
+    stages {
+        // stage('Обновление информационной базы из релизного хранилища') {
+        //     steps {
+
+        //         script {
+		// 			bat """
+		// 			chcp 65001
+		// 			@call ${VRUNNER_PATH} session kill --with-nolock --db ${params.dbName} --db-user Админ"
+		// 			@call ${VRUNNER_PATH} loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+		// 			@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+        //             """
+        //            def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+        //            httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+        //         }
+        //     }
+        // }
+        stage('Выполнение тестирования') {
+            steps {
+                script {
+                    bat """
+                    chcp 65001
+                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ./tools/VAParams.json --workspace tests --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+					allure generate tests/results -o tests/allure-report --clean
+					"""
+                }
+            }
+        }
+        stage('Генерация Allure отчета') {
+            steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                		results: [['path': 'tests/results']]
+                    ])
+                    
+                }
+            }
+        }
+    }
+        post {
+            always {
+                script {
+                    def configJson = readFile(file: 'tests/notifications/config.json')
+                    def updatedConfigJson = configJson
+                        .replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
+                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+                        .replace('"${logo}"', "\"${env.logo}\"")
+                    writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+
+                    // Запускаем allure-notifications
+                    sh '''
+                    java "-DconfigFile=tests/notifications/config.json" \
+                    "-Dhttp.connection.timeout=30000" \
+                    "-Dhttp.socket.timeout=60000" \
+                    -jar tests/notifications/allure-notifications-4.8.0.jar
+                    '''
+                }
+            }
+        }
+}
