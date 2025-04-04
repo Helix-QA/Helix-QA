@@ -37,18 +37,18 @@ pipeline {
                 }
             }
         }
-        // stage('Генерация Allure отчета') {
-        //     steps {
-        //         script {
-        //             allure([
-        //                 includeProperties: false,
-        //                 jdk: '',
-        //         		results: [['path': 'results']]
-        //             ])
+        stage('Генерация Allure отчета') {
+            steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                		results: [['path': 'tests/results']]
+                    ])
                     
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
     }
         // post {
         //     always {
