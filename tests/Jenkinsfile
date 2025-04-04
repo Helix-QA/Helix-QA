@@ -12,7 +12,6 @@ pipeline {
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
-
                 script {
 					bat """
 					chcp 65001
@@ -66,22 +65,10 @@ pipeline {
 
                     // Применяем замену переменных
                     def modifiedJson = replaceVariables(jsonData, variables)
-
                     // Перезаписываем исходный файл с красивым форматированием
                     def jsonOutput = groovy.json.JsonOutput.toJson(modifiedJson)
                     file.write(groovy.json.JsonOutput.prettyPrint(jsonOutput), 'UTF-8')
-
                     echo "JSON-файл ${filePath} успешно обновлен"
-                }
-            }
-            post {
-                failure {
-                    echo 'Ошибка при обновлении VAParams.json'
-                }
-                success {
-                    echo 'VAParams.json успешно обработан'
-                }
-            }
                 }
             }
         }
