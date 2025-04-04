@@ -32,6 +32,7 @@ pipeline {
                     bat """
                     chcp 65001
                     @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ./tools/VAParams.json --workspace tests --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+					allure generate ${env.WORKSPACE}\\tests\\build\\out\\allure -o allure-report --clean
 					"""
                 }
             }
@@ -42,7 +43,8 @@ pipeline {
                     allure([
                         includeProperties: false,
                         jdk: '',
-                        results: [[path: "${env.WORKSPACE}/tests/build/out/allure"]]
+						report: 'allure-report',
+                		results: [['path': 'allure']]
                     ])
                     
                 }
