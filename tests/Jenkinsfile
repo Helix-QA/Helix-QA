@@ -50,24 +50,24 @@ pipeline {
             }
         }
     }
-        // post {
-        //     always {
-        //         script {
-        //             def configJson = readFile(file: 'tests/notifications/config.json')
-        //             def updatedConfigJson = configJson
-        //                 .replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
-        //                 .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-        //                 .replace('"${logo}"', "\"${env.logo}\"")
-        //             writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+        post {
+            always {
+                script {
+                    def configJson = readFile(file: 'tests/notifications/config.json')
+                    def updatedConfigJson = configJson
+                        .replace('"${allureReportUrl}"', "\"${env.allureReportUrl}\"")
+                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+                        .replace('"${logo}"', "\"${env.logo}\"")
+                    writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
-        //             // Запускаем allure-notifications
-        //             sh '''
-        //             java "-DconfigFile=tests/notifications/config.json" \
-        //             "-Dhttp.connection.timeout=30000" \
-        //             "-Dhttp.socket.timeout=60000" \
-        //             -jar tests/notifications/allure-notifications-4.8.0.jar
-        //             '''
-        //         }
-        //     }
-        // }
+                    // Запускаем allure-notifications
+                    sh '''
+                    java "-DconfigFile=tests/notifications/config.json" \
+                    "-Dhttp.connection.timeout=30000" \
+                    "-Dhttp.socket.timeout=60000" \
+                    -jar tests/notifications/allure-notifications-4.8.0.jar
+                    '''
+                }
+            }
+        }
 }
