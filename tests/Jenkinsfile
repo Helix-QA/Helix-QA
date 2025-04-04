@@ -42,7 +42,7 @@ pipeline {
                     allure([
                         includeProperties: false,
                         jdk: '',
-                        results: [[path: "results"]]
+                        results: [[path: "${env.WORKSPACE}/tests/build/out/allure"]]
                     ])
                     
                 }
