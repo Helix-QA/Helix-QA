@@ -1,8 +1,3 @@
-import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
-import java.nio.file.Files
-import java.nio.file.Paths
-
 pipeline {
     agent {
         label "OneS"
@@ -13,10 +8,12 @@ pipeline {
         workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
+		vaParamsjson = 'tests/tools/VAParams.json'  
     }
     stages {
         stage('Обновление информационной базы из релизного хранилища') {
             steps {
+
                 script {
 					bat """
 					chcp 65001
@@ -30,58 +27,15 @@ pipeline {
             }
         }
 		stage("Инициализация параметров") {
-			steps {
-				script {
-					def variables = [
-						"TestPathPlaceholder": params.TestPathPlaceholder,
-						"workSpaceDir": params.workSpaceDir,
-						"allureResultsDir": params.allureResultsDir,
-						"supplierName": params.supplierName
-					]
-
-					def replaceVariables(data, vars) {
-						if (data instanceof Map) {
-							return data.collectEntries { k, v -> [(k): replaceVariables(v, vars)] }
-						} else if (data instanceof List) {
-							return data.collect { replaceVariables(it, vars) }
-						} else if (data instanceof String) {
-							vars.each { k, v -> data = data.replace(k, v) }
-							return data
-						}
-						return data
-					}
-
-					def filePath = 'tests/tools/VAParams.json'
-
-					// Проверяем существование файла
-					if (!new File(filePath).exists()) {
-						error "Ошибка: Файл ${filePath} не найден в директории ${new File('.').absolutePath}"
-					}
-
-					// Читаем JSON-файл
-					def jsonSlurper = new groovy.json.JsonSlurper()
-					def jsonData = jsonSlurper.parse(new File(filePath))
-
-					// Применяем замену переменных
-					def modifiedJson = replaceVariables(jsonData, variables)
-
-					// Перезаписываем исходный файл
-					new File(filePath).text = groovy.json.JsonOutput.prettyPrint(
-						groovy.json.JsonOutput.toJson(modifiedJson)
-					)
-
-					echo "JSON-файл ${filePath} успешно обновлен"
-				}
-			}
-		}
-
-        stage('Выполнение тестирования') {
             steps {
                 script {
-                    powershell """
-                    chcp 65001
-                    & "${params.platformPath}" /N"Админ" /TestManager /Execute "C:\\VA_Test\\vanessa-automation\\vanessa-automation.epf" /IBConnectionString "Srvr=\\"localhost\\";Ref=\\"${params.dbName}\\";" /C"StartFeaturePlayer;QuietInstallVanessaExt;VAParams=${env.vaParamsjson}"
-                    """
+                    def configJson = readFile(file: vaParamsjson)
+                    def updatedConfigJson = configJson
+                        .replace('"TestPathPlaceholder"', "\"${params.TestPathPlaceholder}\"")
+                        .replace('"workSpaceDir"', "\"${env.workSpaceDir}\"")
+                        .replace('"allureResultsDir"', "\"${env.nameProduct}\"")
+                        .replace('"supplierName"', "\"${params.supplierName}\"")
+                    writeFile(file: vaParamsjson, text: updatedConfigJson)
                 }
             }
         }
