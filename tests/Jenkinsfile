@@ -32,23 +32,23 @@ pipeline {
                     bat """
                     chcp 65001
                     @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ./tools/VAParams.json --workspace tests --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
-                    allure generate "tests/build/out/allure" -o "${env.WORKSPACE}/tests/build/result" --clean
+                    allure generate "tests/build/out/allure" -o "${env.WORKSPACE}/tests/build/results" --clean
 					"""
                 }
             }
         }
-        // stage('Генерация Allure отчета') {
-        //     steps {
-        //         script {
-        //             allure([
-        //                 includeProperties: false,
-        //                 jdk: '',
-        //                 results: [[path: "results"]]
-        //             ])
+        stage('Генерация Allure отчета') {
+            steps {
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        results: [[path: "results"]]
+                    ])
                     
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
     }
         // post {
         //     always {
