@@ -42,6 +42,7 @@ pipeline {
                     allure([
                         includeProperties: false,
                         jdk: '',
+						report: 'allure-report',
                         results: [[path: "results"]]
                     ])
                     
