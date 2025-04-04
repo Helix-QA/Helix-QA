@@ -71,7 +71,7 @@
 	},
 	"ДелатьОтчетВФорматеАллюр": true,
 	"ОтчетAllure": {
-		"КаталогВыгрузкиAllure": "$workspaceRoot/allure-report/results",
+		"КаталогВыгрузкиAllure": "$workspaceRoot/tests/build/out/allure",
 		"КаталогВыгрузкиAllureБазовый": "",
 		"УровеньОтчета1": "",
 		"УровеньОтчета2": "",
