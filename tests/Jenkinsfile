@@ -4,8 +4,8 @@ pipeline {
     }
 
     environment {
-        allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
-        workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
+        //allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
+        //workSpaceDir = "${env.WORKSPACE.replace('\\', '\\\\')}"
         allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
 		VRUNNER_PATH = 'vrunner'
 		vaParamsjson = 'tests/tools/VAParams.json'  
@@ -31,23 +31,24 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    @call vrunner vanessa --settings ./tests/tools/env.json  
-                    """
+                    @call vrunner vanessa --path ${params.TestPathPlaceholder} --vanessasettings ./tools/VAParams.json --workspace tests --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+                    allure generate "tests/build/out/allure" -o "${env.WORKSPACE}/tests/build" --clean
+					"""
                 }
             }
         }
-        stage('Генерация Allure отчета') {
-            steps {
-                script {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        results: [[path: "results"]]
-                    ])
+        // stage('Генерация Allure отчета') {
+        //     steps {
+        //         script {
+        //             allure([
+        //                 includeProperties: false,
+        //                 jdk: '',
+        //                 results: [[path: "results"]]
+        //             ])
                     
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
     }
         // post {
         //     always {
