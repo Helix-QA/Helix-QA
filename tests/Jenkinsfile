@@ -26,39 +26,46 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-                    bat """
-                    chcp 65001
-                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ${env.WORKSPACE}\\tests\\tools\\VAParams.json --workspace ${env.WORKSPACE}\\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
-					allure generate ${env.WORKSPACE}\\tests\\build\\results -o ${env.WORKSPACE}\\tests\\allure-report --clean
-					"""
+				def configJson = readFile(file: 'tests/notifications/VAParams.json')
+				def updatedConfigJson = configJson
+					.replace('"${product}"', "\"${params.product}\"")
+					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+					.replace('"${logo}"', "\"${env.logo}\"")
+				writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)	
+
+                    // bat """
+                    // chcp 65001
+                    // @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ${env.WORKSPACE}\\tests\\tools\\VAParams.json --workspace ${env.WORKSPACE}\\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+					// allure generate ${env.WORKSPACE}\\tests\\build\\results -o ${env.WORKSPACE}\\tests\\allure-report --clean
+					// """
                 }
             }
         }
 	}
-	post {
-		always {
-			script {
-				def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-				def configJson = readFile(file: 'tests/notifications/config.json')
-				def updatedConfigJson = configJson
-					.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-					.replace('"${logo}"', "\"${env.logo}\"")
-				writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
-				// Генерация алюр
-				allure([
-					includeProperties: false,
-					jdk: '',
-					results: [['path': 'tests/results']]
-				])
-				// Запускаем allure-notifications
-				sh '''
-				java "-DconfigFile=tests/notifications/config.json" \
-				"-Dhttp.connection.timeout=60000" \
-				"-Dhttp.socket.timeout=120000" \
-				-jar tests/notifications/allure-notifications-4.8.0.jar
-				'''
-            }
-        }
-    }
+	// post {
+	// 	always {
+	// 		script {
+	// 			def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+	// 			def configJson = readFile(file: 'tests/notifications/config.json')
+	// 			def updatedConfigJson = configJson
+	// 				.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+	// 				.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+	// 				.replace('"${logo}"', "\"${env.logo}\"")
+	// 			writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+	// 			// Генерация алюр
+	// 			allure([
+	// 				includeProperties: false,
+	// 				jdk: '',
+	// 				results: [['path': 'tests/results']]
+	// 			])
+	// 			// Запускаем allure-notifications
+	// 			sh '''
+	// 			java "-DconfigFile=tests/notifications/config.json" \
+	// 			"-Dhttp.connection.timeout=60000" \
+	// 			"-Dhttp.socket.timeout=120000" \
+	// 			-jar tests/notifications/allure-notifications-4.8.0.jar
+	// 			'''
+    //         }
+    //     }
+    // }
 }
