@@ -129,7 +129,7 @@
 	"ДелатьОтчетВоВнутреннемФормате": false,
 	"КаталогиБиблиотек": [
 		"C:/VA_test/vanessa-automation/features/Libraries",
-		"$workspaceRoot/features/fitnes/Export"
+		"$workspaceRoot\\features\\fitnes\\Export"
 
 
 	],
