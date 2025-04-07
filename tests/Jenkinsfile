@@ -33,30 +33,30 @@ pipeline {
             }
         }
 	}
-	post {
-		always {
-			script {
-				def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-				def configJson = readFile(file: 'tests/notifications/config.json')
-				def updatedConfigJson = configJson
-					.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-					.replace('"${logo}"', "\"${env.logo}\"")
-				writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
-				// Генерация алюр
-				allure([
-					includeProperties: false,
-					jdk: '',
-					results: [['path': 'tests/results']]
-				])
-				// Запускаем allure-notifications
-				sh '''
-				java "-DconfigFile=tests/notifications/config.json" \
-				"-Dhttp.connection.timeout=60000" \
-				"-Dhttp.socket.timeout=120000" \
-				-jar tests/notifications/allure-notifications-4.8.0.jar
-				'''
-            }
-        }
-    }
+	// post {
+	// 	always {
+	// 		script {
+	// 			def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+	// 			def configJson = readFile(file: 'tests/notifications/config.json')
+	// 			def updatedConfigJson = configJson
+	// 				.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+	// 				.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+	// 				.replace('"${logo}"', "\"${env.logo}\"")
+	// 			writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+	// 			// Генерация алюр
+	// 			allure([
+	// 				includeProperties: false,
+	// 				jdk: '',
+	// 				results: [['path': 'tests/results']]
+	// 			])
+	// 			// Запускаем allure-notifications
+	// 			sh '''
+	// 			java "-DconfigFile=tests/notifications/config.json" \
+	// 			"-Dhttp.connection.timeout=60000" \
+	// 			"-Dhttp.socket.timeout=120000" \
+	// 			-jar tests/notifications/allure-notifications-4.8.0.jar
+	// 			'''
+    //         }
+    //     }
+    // }
 }
