@@ -29,7 +29,7 @@ pipeline {
                     bat """
                     chcp 65001
                     REM @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ${env.WORKSPACE}\\tests\\tools\\VAParams.json --workspace ${env.WORKSPACE}\\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
-					allure generate ./tests/results -o ./tests/allure-report --clean
+					allure generate ${env.WORKSPACE}\\tests\\results -o ${env.WORKSPACE}\\tests\\allure-report --clean
 					"""
                 }
             }
