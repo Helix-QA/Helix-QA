@@ -3,20 +3,20 @@ pipeline {
         label "OneS"
     }
     stages {
-        // stage('Обновление информационной базы из релизного хранилища') {
-        //     steps {
-        //         script {
-		// 			bat """
-		// 			chcp 65001
-		// 			@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
-		// 			@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
-		// 			@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
-        //             """
-		// 			def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
-		// 			httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
-        //         }
-        //     }
-        // }
+        stage('Обновление информационной базы из релизного хранилища') {
+            steps {
+                script {
+					bat """
+					chcp 65001
+					@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
+					@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+					@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+                    """
+					def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+					httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+                }
+            }
+        }
 		// 1) Этап создание базы 
 		// 2) Загрузка .cf из релизного
 		// 3) Первоначальное заполнение
@@ -28,8 +28,8 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    REM @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ${env.WORKSPACE}\\tests\\tools\\VAParams.json --workspace ${env.WORKSPACE}\\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
-					allure generate ${env.WORKSPACE}\\tests\\features\\fitness\\results -o ${env.WORKSPACE}\\tests\\allure-report
+                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ${env.WORKSPACE}\\tests\\tools\\VAParams.json --workspace ${env.WORKSPACE}\\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+					allure generate ${env.WORKSPACE}\\tests\\results -o ${env.WORKSPACE}\\tests\\allure-report --clean
 					"""
                 }
             }
