@@ -12,17 +12,23 @@ pipeline {
 					@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
 					@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
                     """
-                   def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
-                   httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+                //   def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+                //   httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
                 }
             }
         }
         stage('Сценарное тестирвоание') {
             steps {
                 script {
+				// 	def configJson = readFile(file: 'tests/notifications/config.json')
+				// 	def updatedConfigJson = configJson
+				// 	.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+				// 	.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+				// 	.replace('"${logo}"', "\"${env.logo}\"")
+				// writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
                     bat """
                     chcp 65001
-                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ${env.WORKSPACE}\\tests\\tools\\VAParams.json --workspace ${env.WORKSPACE}\\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings \\tests\\tools\\VAParams.json --workspace \\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
 					allure generate tests/results -o tests/allure-report --clean
 					"""
                 }
