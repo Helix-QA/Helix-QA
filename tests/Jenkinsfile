@@ -28,7 +28,7 @@ pipeline {
                 script {
 					def configJson = readFile(file: 'tests/tools/VAParams.json')
 					def updatedConfigJson = configJson
-						.replace('"${product}"', "\"${params.product}\"")
+						.replace('${product}', "\"${params.product}\"")
 					writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)	
 
                     bat """
