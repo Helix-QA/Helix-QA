@@ -20,10 +20,10 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-				def configJson = readFile(file: './tools/VAParams.json')
-				def updatedConfigJson = configJson
+				def configJsonparams = readFile(file: './tools/VAParams.json')
+				def updatedConfigJsonparams = configJsonparams
 					.replace('"${product}"', "\"${params.product}\"")
-				writeFile(file: './tools/VAParams.json', text: updatedConfigJson)
+				writeFile(file: './tools/VAParams.json', text: updatedConfigJsonparams)
                     bat """
                     chcp 65001
                     @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ./tools/VAParams.json --workspace tests --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
