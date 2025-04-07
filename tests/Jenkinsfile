@@ -26,12 +26,10 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-				def configJson = readFile(file: 'tests/notifications/VAParams.json')
+				def configJson = readFile(file: 'tests/tools/VAParams.json')
 				def updatedConfigJson = configJson
 					.replace('"${product}"', "\"${params.product}\"")
-					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-					.replace('"${logo}"', "\"${env.logo}\"")
-				writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)	
+				writeFile(file: 'tests/tools/config.json', text: updatedConfigJson)	
 
                     // bat """
                     // chcp 65001
