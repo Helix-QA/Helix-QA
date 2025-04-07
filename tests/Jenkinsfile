@@ -20,15 +20,13 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-				// 	def configJson = readFile(file: 'tests/notifications/config.json')
-				// 	def updatedConfigJson = configJson
-				// 	.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-				// 	.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-				// 	.replace('"${logo}"', "\"${env.logo}\"")
-				// writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+				def configJson = readFile(file: './tools/VAParams.json')
+				def updatedConfigJson = configJson
+					.replace('"${product}"', "\"${params.product}\"")
+				writeFile(file: './tools/VAParams.json', text: updatedConfigJson)
                     bat """
                     chcp 65001
-                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings \\tests\\tools\\VAParams.json --workspace \\tests\\features\\${params.product} --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings ./tools/VAParams.json --workspace tests --pathvanessa C:/VA_test/vanessa-automation/vanessa-automation.epf --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${params.dbName} --db-user Админ --additional-keys ЗавершитьРаботуСистемы
 					allure generate tests/results -o tests/allure-report --clean
 					"""
                 }

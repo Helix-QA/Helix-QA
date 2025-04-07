@@ -71,7 +71,7 @@
 	},
 	"ДелатьОтчетВФорматеАллюр": true,
 	"ОтчетAllure": {
-		"КаталогВыгрузкиAllure": "./tests/results",
+		"КаталогВыгрузкиAllure": "$workspaceRoot/results",
 		"КаталогВыгрузкиAllureБазовый": "",
 		"УровеньОтчета1": "",
 		"УровеньОтчета2": "",
@@ -95,7 +95,7 @@
 	"ДелатьОтчетВФорматеjUnit": true,
 	"СкриншотыjUnit": true,
 	"ОтчетJUnit": {
-		"КаталогВыгрузкиJUnit": "./tests/build/out/jUnint",
+		"КаталогВыгрузкиJUnit": "$workspaceRoot/build/out/jUnint",
 		"ЗаписыватьСценарииВJunitЧерезTestSuite": false
 	},
 	"ДелатьОтчетВФорматеCucumberJson": false,
@@ -129,7 +129,7 @@
 	"ДелатьОтчетВоВнутреннемФормате": false,
 	"КаталогиБиблиотек": [
 		"C:/VA_test/vanessa-automation/features/Libraries",
-		"$workspaceRoot\\Export"
+		"$workspaceRoot\\features\\product\\Export"
 
 
 	],
