@@ -17,24 +17,28 @@ pipeline {
         //         }
         //     }
         // }
-		stage("Подготовка базы"){
+		stage("Подготовка базы") {
 			parallel {
-				steps("Создание базы"){
-					bat """
-					chcp 65001
-					@call vrunner create --settings --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
-					"""
-				}
-				steps("Выгрузка .cf из релизного хранилища"){
-					bat """
-					chcp 65001
-					@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
-					@call vrunner unload cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
-					"""
+				stage("Создание базы") {
+					steps {
+						bat """
+						chcp 65001
+						@call vrunner create --settings --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+						"""
 					}
 				}
+				stage("Выгрузка .cf из релизного хранилища") {
+					steps {
+						bat """
+						chcp 65001
+						@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
+						@call vrunner unload cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
+						"""
+					}
+				}
+			}
 		}
-		stage("Загрузка .cf в новую базу"){}
+		stage("Загрузка .cf в новую базу"){
 			steps{
 				bat """
 				chcp 65001
@@ -42,6 +46,7 @@ pipeline {
 				@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
 			"""
 			}
+		}
 		stage('Первоначальное заполнение'){
             steps{
                 script{
