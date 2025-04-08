@@ -33,14 +33,15 @@ pipeline {
 					"""
 					}
 				}
-				steps("Загрузка .cf в новую базу"){
-					bat """
-					chcp 65001
-					@call vrunner load --src cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
-					@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
-					"""
-			}
 		}
+		stage("Загрузка .cf в новую базу"){}
+			steps{
+				bat """
+				chcp 65001
+				@call vrunner load --src cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
+				@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
+			"""
+			}
 		stage('Первоначальное заполнение'){
             steps{
                 script{
