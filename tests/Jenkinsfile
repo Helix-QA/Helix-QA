@@ -23,7 +23,7 @@ pipeline {
 					steps {
 						bat """
 						chcp 65001
-						@call vrunner create --settings --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+						@call vrunner create --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
 						"""
 					}
 				}
