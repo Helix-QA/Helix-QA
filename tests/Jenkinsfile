@@ -62,14 +62,16 @@ pipeline {
 		// }
 		stage("Заполнение базы"){
 			steps{
-				def configJson = readFile(file: 'tests/tools/VAParams.json')
-				def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-				writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
-				bat """
-                    chcp 65001
-					@call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
-                    @call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
-                    """
+				script{
+					def configJson = readFile(file: 'tests/tools/VAParams.json')
+					def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+					writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+					bat """
+						chcp 65001
+						@call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
+						@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+						"""
+				}
 			}
 		}
 		// stage("Загрузка .cf в новую базу"){
