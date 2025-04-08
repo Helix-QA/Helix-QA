@@ -55,7 +55,7 @@ pipeline {
 		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
                     bat """
                     chcp 65001
-                    @call vrunner vanessa --path ${env.WORKSPACE}\\tests\\feature\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/ManageTest --vanessasettings tests/tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+                    @call vrunner vanessa --path ${env.WORKSPACE}\\tests\\feature\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/ManageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
                     """
                 }
             }
