@@ -17,36 +17,36 @@ pipeline {
         //         }
         //     }
         // }
-		stage("Подготовка базы") {
-			parallel {
-				stage("Создание базы") {
-					steps {
-						bat """
-						chcp 65001
-						@call vrunner create --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
-						"""
-					}
-				}
-				stage("Выгрузка .cf из релизного хранилища") {
-					steps {
-						bat """
-						chcp 65001
-						@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
-						@call vrunner unload D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
-						"""
-					}
-				}
-			}
-		}
-		stage("Загрузка .cf в новую базу"){
-			steps{
-				bat """
-				chcp 65001
-				@call vrunner load --src D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
-				@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
-			"""
-			}
-		}
+		// stage("Подготовка базы") {
+		// 	parallel {
+		// 		stage("Создание базы") {
+		// 			steps {
+		// 				bat """
+		// 				chcp 65001
+		// 				@call vrunner create --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+		// 				"""
+		// 			}
+		// 		}
+		// 		stage("Выгрузка .cf из релизного хранилища") {
+		// 			steps {
+		// 				bat """
+		// 				chcp 65001
+		// 				@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
+		// 				@call vrunner unload D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
+		// 				"""
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage("Загрузка .cf в новую базу"){
+		// 	steps{
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner load --src D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
+		// 		@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
+		// 	"""
+		// 	}
+		// }
 		stage('Первоначальное заполнение'){
             steps{
                 script{
@@ -55,7 +55,7 @@ pipeline {
 		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
                     bat """
                     chcp 65001
-                    @call vrunner vanessa --path ${env.WORKSPACE}\\tests\\feature\\ПервоначальноеЗаполнение\\${params.product}.feature --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/ManageTest --vanessasettings tests/tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+                    @call vrunner vanessa --path ${env.WORKSPACE}\\tests\\feature\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/ManageTest --vanessasettings tests/tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
                     """
                 }
             }
