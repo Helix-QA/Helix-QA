@@ -50,7 +50,7 @@ pipeline {
 		// stage('Первоначальное заполнение'){
         //     steps{
         //         script{
-		// 			def configJson = readFile(file: 'tests/tools/VAParams.json')
+		// 				def configJson = readFile(file: 'tests/tools/VAParams.json')
 		//  			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
 		//  			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
         //             bat """
@@ -62,6 +62,9 @@ pipeline {
 		// }
 		stage("Заполнение базы"){
 			steps{
+				def configJson = readFile(file: 'tests/tools/VAParams.json')
+				def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+				writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 				bat """
                     chcp 65001
 					@call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
