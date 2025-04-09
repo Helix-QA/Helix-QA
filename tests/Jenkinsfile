@@ -92,16 +92,11 @@ pipeline {
 	post {
 		always {
 			script {
-				// Генерация отчёта Allure (выполняется всегда)
 				allure([
 					includeProperties: false,
 					jdk: '',
 					results: [['path': 'tests/build/results']]
 				])
-			}
-		}
-		always {
-			script {
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
 					if ("${params.dbName}" == "VAFitness") {
