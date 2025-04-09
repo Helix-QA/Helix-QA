@@ -9,6 +9,7 @@
 
 # Игнорировать папку build и всё внутри
 tests/build/
+tests/epf/
 
 # Игнорировать файлы macOS
 #.DS_Store
