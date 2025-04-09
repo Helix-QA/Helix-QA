@@ -82,7 +82,7 @@ pipeline {
                     bat """
                     chcp 65001
 		            @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
-                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings tools/VAParams.json --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/AvtotestQA --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings tools/VAParams.json --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/MenageTest --db-user Админ --additional-keys ЗавершитьРаботуСистемы
 					allure generate tests/build/results -o tests/allure-report --clean
 					"""
                 }
