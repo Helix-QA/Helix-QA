@@ -65,8 +65,8 @@ pipeline {
 					bat """
                     chcp 65001
                     @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
-					@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\РазблокироватьПодключаемоеОборудование.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --db-user Админ --execute ${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf
-					@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\VAExtension.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --db-user Админ --execute ${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf
+					@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\РазблокироватьПодключаемоеОборудование.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --db-user Админ --execute "${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
+					@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\VAExtension.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --db-user Админ --execute "${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
 					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
 					"""
                 }
