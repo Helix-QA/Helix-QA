@@ -57,76 +57,76 @@ pipeline {
 			"""
 			}
 		}
-	// 	stage('Первоначальное заполнение'){
-    //         steps{
-    //             script{
-	// 				def configJson = readFile(file: 'tests/tools/VAParams.json')
-	// 	 			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-	// 	 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+		stage('Первоначальное заполнение'){
+            steps{
+                script{
+					def configJson = readFile(file: 'tests/tools/VAParams.json')
+		 			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 				
-	// 				bat """
-    //                 chcp 65001
-    //                 @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
-	// 				@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
-	// 				@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
-	// 				"""
-    //             }
-    //         }
-	// 	}
-    //     stage('Сценарное тестирвоание') {
-    //         steps {
-    //             script {
-	// 				def configJson = readFile(file: 'tests/tools/VAParams.json')
-	// 				def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-	// 				writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
-    //                 bat """
-    //                 chcp 65001
-	// 	            @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
-    //                 @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings tools/VAParams.json --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/MenageTest --additional-keys ЗавершитьРаботуСистемы
-	// 				allure generate tests/build/results -o tests/allure-report --clean
-	// 				"""
-    //             }
-    //         }
-    //     }
-	// }
-	// post {
-	// 	always {
-	// 		script {
-	// 			allure([
-	// 				includeProperties: false,
-	// 				jdk: '',
-	// 				results: [['path': 'tests/build/results']]
-	// 			])
-	// 			// Отправка уведомлений только при SUCCESS или UNSTABLE
-	// 			if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-	// 				if ("${params.dbName}" == "VAFitness") {
-	// 					env.logo = "tests/notifications/logo.png"
-	// 				}
-	// 				else if ("${params.dbName}" == "VASPA") {
-	// 					env.logo = "tests/notifications/logo1.png"
-	// 				}
-	// 				else if ("${params.dbName}" == "VAStoma") {
-	// 					env.logo = "tests/notifications/logo2.png"
-	// 				}
+					bat """
+                    chcp 65001
+                    @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
+					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+					"""
+                }
+            }
+		}
+        stage('Сценарное тестирвоание') {
+            steps {
+                script {
+					def configJson = readFile(file: 'tests/tools/VAParams.json')
+					def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+					writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+                    bat """
+                    chcp 65001
+		            @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
+                    @call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings tools/VAParams.json --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/MenageTest --additional-keys ЗавершитьРаботуСистемы
+					allure generate tests/build/results -o tests/allure-report --clean
+					"""
+                }
+            }
+        }
+	}
+	post {
+		always {
+			script {
+				allure([
+					includeProperties: false,
+					jdk: '',
+					results: [['path': 'tests/build/results']]
+				])
+				// Отправка уведомлений только при SUCCESS или UNSTABLE
+				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
+					if ("${params.dbName}" == "VAFitness") {
+						env.logo = "tests/notifications/logo.png"
+					}
+					else if ("${params.dbName}" == "VASPA") {
+						env.logo = "tests/notifications/logo1.png"
+					}
+					else if ("${params.dbName}" == "VAStoma") {
+						env.logo = "tests/notifications/logo2.png"
+					}
 
-	// 				def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-	// 				def configJson = readFile(file: 'tests/notifications/config.json')
-	// 				def updatedConfigJson = configJson
-	// 					.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-	// 					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-	// 					.replace('"${logo}"', "\"${env.logo}\"")
-	// 				writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+					def configJson = readFile(file: 'tests/notifications/config.json')
+					def updatedConfigJson = configJson
+						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+						.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+						.replace('"${logo}"', "\"${env.logo}\"")
+					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
-	// 				try {
-	// 					bat """
-	// 					java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar
-	// 					"""
-	// 				}
-	// 				catch (Exception e) {
-	// 					echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
-	// 				}
-	// 			}
-	// 		}
-	// 	}
+					try {
+						bat """
+						java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar
+						"""
+					}
+					catch (Exception e) {
+						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+					}
+				}
+			}
+		}
 	}
 }
