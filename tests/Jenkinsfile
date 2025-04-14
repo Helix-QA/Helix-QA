@@ -11,68 +11,68 @@ pipeline {
 		// 7) Сонар 
 		// 8) Удаление базы
     stages {
-        stage('Обновление информационной базы из релизного хранилища') {
-            steps {
-                script {
-					bat """
-					chcp 65001
-					@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
-					@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
-					@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
-                    """
-				//	def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
-				//	httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
-                }
-            }
-        }
-		stage("Подготовка базы") {
-			parallel {
-				stage("Создание базы") {
-					steps {
-						bat """
-						chcp 65001
-						@call vrunner create --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
-						@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\РазблокироватьПодключаемоеОборудование.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --execute "${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
-						@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\VAExtension.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --execute "${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
-						"""
-					}
-				}
-				stage("Выгрузка .cf из релизного хранилища") {
-					steps {
-						bat """
-						chcp 65001
-						@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
-						@call vrunner unload D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
-						"""
-					}
-				}
-			}
-		}
-		stage("Загрузка .cf в новую базу"){
-			steps{
-				bat """
-				chcp 65001
-				@call vrunner load --src D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
-				@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
-			"""
-			}
-		}
-		stage('Первоначальное заполнение'){
-            steps{
-                script{
-					def configJson = readFile(file: 'tests/tools/VAParams.json')
-		 			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+        // stage('Обновление информационной базы из релизного хранилища') {
+        //     steps {
+        //         script {
+		// 			bat """
+		// 			chcp 65001
+		// 			@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
+		// 			@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+		// 			@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+        //             """
+		// 		//	def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+		// 		//	httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+        //         }
+        //     }
+        // }
+		// stage("Подготовка базы") {
+		// 	parallel {
+		// 		stage("Создание базы") {
+		// 			steps {
+		// 				bat """
+		// 				chcp 65001
+		// 				@call vrunner create --db-server localhost --name AvtotestQA --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+		// 				@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\РазблокироватьПодключаемоеОборудование.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --execute "${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
+		// 				@call vrunner run --command "Путь=${env.WORKSPACE}\\tests\\epf\\VAExtension.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/AvtotestQA --execute "${env.epfvrunner}\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
+		// 				"""
+		// 			}
+		// 		}
+		// 		stage("Выгрузка .cf из релизного хранилища") {
+		// 			steps {
+		// 				bat """
+		// 				chcp 65001
+		// 				@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
+		// 				@call vrunner unload D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
+		// 				"""
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage("Загрузка .cf в новую базу"){
+		// 	steps{
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner load --src D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
+		// 		@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
+		// 	"""
+		// 	}
+		// }
+		// stage('Первоначальное заполнение'){
+        //     steps{
+        //         script{
+		// 			def configJson = readFile(file: 'tests/tools/VAParams.json')
+		//  			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+		//  			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 				
-					bat """
-                    chcp 65001
-                    @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
-					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
-					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
-					"""
-                }
-            }
-		}
+		// 			bat """
+        //             chcp 65001
+        //             @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
+		// 			@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+		// 			@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+		// 			"""
+        //         }
+        //     }
+		// }
         stage('Сценарное тестирвоание') {
             steps {
                 script {
