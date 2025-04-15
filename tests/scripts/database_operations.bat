@@ -10,7 +10,7 @@ if "%1"=="" (
 REM Переходим к нужной функции
 if "%1"=="kill_sessions" goto :kill_sessions
 if "%1"=="load_and_update" goto :load_and_update
-if "%1"=="remove" goto :load_and_update
+if "%1"=="remove" goto :remove
 
 REM Если функция не найдена
 echo Ошибка: Функция %1 не найдена
@@ -32,5 +32,5 @@ REM Функция 2: Загрузка из хранилища и обновле
 REM Функция 3: Удаление базы
 :remove
     REM %2 - это dbName
-    call vrunner remove --name %5 --drop-database --clear-database --db-user Админ
+    call vrunner remove --name %2 --drop-database --clear-database --db-user Админ
     exit /b 0
