@@ -10,6 +10,7 @@ if "%1"=="" (
 REM Переходим к нужной функции
 if "%1"=="kill_sessions" goto :kill_sessions
 if "%1"=="load_and_update" goto :load_and_update
+if "%1"=="remove" goto :load_and_update
 
 REM Если функция не найдена
 echo Ошибка: Функция %1 не найдена
