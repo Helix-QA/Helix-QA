@@ -11,22 +11,28 @@ pipeline {
 		// 7) Сонар 
 		// 8) Удаление базы
     stages {
-        stage('Обновление информационной базы из релизного хранилища') {
-            steps {
-                script {
-					bat """
-					chcp 65001
-					@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
-					@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
-					@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
-                    """
-				//	def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
-				//	httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
-                }
-            }
-        }
 		stage("Подготовка базы") {
 			parallel {
+				stage('Обновление базы'){
+					steps {
+						bat """
+						chcp 65001
+						@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ"
+						@call vrunner loadrepo --storage-name ${params.repository} --storage-user ${env.VATest} --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+						@call vrunner updatedb --ibconnection /Slocalhost/${params.dbName} --db-user Админ"
+						"""
+					//	def messagetestStart = "Автотестирование ${JOB_NAME} сборка #${BUILD_NUMBER} запущено."
+					//	httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagetestStart, 'UTF-8')}")
+					}
+				}
+				stage('Удаление существующей базы'){
+					steps {
+						bat """
+						@call vrunner session kill --with-nolock --db AvtotestQA --db-user "Админи"
+						@call vrunner remove --name AvtotestQA --drop-database --clear-database --db-user "Админ"
+						"""
+					}
+				}
 				stage("Создание базы") {
 					steps {
 						bat """
@@ -37,26 +43,26 @@ pipeline {
 						"""
 					}
 				}
-				stage("Выгрузка .cf из релизного хранилища") {
-					steps {
-						bat """
-						chcp 65001
-						@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
-						@call vrunner unload D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
-						"""
-					}
+			}
+			stage("Выгрузка .cf из релизного хранилища") {
+				steps {
+					bat """
+					chcp 65001
+					@call vrunner session kill --with-nolock --db ${params.dbName} --db-user Админ
+					@call vrunner unload D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/${params.dbName} --db-user Админ
+					"""
 				}
 			}
-		}
-		stage("Загрузка .cf в новую базу"){
-			steps{
-				bat """
-				chcp 65001
-				@call vrunner load --src D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
-				@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
-			"""
+			stage("Загрузка .cf в новую базу"){
+				steps{
+					bat """
+					chcp 65001
+					@call vrunner load --src D:\\cf\\1Cv8.cf --ibconnection /Slocalhost/AvtotestQA
+					@call vrunner updatedb --ibconnection /Slocalhost/AvtotestQA
+				"""
 			}
 		}
+	}
 		stage('Первоначальное заполнение'){
             steps{
                 script{
