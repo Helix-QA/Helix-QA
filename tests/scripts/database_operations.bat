@@ -32,5 +32,5 @@ REM Функция 2: Загрузка из хранилища и обновле
 REM Функция 3: Удаление базы
 :remove
     REM %2 - это dbName
-    call vrunner remove --name %2 --drop-database --clear-database --db-user Админ
+    call vrunner remove --name %5 --drop-database --clear-database --db-user Админ
     exit /b 0
