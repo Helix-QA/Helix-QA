@@ -15,9 +15,9 @@ pipeline {
             steps {
                 script {
                     // Вызов .bat-файлов с параметрами
-                    bat "chcp 65001 scripts\\kill_sessions.bat ${params.dbName}"
-                    bat "chcp 65001 scripts\\load_repository.bat ${params.repository} ${env.VATest} ${params.dbName}"
-                    bat "chcp 65001 scripts\\update_database.bat ${params.dbName}"
+                    sh "python -X utf8 scripts\\kill_sessions.bat ${params.dbName}"
+                    sh "python -X utf8 scripts\\load_repository.bat ${params.repository} ${env.VATest} ${params.dbName}"
+                    sh "python -X utf8 scripts\\update_database.bat ${params.dbName}"
                 }
             }
         }
