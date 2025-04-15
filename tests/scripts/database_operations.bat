@@ -11,6 +11,9 @@ REM Переходим к нужной функции
 if "%1"=="kill_sessions" goto :kill_sessions
 if "%1"=="load_and_update" goto :load_and_update
 if "%1"=="remove" goto :remove
+if "%1"=="create" goto :create
+if "%1"=="run" goto :run
+if "%1"=="unload" goto :unload
 
 REM Если функция не найдена
 echo Ошибка: Функция %1 не найдена
@@ -34,3 +37,23 @@ REM Функция 3: Удаление базы
     REM %2 - это dbName
     call vrunner remove --name %2 --drop-database --clear-database --db-user Админ
     exit /b 0
+
+REM Функция 3: Удаление базы
+:create
+    REM %2 - это dbName
+    call vrunner create --db-server localhost --name %2 --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
+    exit /b 0
+
+
+REM Функция 3: Удаление базы
+:run
+    REM %2 - это dbName
+    call vrunner run --command "Путь=%2\\tests\\epf\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%5\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
+    exit /b 0
+
+REM Функция 3: Удаление базы
+:unload
+    REM %2 - это dbName
+    call vrunner unload "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2 --db-user Админ
+    exit /b 0
+
