@@ -26,6 +26,7 @@ pipeline {
                             },
                             "Удаление существующей базы": {
 								bat """
+								chcp 65001
 								@call vrunner session kill --with-nolock --db AvtotestQA --db-user "Админи"
 								@call vrunner remove --name AvtotestQA --drop-database --clear-database --db-user "Админ"
 								"""
