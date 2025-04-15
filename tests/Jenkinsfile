@@ -15,8 +15,8 @@ pipeline {
             steps {
                 script {
                     // Вызов функций из database_operations.bat
-                    bat "tests\\scripts\\database_operations.bat kill_sessions \"${params.dbName}\""
-                    bat "tests\\scripts\\database_operations.bat load_and_update \"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\""
+                    sh "tests\\scripts\\database_operations.bat kill_sessions \"${params.dbName}\""
+                    sh "tests\\scripts\\database_operations.bat load_and_update \"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\""
                 }
             }
         }
