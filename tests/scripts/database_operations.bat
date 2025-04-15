@@ -27,3 +27,9 @@ REM Функция 2: Загрузка из хранилища и обновле
     call vrunner loadrepo --storage-name %2 --storage-user %3 --ibconnection /Slocalhost/%4 --db-user Админ
     call vrunner updatedb --ibconnection /Slocalhost/%4 --db-user Админ
     exit /b 0
+
+REM Функция 3: Удаление базы
+:remove
+    REM %2 - это dbName
+    call vrunner remove --name %2 --drop-database --clear-database --db-user Админ
+    exit /b 0
