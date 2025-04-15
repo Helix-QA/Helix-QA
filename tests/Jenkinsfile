@@ -18,9 +18,9 @@ pipeline {
 		stage("Обновление базы") {
             steps {
                 script {
-                    bat "${env.DB_OPERATIONS_SCRIPT} kill_sessions \"${params.dbName}\""
-                    bat "${env.DB_OPERATIONS_SCRIPT} load_and_update \"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\""
-					bat "${env.DB_OPERATIONS_SCRIPT} kill_sessions \"${env.dbTests}\""
+                    // bat "${env.DB_OPERATIONS_SCRIPT} kill_sessions \"${params.dbName}\""
+                    // bat "${env.DB_OPERATIONS_SCRIPT} load_and_update \"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\""
+					// bat "${env.DB_OPERATIONS_SCRIPT} kill_sessions \"${env.dbTests}\""
 					bat "${env.DB_OPERATIONS_SCRIPT} remove \"${env.dbTests}\""
                 }
             }
