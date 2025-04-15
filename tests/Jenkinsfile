@@ -23,7 +23,7 @@ pipeline {
 					bat "${env.DB_OPERATIONS_SCRIPT} kill_sessions \"${params.dbName}\""
                     bat "${env.DB_OPERATIONS_SCRIPT} load_and_update \"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\""
 					bat "${env.DB_OPERATIONS_SCRIPT} kill_sessions \"${env.dbTests}\""
-					bat "${env.DB_OPERATIONS_SCRIPT} remove \"${env.dbTests}\""
+				//	bat "${env.DB_OPERATIONS_SCRIPT} remove \"${env.dbTests}\""
 					bat "${env.DB_OPERATIONS_SCRIPT} create \"${env.dbTests}\""
 					bat "${env.DB_OPERATIONS_SCRIPT} run \"${env.WORKSPACE}\" \"${nameEpf}\" \"${env.dbTests}\" \"${env.epfvrunner}\""
 					bat "${env.DB_OPERATIONS_SCRIPT} run \"${env.WORKSPACE}\" \"${vaExtension}\" \"${env.dbTests}\" \"${env.epfvrunner}\""
