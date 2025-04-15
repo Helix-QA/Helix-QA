@@ -4,7 +4,7 @@ pipeline {
     }
 	environment {
         DB_OPERATIONS_SCRIPT = "tests/scripts/database_operations.bat"
-		env.dbTests = "AvtotestQA"
+		dbTests = "AvtotestQA"
     }
 	 	// 1) Этап создание базы 
 		// 2) Загрузка .cf из релизного
