@@ -25,21 +25,23 @@ pipeline {
 						}
 					}
 				}
-				// stage("Очистка существующей базы") {
-				// 	steps {
-				// 		script {
-				// 			runDbOperation("kill_sessions", "\"${env.DB_TESTS}\"")
-				// 			runDbOperation("remove", "\"${env.DB_TESTS}\"")
+				stage("Очистка существующей базы") {
+					steps {
+						script {
+							runDbOperation("kill_sessions", "\"${env.DB_TESTS}\"")
+							runDbOperation("remove", "\"${env.DB_TESTS}\"")
 
-				// 		}
-				// 	}
-				// }
+						}
+					}
+				}
 				stage("Установка расширений") {
 					steps {
 						script {
+							def NAME_EPF = "ConnectedEquipment"
+							def VA_EXTENSION = "VAExtension"
 							runDbOperation("create", "\"${env.DB_TESTS}\"")
-							runDbOperation("run", "\"${env.WORKSPACE}\" \"${env.NAME_EPF}\" \"${env.DB_TESTS}\"")
-							runDbOperation("run", "\"${env.WORKSPACE}\" \"${env.VA_EXTENSION}\" \"${env.DB_TESTS}\"")
+							runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.DB_TESTS}\"")
+							runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.DB_TESTS}\"")
 						}
 					}
 				}
