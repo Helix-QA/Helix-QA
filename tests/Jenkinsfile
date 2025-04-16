@@ -7,13 +7,6 @@ pipeline {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "AvtotestQA"
     }
-	script {
-        // Вспомогательная функция для вызова bat-скрипта, доступная во всём pipeline
-        def runDbOperation = { operation, args ->
-            bat "${env.InitDatabase} ${operation} ${args}"
-            echo "Выполнена операция: ${operation} ${args}"
-        }
-    }
     stages {
 		stage("Обновление в хранилище") {
 			steps {
