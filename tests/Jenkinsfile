@@ -32,9 +32,11 @@ pipeline {
                 stage('Установка расширений') {
                     steps {
                         script {
-                            runDbOperation('create', "\"${env.DB_TESTS}\"")
-                            runDbOperation('run', "\"${env.WORKSPACE}\" \"${env.NAME_EPF}\" \"${env.DB_TESTS}\"")
-                            runDbOperation('run', "\"${env.WORKSPACE}\" \"${env.VA_EXTENSION}\" \"${env.DB_TESTS}\"")
+							def NAME_EPF = "ConnectedEquipment"
+							def VA_EXTENSION = "VAExtension"
+							runDbOperation('create', "\"${env.DB_TESTS}\"")
+                            runDbOperation('run', "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.DB_TESTS}\"")
+                            runDbOperation('run', "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.DB_TESTS}\"")
                         }
                     }
                 }
