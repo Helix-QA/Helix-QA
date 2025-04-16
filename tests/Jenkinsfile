@@ -137,7 +137,8 @@ pipeline {
 			}
 		}
 	 }
-		def runDbOperation(operation, params) {
+}
+def runDbOperation(operation, params) {
 		try {
 			bat """
 				chcp 65001
@@ -148,4 +149,3 @@ pipeline {
 			throw e
 		}
 	}
-}
