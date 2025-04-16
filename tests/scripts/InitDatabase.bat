@@ -24,7 +24,7 @@ exit /b 1
 REM Функция 1: Завершение сессий
 :kill_sessions
     REM %2 - это dbName
-    call vrunner session kill --db %2 --cluster-admin Admin --cluster-pwd admin --cluster-name "Локальный кластер"
+    call vrunner session kill --with-nolock --db %2 --db-user Админ
     exit /b 0
 
 REM Функция 2: Загрузка из хранилища и обновление базы
