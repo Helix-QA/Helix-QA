@@ -1,4 +1,4 @@
-@Library('Helix-lib') _
+@Library('Helix-lib@main') _
 pipeline {
     agent {
         label "OneS"
