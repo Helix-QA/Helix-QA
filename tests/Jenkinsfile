@@ -1,185 +1,151 @@
 pipeline {
     agent {
-        label 'OneS'
+        label "OneS"
     }
-
-    environment {
-        INIT_DATABASE = 'tests/scripts/InitDatabase.bat'
-        DB_TESTS = 'AvtotestQA'
-        VA_TEST = 'VATest'
+	environment {
+        InitDatabase = "tests/scripts/InitDatabase.bat"
+		dbTests = "AvtotestQA"
     }
+	 	// 1) Этап создание базы 
+		// 2) Загрузка .cf из релизного
+		// 3) Первоначальное заполнение
+		// 4) Сценарное тестирование 
+		// 5) Дымовые тесты
+		// 6) Синтаксический контроль
+		// 7) Сонар 
+		// 8) Удаление базы
     stages {
-        stage('Подготовка базы') {
-            stages {
-                stage('Обновление в хранилище') {
-                    steps {
-                        script {
-                            runDbOperation('kill_sessions', "\"${params.dbName}\"")
-                            runDbOperation('loadrepo', "\"${params.repository}\" \"${env.VA_TEST}\" \"${params.dbName}\"")
-                        }
-                    }
-                }
+		stage("Подготовка базы") {
+			stages {
+				stage("Обновление в хранилище") {
+					steps {
+						script {
+							runDbOperation("kill_sessions", "\"${params.dbName}\"")
+							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
+						}
+					}
+				}
+				stage("Очистка существующей базы") {
+					steps {
+						script {
+							runDbOperation("kill_sessions", "\"${env.DB_TESTS}\"")
+							runDbOperation("remove", "\"${env.DB_TESTS}\"")
 
-                stage('Очистка существующей базы') {
-                    steps {
-                        script {
-                            runDbOperation('kill_sessions', "\"${env.DB_TESTS}\"")
-                            runDbOperation('remove', "\"${env.DB_TESTS}\"")
-                        }
-                    }
-                }
-
-                stage('Установка расширений') {
-                    steps {
-                        script {
-							def NAME_EPF = "ConnectedEquipment"
-							def VA_EXTENSION = "VAExtension"
-							runDbOperation('create', "\"${env.DB_TESTS}\"")
-                            runDbOperation('run', "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.DB_TESTS}\"")
-                            runDbOperation('run', "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.DB_TESTS}\"")
-                        }
-                    }
-                }
-
-                stage('Выгрузка базы') {
-                    steps {
-                        script {
-                            runDbOperation('kill_sessions', "\"${params.dbName}\"")
-                            runDbOperation('unload', "\"${params.dbName}\"")
-                        }
-                    }
-                }
-
-                stage('Загрузка .cf в новую базу') {
-                    steps {
-                        script {
-                            runDbOperation('load', "\"${env.DB_TESTS}\"")
-                            runDbOperation('updatedb', "\"${env.DB_TESTS}\"")
-                        }
-                    }
+						}
+					}
+				}
+				stage("Установка расширений") {
+					steps {
+						script {
+							runDbOperation("create", "\"${env.DB_TESTS}\"")
+							runDbOperation("run", "\"${env.WORKSPACE}\" \"${env.NAME_EPF}\" \"${env.DB_TESTS}\"")
+							runDbOperation("run", "\"${env.WORKSPACE}\" \"${env.VA_EXTENSION}\" \"${env.DB_TESTS}\"")
+						}
+					}
+				}
+				stage("Выгрузка базы") {
+					steps {
+						script {
+							runDbOperation("kill_sessions", "\"${params.dbName}\"")
+							runDbOperation("unload", "\"${params.dbName}\"")
+						}
+					}
+				}
+				stage("Загрузка .cf в новую базу") {
+					steps {
+						script {
+							runDbOperation("load", "\"${env.dbTests}\"")
+							runDbOperation("updatedb", "\"${env.dbTests}\"")
+						}
+					}
+				}
+			}
+		}
+		stage('Первоначальное заполнение'){
+            steps{
+                script{
+					def configJson = readFile(file: 'tests/tools/VAParams.json')
+		 			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+				
+					bat """
+                    chcp 65001
+                    @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
+					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+					"""
                 }
             }
-        }
-
-        stage('Первоначальное заполнение') {
+		}
+        stage('Сценарное тестирвоание') {
             steps {
                 script {
-                    // Update configuration file
-                    def configJson = readFile(file: 'tests/tools/VAParams.json')
-                    def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-                    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
-
-                    // Kill sessions
-                    runDbOperation('kill_sessions', "\"${env.DB_TESTS}\"")
-
-                    // Run initialization scripts
-                    bat """
-                        chcp 65001
-                        @call vrunner session kill --with-nolock --db ${env.DB_TESTS} --db-user Админ
-                        @call vrunner vanessa ^
-                            --path "${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature" ^
-                            --workspace tests ^
-                            --pathvanessa "${env.pathvanessa}" ^
-                            --ibconnection /Slocalhost/MenageTest ^
-                            --vanessasettings tools/VAParams.json ^
-                            --additional-keys ЗавершитьРаботуСистемы
-                        @call vrunner vanessa ^
-                            --path "${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature" ^
-                            --workspace tests ^
-                            --pathvanessa "${env.pathvanessa}" ^
-                            --ibconnection /Slocalhost/MenageTest ^
-                            --vanessasettings tools/VAParams.json ^
-                            --additional-keys ЗавершитьРаботаСистемы
-                    """
+					def configJson = readFile(file: 'tests/tools/VAParams.json')
+					def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+					writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+					try	{
+						bat """
+						chcp 65001
+						@call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
+						@call vrunner vanessa --path "${env.WORKSPACE}${params.TestPathPlaceholder}" --vanessasettings tools/VAParams.json --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/AvtotestQA --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+						allure generate tests/build/results -o tests/allure-report --clean
+						"""
+					} catch(Exception Exc){
+						currentBuild.result = 'UNSTABLE'
+					}
                 }
             }
         }
+	}
+	post {
+		always {
+			script {
+				allure([
+					includeProperties: false,
+					jdk: '',
+					results: [['path': 'tests/build/results']]
+				])
+				// Отправка уведомлений только при SUCCESS или UNSTABLE
+				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
+					if ("${params.dbName}" == "VAFitness") {
+						env.logo = "tests/notifications/logo.png"
+					}
+					else if ("${params.dbName}" == "VASPA") {
+						env.logo = "tests/notifications/logo1.png"
+					}
+					else if ("${params.dbName}" == "VAStoma") {
+						env.logo = "tests/notifications/logo2.png"
+					}
 
-        stage('Сценарное тестирование') {
-            steps {
-                script {
-                    // Update configuration file
-                    def configJson = readFile(file: 'tests/tools/VAParams.json')
-                    def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-                    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+					def configJson = readFile(file: 'tests/notifications/config.json')
+					def updatedConfigJson = configJson
+						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+						.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+						.replace('"${logo}"', "\"${env.logo}\"")
+					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
-                    try {
-                        bat """
-                            chcp 65001
-                            @call vrunner session kill --with-nolock --db ${env.DB_TESTS} --db-user Админ
-                            @call vrunner vanessa ^
-                                --path "${env.WORKSPACE}${params.TestPathPlaceholder}" ^
-                                --vanessasettings tools/VAParams.json ^
-                                --workspace tests ^
-                                --pathvanessa "${env.pathvanessa}" ^
-                                --additional "/DisplayAllFunctions /L ru" ^
-                                --ibconnection /Slocalhost/${env.DB_TESTS} ^
-                                --db-user Админ ^
-                                --additional-keys ЗавершитьРаботаСистемы
-                            allure generate tests/build/results -o tests/allure-report --clean
-                        """
-                    } catch (Exception e) {
-                        echo "Тестирование завершилось с ошибками: ${e.message}"
-                        currentBuild.result = 'UNSTABLE'
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                // Generate Allure report
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    results: [[path: 'tests/build/results']]
-                ])
-
-                // Send notifications for SUCCESS or UNSTABLE builds
-                if (currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
-                    // Set logo based on database name
-                    env.LOGO = params.dbName == 'VAFitness' ? 'tests/notifications/logo.png' :
-                              params.dbName == 'VASPA' ? 'tests/notifications/logo1.png' :
-                              params.dbName == 'VAStoma' ? 'tests/notifications/logo2.png' :
-                              'tests/notifications/default.png'
-
-                    // Update notification configuration
-                    def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-                    def configJson = readFile(file: 'tests/notifications/config.json')
-                    def updatedConfigJson = configJson
-                        .replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-                        .replace('"${logo}"', "\"${env.LOGO}\"")
-                    writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
-
-                    // Send notification
-                    try {
-                        bat """
-                            java ^
-                                "-DconfigFile=tests/notifications/config.json" ^
-                                "-Dhttp.connection.timeout=60000" ^
-                                "-Dhttp.socket.timeout=120000" ^
-                                -jar tests/notifications/allure-notifications-4.8.0.jar
-                        """
-                    } catch (Exception e) {
-                        echo "Ошибка при отправке уведомления: ${e.message}"
-                    }
-                }
-            }
-        }
-    }
-}
-
-def runDbOperation(operation, params) {
-    try {
-        bat """
-            chcp 65001
-            @call ${env.INIT_DATABASE} ${operation} ${params}
-        """
-    } catch (Exception e) {
-        echo "Ошибка при выполнении операции ${operation}: ${e.message}"
-        throw e
-    }
+					try {
+						bat """
+						java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar
+						"""
+					}
+					catch (Exception e) {
+						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+					}
+				}
+			}
+		}
+	 }
+		def runDbOperation(operation, params) {
+		try {
+			bat """
+				chcp 65001
+				@call ${env.InitDatabase} ${operation} ${params}
+			"""
+		} catch (Exception e) {
+			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+			throw e
+		}
+	}
 }
