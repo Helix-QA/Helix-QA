@@ -53,8 +53,8 @@ pipeline {
                 stage('Загрузка .cf в новую базу') {
                     steps {
                         script {
-                            runDbOperation('load', "\"${env.VA_TEST}\"")
-                            runDbOperation('updatedb', "\"${env.VA_TEST}\"")
+                            runDbOperation('load', "\"${env.DB_TESTS}\"")
+                            runDbOperation('updatedb', "\"${env.DB_TESTS}\"")
                         }
                     }
                 }
