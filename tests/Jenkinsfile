@@ -6,51 +6,40 @@ pipeline {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "AvtotestQA"
     }
-	 	// 1) Этап создание базы 
-		// 2) Загрузка .cf из релизного
-		// 3) Первоначальное заполнение
-		// 4) Сценарное тестирование 
-		// 5) Дымовые тесты
-		// 6) Синтаксический контроль
-		// 7) Сонар 
-		// 8) Удаление базы
     stages {
-		stage("Подготовка базы") {
-			stages {
-				stage("Обновление в хранилище") {
-					steps {
-						script {
-							runDbOperation("kill_sessions", "\"${params.dbName}\"")
-							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
-						}
-					}
+		stage("Обновление в хранилище") {
+			steps {
+				script {
+					runDbOperation("kill_sessions", "\"${params.dbName}\"") // Очищаем сессии в релизной базе
+					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Получаем данные из релизного хранилища
+					runDbOperation("updatedb", "\"${params.dbName}\"") // Обновляемся из релизного хранилища
 				}
-				stage("Установка расширений") {
-					steps {
-						script {
-							def NAME_EPF = "ConnectedEquipment"
-							def VA_EXTENSION = "VAExtension"
-							runDbOperation("create", "\"${env.dbTests}\"")
-							runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"")
-							runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"")
-						}
-					}
+			}
+		}
+		stage("Установка расширений") {
+			steps {
+				script {
+					def NAME_EPF = "ConnectedEquipment"
+					def VA_EXTENSION = "VAExtension"
+					runDbOperation("create", "\"${env.dbTests}\"") // Создаем базу
+					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"") // Устанавливаем расширение для разблокировки подключаемого оборудования
+					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"") // Устанавливаем расширение VAExtension
 				}
-				stage("Выгрузка базы") {
-					steps {
-						script {
-							runDbOperation("kill_sessions", "\"${params.dbName}\"")
-							runDbOperation("unload", "\"${params.dbName}\"")
-						}
-					}
+			}
+		}
+		stage("Выгрузка базы") {
+			steps {
+				script {
+					runDbOperation("kill_sessions", "\"${params.dbName}\"") // Очищаем сессии в релизной базе
+					runDbOperation("unload", "\"${params.dbName}\"") // Выгружаем .cf из релизного хранилища
 				}
-				stage("Загрузка .cf в новую базу") {
-					steps {
-						script {
-							runDbOperation("load", "\"${env.dbTests}\"")
-							runDbOperation("updatedb", "\"${env.dbTests}\"")
-						}
-					}
+			}
+		}
+		stage("Загрузка .cf в новую базу") {
+			steps {
+				script {
+					runDbOperation("load", "\"${env.dbTests}\"") // Загружаем .cf в новую созданную базу
+					runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновляем новую базу
 				}
 			}
 		}
@@ -60,12 +49,11 @@ pipeline {
 					def configJson = readFile(file: 'tests/tools/VAParams.json')
 		 			def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
 		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
-				
 					bat """
                     chcp 65001
                     @call vrunner session kill --with-nolock --db AvtotestQA --db-user Админ
 					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\${params.product}.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
-					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\12fitness1.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
+					@call vrunner vanessa --path ${env.WORKSPACE}\\tests\\features\\ПервоначальноеЗаполнение\\Наполнение.feature --workspace tests --pathvanessa ${env.pathvanessa} --ibconnection /Slocalhost/MenageTest --vanessasettings tools/VAParams.json --additional-keys ЗавершитьРаботуСистемы
 					"""
                 }
             }
@@ -142,3 +130,13 @@ def runDbOperation(operation, params) {
 			throw e
 		}
 	}
+
+
+		// 1) Этап создание базы 
+		// 2) Загрузка .cf из релизного
+		// 3) Первоначальное заполнение
+		// 4) Сценарное тестирование 
+		// 5) Дымовые тесты
+		// 6) Синтаксический контроль
+		// 7) Сонар 
+		// 8) Удаление базы
