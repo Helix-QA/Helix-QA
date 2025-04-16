@@ -48,7 +48,7 @@ REM Функция 3: Удаление базы
 REM Функция 3: Удаление базы
 :run
     REM %2 - это dbName
-    call vrunner run --command "Путь=%2/tests/epf/%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%5/ЗагрузитьРасширениеВРежимеПредприятия.epf"
+    call vrunner run --command "Путь=%2\\tests\\epf\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%5\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
     exit /b 0
 
 REM Функция 3: Удаление базы
