@@ -9,11 +9,13 @@ if "%1"=="" (
 
 REM Переходим к нужной функции
 if "%1"=="kill_sessions" goto :kill_sessions
-if "%1"=="load_and_update" goto :load_and_update
+if "%1"=="loadrepo" goto :loadrepo
 if "%1"=="remove" goto :remove
 if "%1"=="create" goto :create
 if "%1"=="run" goto :run
 if "%1"=="unload" goto :unload
+if "%1"=="load" goto :load
+if "%1"=="updatedb" goto :updatedb
 
 REM Если функция не найдена
 echo Ошибка: Функция %1 не найдена
@@ -26,7 +28,7 @@ REM Функция 1: Завершение сессий
     exit /b 0
 
 REM Функция 2: Загрузка из хранилища и обновление базы
-:load_and_update
+:loadrepo
     REM %2 - это repository, %3 - это user, %4 - это dbName
     call vrunner loadrepo --storage-name %2 --storage-user %3 --ibconnection /Slocalhost/%4 --db-user Админ
     call vrunner updatedb --ibconnection /Slocalhost/%4 --db-user Админ
@@ -57,3 +59,15 @@ REM Функция 3: Удаление базы
     call vrunner unload "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2 --db-user Админ
     exit /b 0
 
+
+REM Функция 3: Удаление базы
+:load
+    REM %2 - это dbName
+    call vrunner load --src "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2
+    exit /b 0
+
+REM Функция 3: Удаление базы
+:updatedb
+    REM %2 - это dbName
+    call vrunner updatedb --ibconnection /Slocalhost/%2
+    exit /b 0
