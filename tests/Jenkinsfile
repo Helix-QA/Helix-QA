@@ -15,16 +15,14 @@ pipeline {
         }
     }
     stages {
-		stage("Подготовка базы") {
-			stages {
-				stage("Обновление в хранилище") {
-					steps {
-						script {
-							dbUtils.runDbOperation("kill_sessions", "\"${params.dbName}\"")
-							dbUtils.runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
-						}
-					}
+		stage("Обновление в хранилище") {
+			steps {
+				script {
+					dbUtils.runDbOperation("kill_sessions", "\"${params.dbName}\"")
+					dbUtils.runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
 				}
+			}
+		}
 				// stage("Очистка существующей базы") {
 				// 	steps {
 				// 		script {
@@ -134,9 +132,6 @@ pipeline {
 	// 			}
 	 		}
 	 	}
-	 }
-}
-
 
 
 	 	// 1) Этап создание базы 
