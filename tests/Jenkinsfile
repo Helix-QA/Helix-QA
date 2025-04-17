@@ -26,8 +26,8 @@ def updateConfigJson() {
         def configJson = readFile(file: env.vaParamsjson) // Чтение JSON-файла
         def updatedConfigJson = configJson
             .replace('"${BuildBase}"', "\"${env.dbTests}\"")
+			.replaceAll(/\$\{dbName\}/, params.dbName)
 			.replace('"${VATest}"', "\"${env.VATest}\"")
-			.replace('"${dbName}"', "\"${params.dbName}\"")
 			.replace('"${repository}"', "\"${params.repository}\"") // Замена ${BuildBase} на env.dbTests
         writeFile(file: env.vaParamsjson, text: updatedConfigJson) // Запись обновленного JSON
     }
