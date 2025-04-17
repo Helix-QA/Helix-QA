@@ -35,29 +35,8 @@
             "-ThickClientOrdinaryApplication"
         ]
     },
-    "compile": {
-        "--src": "./cf",
-        "--out": "./build/1Cv8.cf"
-    },
-    "decompile": {
-        "--in": "./build/1Cv8.cf",
-        "--out": "./cf"
-    },
-    "compileepf": {
-        "--ibconnection": "/F./build/ibservice",
-        "inputPath": "./epf",
-        "outputPath": "./build/out/epf"
-    },
-    "decompileepf": {
-        "--ibconnection": "/F./build/ibservice",
-        "inputPath": "./build/out/epf",
-        "outputPath": "./epf"
-    },
     "updatedb": {
-        "--ibconnection": "/F./build/ib",
-        "--db-user": "bot",
-        "--db-pwd": "123",
-        "--uccode": "godModeOn"
+        "--ibconnection": "/Slocalhost/${dbName}"
     },
     "run": {
         "--uccode": "godModeOFF",
@@ -68,21 +47,13 @@
         "--ibconnection": "/Slocalhost/${dbName}",
         "--storage-name": "${repository}",
         "--storage-user": "${VATest}",
-        "--storage-pwd": ""
+        "--storage-pwd": "",
+        "--db-user": "Админ"
     },
-    "designer": {
-        "--ibconnection": "/Sserveronec/devib",
-        "--storage-name": "tcp://serverstorage/erp",
-        "--storage-user": "bot",
-        "--storage-pwd": "123"
-    },
-    "compileext": {
-        "inputPath": "./cfe/Доработки",
-        "extensionName": "Доработки"
-    },
-    "decompileext": {
-        "extensionName": "Доработки",
-        "outputPath": "./cfe/Доработки"
+    "unload": {
+        "cfpath": "D:\\cf\\1Cv8.cf",
+        "--ibconnection": "/Slocalhost/${dbName}",
+        "--db-user": "Админ"
     },
     "session": {
         "--with-nolock": false,
