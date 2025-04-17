@@ -14,7 +14,7 @@ pipeline {
                 script {
 				runDbOperation("session_kill")
 				runDbOperation("loadrepo")
-				runDbOperation("updatedb")
+				//runDbOperation("updatedb")
                 }
             }
         }
@@ -25,7 +25,10 @@ def updateConfigJson() {
     script {
         def configJson = readFile(file: env.vaParamsjson) // Чтение JSON-файла
         def updatedConfigJson = configJson
-            .replace('"${BuildBase}"', "\"${env.dbTests}\"") // Замена ${BuildBase} на env.dbTests
+            .replace('"${BuildBase}"', "\"${env.dbTests}\"")
+			.replace('"${VATest}"', "\"${env.VATest}\"")
+			.replace('"${dbName}"', "\"${params.dbName}\"")
+			.replace('"${repository}"', "\"${params.repository}\"") // Замена ${BuildBase} на env.dbTests
         writeFile(file: env.vaParamsjson, text: updatedConfigJson) // Запись обновленного JSON
     }
 }

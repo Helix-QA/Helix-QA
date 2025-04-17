@@ -65,10 +65,10 @@
         "--execute": "./build/out/epf/admin/ЗавершитьРаботу.epf"
     },
     "loadrepo": {
-        "--ibconnection": "/F./build/ibservice",
-        "--storage-name": "tcp://serverstorage/erp",
-        "--storage-user": "bot",
-        "--storage-pwd": "123"
+        "--ibconnection": "/Slocalhost/${dbName}",
+        "--storage-name": "${repository}",
+        "--storage-user": "${VATest}",
+        "--storage-pwd": ""
     },
     "designer": {
         "--ibconnection": "/Sserveronec/devib",
