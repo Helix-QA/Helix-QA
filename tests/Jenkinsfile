@@ -28,17 +28,14 @@ def updateConfigJson() {
     }
 }
 
-def runDbOperation(operation, params) {
-		try {
-			bat """
-				chcp 65001
-				@call ${env.InitDatabase} ${operation} ${params}
-			"""
-		} catch (Exception e) {
-			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
-			throw e
-		}
-	}
+def runDbOperation(String operation) {
+    try {
+        bat "chcp 65001 \n @call ${env.InitDatabase} ${operation}"
+    } catch (Exception e) {
+        echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+        throw e
+    }
+}
 		// stage("Обновление в хранилище") {
 		// 	steps {
 		// 		script {
