@@ -10,7 +10,6 @@ pipeline {
 		stage{
 			steps{
 				script{
-					
 					def configJson = readFile(file: 'tests/tools/env.json')
  		 			def updatedConfigJson = configJson.replaceAll(/\$\{BuildBase\}/, env.dbTests)
  		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
@@ -18,9 +17,10 @@ pipeline {
 					@call vrunner session 
 					"""
 					}
-
 			}
 		}
+	}
+}
 		// stage("Обновление в хранилище") {
 		// 	steps {
 		// 		script {
@@ -30,8 +30,7 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-	}
-}
+	
 // 		stage("Установка расширений") {
 // 			steps {
 // 				script {
