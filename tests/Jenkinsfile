@@ -5,23 +5,29 @@ pipeline {
     environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
         dbTests = "AvtotestQA"
+		vaParamsjson = 'tests/tools/env.json'  
     }
     stages {
         stage("Инициализация сессии") {  // Добавлено имя этапа
             steps {
                 script {
-                    // Чтение и обновление конфигурационного файла
-                    def configJson = readFile(file: 'tests/tools/env.json')
-                    def updatedConfigJson = configJson.replaceAll(/\$\{BuildBase\}/, env.dbTests)
-                    writeFile(file: 'tests/tools/env.json', text: updatedConfigJson)
 
 					bat"""
 					chcp 65001
-					@call vrunner session 
+					@call vrunner session kill
 					"""
                 }
             }
         }
+    }
+}
+
+def updateConfigJson() {
+    script {
+        def configJson = readFile(file: vaParamsjson)
+        def updatedConfigJson = configJson
+            .replace('"BuildBase"', "\"${env.dbTests}\"")
+        writeFile(file: vaParamsjson, text: updatedConfigJson)
     }
 }
 		// stage("Обновление в хранилище") {
