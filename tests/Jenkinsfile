@@ -12,8 +12,7 @@ pipeline {
             steps {
 				updateConfigJson()
                 script {
-					bat""" chcp 65001 \n @call vrunner session kill --settings ${vaParamsjson}
-					"""
+					bat" chcp 65001 \n @call vrunner session kill --settings ${vaParamsjson}"
                 }
             }
         }
