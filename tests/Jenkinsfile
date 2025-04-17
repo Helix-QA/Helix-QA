@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage("Инициализация сессии") {  // Добавлено имя этапа
             steps {
+				updateConfigJson()
                 script {
 
 					bat"""
