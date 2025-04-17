@@ -133,4 +133,3 @@ def runDbOperation(operation, params) {
 		// 6) Синтаксический контроль
 		// 7) Сонар 
 		// 8) Удаление базы
-
