@@ -24,10 +24,10 @@ pipeline {
 
 def updateConfigJson() {
     script {
-        def configJson = readFile(file: vaParamsjson)
+        def configJson = readFile(file: env.vaParamsjson) // Чтение JSON-файла
         def updatedConfigJson = configJson
-            .replace('"${BuildBase}"', "\"${env.dbTests}\"")
-        writeFile(file: vaParamsjson, text: updatedConfigJson)
+            .replace('"${BuildBase}"', "\"${env.dbTests}\"") // Замена ${BuildBase} на env.dbTests
+        writeFile(file: env.vaParamsjson, text: updatedConfigJson) // Запись обновленного JSON
     }
 }
 		// stage("Обновление в хранилище") {
