@@ -13,6 +13,8 @@ pipeline {
 				updateConfigJson()
                 script {
 				runDbOperation("session_kill")
+				runDbOperation("loadrepo")
+				runDbOperation("updatedb")
                 }
             }
         }
