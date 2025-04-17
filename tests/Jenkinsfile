@@ -2,24 +2,26 @@ pipeline {
     agent {
         label "OneS"
     }
-	environment {
+    environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
-		dbTests = "AvtotestQA"
+        dbTests = "AvtotestQA"
     }
     stages {
-		stage{
-			steps{
-				script{
-					def configJson = readFile(file: 'tests/tools/env.json')
- 		 			def updatedConfigJson = configJson.replaceAll(/\$\{BuildBase\}/, env.dbTests)
- 		 			writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+        stage("Инициализация сессии") {  // Добавлено имя этапа
+            steps {
+                script {
+                    // Чтение и обновление конфигурационного файла
+                    def configJson = readFile(file: 'tests/tools/env.json')
+                    def updatedConfigJson = configJson.replaceAll(/\$\{BuildBase\}/, env.dbTests)
+                    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+
 					bat"""
 					@call vrunner session 
 					"""
-					}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 }
 		// stage("Обновление в хранилище") {
 		// 	steps {
