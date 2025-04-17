@@ -3,7 +3,7 @@ pipeline {
         label "OneS"
     }
     environment {
-        InitDatabase = "tests/scripts/InitDatabase.bat"
+        InitDatabase = "tests/scripts/run_vrunner.bat"
         dbTests = "AvtotestQA"
 		vaParamsjson = 'tests/tools/vrunner.json'  
     }
@@ -12,7 +12,7 @@ pipeline {
             steps {
 				updateConfigJson()
                 script {
-					bat" chcp 65001 \n @call vrunner session kill --settings ${vaParamsjson}"
+				runDbOperation("kill_sessions")
                 }
             }
         }
@@ -27,6 +27,18 @@ def updateConfigJson() {
         writeFile(file: env.vaParamsjson, text: updatedConfigJson) // Запись обновленного JSON
     }
 }
+
+def runDbOperation(operation, params) {
+		try {
+			bat """
+				chcp 65001
+				@call ${env.InitDatabase} ${operation} ${params}
+			"""
+		} catch (Exception e) {
+			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+			throw e
+		}
+	}
 		// stage("Обновление в хранилище") {
 		// 	steps {
 		// 		script {
