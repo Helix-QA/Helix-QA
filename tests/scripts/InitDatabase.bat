@@ -59,3 +59,13 @@ REM Функция 8: Обновление базы
 :updatedb
     call vrunner updatedb --ibconnection /Slocalhost/%2
     exit /b 0
+
+
+REM Функция 8: Обновление базы
+:vanessa
+    call vrunner updatedb --ibconnection /Slocalhost/%2
+    exit /b 0
+
+call vrunner session
+
+    
