@@ -5,17 +5,16 @@ pipeline {
     environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
         dbTests = "AvtotestQA"
-		vaParamsjson = 'tests/tools/env.json'  
+		vaParamsjson = 'tests/tools/vrunner.json'  
     }
     stages {
         stage("Инициализация сессии") {  // Добавлено имя этапа
             steps {
 				updateConfigJson()
                 script {
-
 					bat"""
 					chcp 65001
-					@call vrunner session kill
+					@call vrunner session kill --settings ${vaParamsjson}
 					"""
                 }
             }
