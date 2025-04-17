@@ -12,7 +12,7 @@ pipeline {
             steps {
 				updateConfigJson()
                 script {
-				runDbOperation("kill_sessions")
+				runDbOperation("session_kill")
                 }
             }
         }
