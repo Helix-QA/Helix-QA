@@ -26,7 +26,7 @@ def updateConfigJson() {
     script {
         def configJson = readFile(file: vaParamsjson)
         def updatedConfigJson = configJson
-            .replace('"{BuildBase}"', "\"${env.dbTests}\"")
+            .replace('"${BuildBase}"', "\"${env.dbTests}\"")
         writeFile(file: vaParamsjson, text: updatedConfigJson)
     }
 }
