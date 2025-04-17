@@ -13,7 +13,7 @@ pipeline {
                     // Чтение и обновление конфигурационного файла
                     def configJson = readFile(file: 'tests/tools/env.json')
                     def updatedConfigJson = configJson.replaceAll(/\$\{BuildBase\}/, env.dbTests)
-                    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+                    writeFile(file: 'tests/tools/env.json', text: updatedConfigJson)
 
 					bat"""
 					chcp 65001
