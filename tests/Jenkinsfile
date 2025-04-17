@@ -137,16 +137,16 @@ pipeline {
 // 	 }
 // }
 // def runDbOperation(operation, params) {
-		try {
-			bat """
-				chcp 65001
-				@call ${env.InitDatabase} ${operation} ${params}
-			"""
-		} catch (Exception e) {
-			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
-			throw e
-		}
-	}
+	// 	try {
+	// 		bat """
+	// 			chcp 65001
+	// 			@call ${env.InitDatabase} ${operation} ${params}
+	// 		"""
+	// 	} catch (Exception e) {
+	// 		echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+	// 		throw e
+	// 	}
+	// }
 
 
 		// 1) Этап создание базы 
