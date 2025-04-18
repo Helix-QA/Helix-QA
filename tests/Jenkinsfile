@@ -17,67 +17,51 @@ pipeline {
 					println "Начало обновления конфигурационного файла"
 					updateConfigFile()
 
-					// 1.0 Блокировка ИБ
 					println "Блокировка информационной базы: ${params.dbName}"
 					runDbOperation("session_lock", "\"${params.dbName}\"")
 
-					// 1.1 Отключение пользователей
 					println "Отключение пользователей от базы данных: ${params.dbName}"
 					runDbOperation("session_kill", "\"${params.dbName}\"")
 
-					// 1.2 Получение данных из релизного хранилища
 					println "Загрузка данных из хранилища: ${params.repository} в базу: ${params.dbName}"
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
 
-					// 1.3 Обновление конфигурации БД
 					println "Обновление конфигурации базы данных: ${params.dbName}"
 					runDbOperation("updatedbRep", "\"${params.dbName}\"")
 
-					// 1.4 Выгрузка .cf из релизного хранилища
 					println "Выгрузка файла .cf из базы данных: ${params.dbName}"
 					runDbOperation("unload", "\"${params.dbName}\"")
 
-					// 1.5 Снятие блокировки сеансов
 					println "Снятие блокировки сеансов для базы: ${params.dbName}"
 					runDbOperation("session_unlock", "\"${params.dbName}\"")
 
-					// 2.0 Создание пустой базы
 					println "Создание новой пустой базы данных: ${env.dbTests}"
 					runDbOperation("create", "\"${env.dbTests}\"")
 
-					// 2.1 Установка расширения для разблокировки подключенного оборудования
 					println "Установка расширения ${NAME_EPF} для базы: ${env.dbTests}"
 					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"")
 
-					// 2.2 Установка расширения VAExtension
 					println "Установка расширения ${VA_EXTENSION} для базы: ${env.dbTests}"
 					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"")
 
-					// 2.3 Загрузка .cf в новую созданную базу
 					println "Загрузка файла .cf в базу данных: ${env.dbTests}"
 					runDbOperation("load", "\"${env.dbTests}\"")
 
-					// 2.4 Обновление новой БД
 					println "Обновление конфигурации новой базы данных: ${env.dbTests}"
 					runDbOperation("updatedb", "\"${env.dbTests}\"")
 
-					// 3.0 Блокировка ИБ
 					println "Блокировка информационной базы: ${env.dbTests}"
 					runDbOperation("session_lock", "\"${env.dbTests}\"")
 
-					// 3.1 Отключение пользователей
 					println "Отключение пользователей от базы данных: ${env.dbTests}"
 					runDbOperation("session_kill", "\"${env.dbTests}\"")
 
-					// 3.2 Первоначальное заполнение
 					println "Выполнение первоначального заполнения для продукта: ${params.product}"
 					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"")
 
-					// 3.3 Наполнение данными
 					println "Наполнение базы данных данными: ${snakCase}"
 					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${snakCase}\" \"${env.pathvanessa}\"")
 
-					// 3.4 Снятие блокировки сеансов
 					println "Снятие блокировки сеансов для базы: ${env.dbTests}"
 					runDbOperation("session_unlock", "\"${env.dbTests}\"")
 				}
