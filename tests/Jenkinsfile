@@ -17,9 +17,6 @@ pipeline {
 					println "Начало обновления конфигурационного файла"
 					updateConfigFile()
 
-					println "Блокировка информационной базы: ${params.dbName}"
-					runDbOperation("session_lock", "\"${params.dbName}\"")
-
 					println "Отключение пользователей от базы данных: ${params.dbName}"
 					runDbOperation("session_kill", "\"${params.dbName}\"")
 
@@ -31,9 +28,6 @@ pipeline {
 
 					println "Выгрузка файла .cf из базы данных: ${params.dbName}"
 					runDbOperation("unload", "\"${params.dbName}\"")
-
-					println "Снятие блокировки сеансов для базы: ${params.dbName}"
-					runDbOperation("session_unlock", "\"${params.dbName}\"")
 
 					println "Создание новой пустой базы данных: ${env.dbTests}"
 					runDbOperation("create", "\"${env.dbTests}\"")
