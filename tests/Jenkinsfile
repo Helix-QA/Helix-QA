@@ -10,48 +10,33 @@ pipeline {
 		stage("Подготовка и создание БД") {
 			steps {
 				script {
-					def NAME_EPF = "ConnectedEquipment"
-					def VA_EXTENSION = "VAExtension"
-					def loadingData = "Наполнение"
 
-					println "Начало обновления конфигурационного файла"
+					def runOperation(String operation, String args, String message) {
+						echo "[${new Date().format('HH:mm:ss')}] ${message}"
+						try {
+							runDbOperation(operation, args)
+						} catch (Exception e) {
+							echo "Ошибка в операции '${message}': ${e.message}"
+							throw e 
+						}
+					}
+
+					// Чтение JSON-конфигурации
+					def config = readJSON file: "${env.WORKSPACE}/db_tasks.json"
+
+					// Выполнение обновления конфигурации
+					echo "[${new Date().format('HH:mm:ss')}] Начало обновления конфигурационного файла"
 					updateConfigFile()
 
-					println "Отключение пользователей от базы данных: ${params.dbName}"
-					runDbOperation("session_kill", "\"${params.dbName}\"")
 
-					println "Загрузка данных из хранилища: ${params.repository} в базу: ${params.dbName}"
-					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
-
-					println "Обновление конфигурации базы данных: ${params.dbName}"
-					runDbOperation("updatedbRep", "\"${params.dbName}\"")
-
-					println "Выгрузка файла .cf из базы данных: ${params.dbName}"
-					runDbOperation("unload", "\"${params.dbName}\"")
-
-					println "Создание новой пустой базы данных: ${env.dbTests}"
-					runDbOperation("create", "\"${env.dbTests}\"")
-
-					println "Установка расширения ${NAME_EPF} для базы: ${env.dbTests}"
-					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"")
-
-					println "Установка расширения ${VA_EXTENSION} для базы: ${env.dbTests}"
-					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"")
-
-					println "Загрузка файла .cf в базу данных: ${env.dbTests}"
-					runDbOperation("load", "\"${env.dbTests}\"")
-
-					println "Обновление конфигурации новой базы данных: ${env.dbTests}"
-					runDbOperation("updatedb", "\"${env.dbTests}\"")
-
-					println "Отключение пользователей от базы данных: ${env.dbTests}"
-					runDbOperation("session_kill", "\"${env.dbTests}\"")
-
-					println "Первоначальное заполнение: ${params.product}"
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"")
-
-					println "Наполнение базы данных данными: ${loadingData}"
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${loadingData}\" \"${env.pathvanessa}\"")
+					config.categories.each { category ->
+						echo "=== ${category.name} ==="
+						category.tasks.each { task ->
+							if (!params.skipSteps?.contains(task.operation)) { 
+								runOperation(task.operation, task.args, task.message)
+							}
+						}
+					}
 				}
 			}
 		}

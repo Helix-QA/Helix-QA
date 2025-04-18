@@ -1,0 +1,79 @@
+{
+    "categories": [
+      {
+        "name": "Исходная база",
+        "tasks": [
+          {
+            "operation": "session_kill",
+            "args": "\"${params.dbName}\"",
+            "message": "Отключение пользователей от ${params.dbName}"
+          },
+          {
+            "operation": "loadrepo",
+            "args": "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"",
+            "message": "Загрузка данных из ${params.repository} в ${params.dbName}"
+          },
+          {
+            "operation": "updatedbRep",
+            "args": "\"${params.dbName}\"",
+            "message": "Обновление конфигурации ${params.dbName}"
+          },
+          {
+            "operation": "unload",
+            "args": "\"${params.dbName}\"",
+            "message": "Выгрузка .cf из ${params.dbName}"
+          }
+        ]
+      },
+      {
+        "name": "Новая база",
+        "tasks": [
+          {
+            "operation": "create",
+            "args": "\"${env.dbTests}\"",
+            "message": "Создание новой базы ${env.dbTests}"
+          },
+          {
+            "operation": "run",
+            "args": "\"${env.WORKSPACE}\" \"ConnectedEquipment\" \"${env.dbTests}\"",
+            "message": "Установка расширения ConnectedEquipment"
+          },
+          {
+            "operation": "run",
+            "args": "\"${env.WORKSPACE}\" \"VAExtension\" \"${env.dbTests}\"",
+            "message": "Установка расширения VAExtension"
+          },
+          {
+            "operation": "load",
+            "args": "\"${env.dbTests}\"",
+            "message": "Загрузка .cf в ${env.dbTests}"
+          },
+          {
+            "operation": "updatedb",
+            "args": "\"${env.dbTests}\"",
+            "message": "Обновление конфигурации ${env.dbTests}"
+          },
+          {
+            "operation": "session_kill",
+            "args": "\"${env.dbTests}\"",
+            "message": "Отключение пользователей от ${env.dbTests}"
+          }
+        ]
+      },
+      {
+        "name": "Наполнение",
+        "tasks": [
+          {
+            "operation": "vanessa",
+            "args": "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"",
+            "message": "Первоначальное заполнение: ${params.product}"
+          },
+          {
+            "operation": "vanessa",
+            "args": "\"${env.WORKSPACE}\" \"Наполнение\" \"${env.pathvanessa}\"",
+            "message": "Наполнение данными: Наполнение"
+          }
+        ]
+      }
+    ]
+  }
