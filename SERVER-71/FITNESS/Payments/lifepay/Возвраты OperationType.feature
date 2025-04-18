@@ -41,37 +41,37 @@
 
 	И Проверка xml lifepay
 	И элемент формы с именем 'ТекстXML' стал равен по шаблону
-		| '{*'                                                      |
-		| '\"apikey\": \"379b9878cf4973699a7aea7d37562a3f\",*'      |
-		| '\"login\": \"79882843969\",*'                            |
-		| '\"purchase\": {*'                                        |
-		| '\"products\": [*'                                        |
-		| '{*'                                                      |
-		| '\"name\": \" $$УслугаПерсональная$$\",*'                 |
-		| '\"price\": 250,*'                                        |
-		| '\"quantity\": 1,*'                                       |
-		| '\"tax\": \"none\",*'                                     |
-		| '\"unit\": \"piece\",*'                                   |
-		| '\"type\": \"4\",*'                                       |
-		| '\"item_type\": \"4\",*'                                  |
-		| '\"measurement_unit\": 0*'                                |
-		| '}*'                                                      |
-		| ']*'                                                      |
-		| '},*'                                                     |
-		| '\"mode\": \"print\",*'                                   |
-		| '\"type\": \"refund\",*'                                  |
-		| '\"source\": \"1С_cloud\",*'                              |
-		| '\"cash_amount\": 250,*'                                  |
-		| '\"card_amount\": 0,*'                                    |
-		| '\"prepayment_amount\": 0,*'                              |
-		| '\"credit_amount\": 0,*'                                  |
-		| '\"cashier_name\": \"*\",*'                           |
-		| '\"supplier_name\": \"*\",*'          |
-		| '\"supplier_inn\": \"\",*'                                |
-		| '\"tax_system\": \"osn\",*'                               |
-		| '\"target_serial\": \"00106701076650\",*'                 |
-		| '\"ref_uuid\": \"*\"*' |
-		| '}'                                                       |
+		| '{*'                                                 |
+		| '\"apikey\": \"379b9878cf4973699a7aea7d37562a3f\",*' |
+		| '\"login\": \"79882843969\",*'                       |
+		| '\"purchase\": {*'                                   |
+		| '\"products\": [*'                                   |
+		| '{*'                                                 |
+		| '\"name\": \" $$УслугаПерсональная$$\",*'            |
+		| '\"price\": 250,*'                                   |
+		| '\"quantity\": 1,*'                                  |
+		| '\"tax\": \"none\",*'                                |
+		| '\"unit\": \"piece\",*'                              |
+		| '\"type\": \"4\",*'                                  |
+		| '\"item_type\": \"4\",*'                             |
+		| '\"measurement_unit\": 0*'                           |
+		| '}*'                                                 |
+		| ']*'                                                 |
+		| '},*'                                                |
+		| '\"mode\": \"print\",*'                              |
+		| '\"type\": \"refund\",*'                             |
+		| '\"source\": \"1С_cloud\",*'                         |
+		| '\"cash_amount\": 250,*'                             |
+		| '\"card_amount\": 0,*'                               |
+		| '\"prepayment_amount\": 0,*'                         |
+		| '\"credit_amount\": 0,*'                             |
+		| '\"cashier_name\": \"*\",*'                          |
+		| '\"supplier_name\": \"*\",*'                         |
+		| '\"supplier_inn\": \"*\",*'                          |
+		| '\"tax_system\": \"osn\",*'                          |
+		| '\"target_serial\": \"00106701076650\",*'            |
+		| '\"ref_uuid\": \"*\"*'                               |
+		| '}'                                                  |
 
 Сценарий: Частичный возврат номенклатуры
 *Продажа
@@ -123,7 +123,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"О*\",*'                        |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\",*'            |
 		| '\"ref_uuid\": \"*\"*'                               |
@@ -171,7 +171,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\",*'            |
 		| '\"ref_uuid\": \"*\"*'                               |
@@ -200,37 +200,37 @@
 
 	И Проверка xml lifepay
 	И элемент формы с именем 'ТекстXML' стал равен по шаблону
-		| '{*'                                                      |
-		| '\"apikey\": \"379b9878cf4973699a7aea7d37562a3f\",*'      |
-		| '\"login\": \"79882843969\",*'                            |
-		| '\"purchase\": {*'                                        |
-		| '\"products\": [*'                                        |
-		| '{*'                                                      |
-		| '\"name\": \" $$УслугаПерсональная$$\",*'                 |
-		| '\"price\": 250,*'                                        |
-		| '\"quantity\": 1,*'                                       |
-		| '\"tax\": \"none\",*'                                     |
-		| '\"unit\": \"piece\",*'                                   |
-		| '\"type\": \"5\",*'                                       |
-		| '\"item_type\": \"4\",*'                                  |
-		| '\"measurement_unit\": 0*'                                |
-		| '}*'                                                      |
-		| ']*'                                                      |
-		| '},*'                                                     |
-		| '\"mode\": \"print\",*'                                   |
-		| '\"type\": \"refund\",*'                                  |
-		| '\"source\": \"1С_cloud\",*'                              |
-		| '\"cash_amount\": 200,*'                                  |
-		| '\"card_amount\": 0,*'                                    |
-		| '\"prepayment_amount\": 0,*'                              |
-		| '\"credit_amount\": 50,*'                                 |
-		| '\"cashier_name\": \"*\",*'                               |
-		| '\"supplier_name\": \"*\",*'                              |
-		| '\"supplier_inn\": \"\",*'                                |
-		| '\"tax_system\": \"osn\",*'                               |
-		| '\"target_serial\": \"00106701076650\",*'                 |
-		| '\"ref_uuid\": \"*\"*' |
-		| '}'                                                       |
+		| '{*'                                                 |
+		| '\"apikey\": \"379b9878cf4973699a7aea7d37562a3f\",*' |
+		| '\"login\": \"79882843969\",*'                       |
+		| '\"purchase\": {*'                                   |
+		| '\"products\": [*'                                   |
+		| '{*'                                                 |
+		| '\"name\": \" $$УслугаПерсональная$$\",*'            |
+		| '\"price\": 250,*'                                   |
+		| '\"quantity\": 1,*'                                  |
+		| '\"tax\": \"none\",*'                                |
+		| '\"unit\": \"piece\",*'                              |
+		| '\"type\": \"5\",*'                                  |
+		| '\"item_type\": \"4\",*'                             |
+		| '\"measurement_unit\": 0*'                           |
+		| '}*'                                                 |
+		| ']*'                                                 |
+		| '},*'                                                |
+		| '\"mode\": \"print\",*'                              |
+		| '\"type\": \"refund\",*'                             |
+		| '\"source\": \"1С_cloud\",*'                         |
+		| '\"cash_amount\": 200,*'                             |
+		| '\"card_amount\": 0,*'                               |
+		| '\"prepayment_amount\": 0,*'                         |
+		| '\"credit_amount\": 50,*'                            |
+		| '\"cashier_name\": \"*\",*'                          |
+		| '\"supplier_name\": \"*\",*'                         |
+		| '\"supplier_inn\": \"*\",*'                          |
+		| '\"tax_system\": \"osn\",*'                          |
+		| '\"target_serial\": \"00106701076650\",*'            |
+		| '\"ref_uuid\": \"*\"*'                               |
+		| '}'                                                  |
 
 Сценарий: Отмена ошибочной оплаты
 *Оплата
@@ -275,7 +275,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\",*'            |
 		| '\"ref_uuid\": \"*\"*'                               |
@@ -327,7 +327,7 @@
 		| '\"credit_amount\": 50,*'                            |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
