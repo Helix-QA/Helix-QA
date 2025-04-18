@@ -14,8 +14,8 @@ pipeline {
 					def VA_EXTENSION = "VAExtension"
 					def snakCase = "Наполнение"
 
-					// println "Начало обновления конфигурационного файла"
-					// updateConfigFile()
+					println "Начало обновления конфигурационного файла"
+					updateConfigFile()
 
 					// println "Блокировка информационной базы: ${params.dbName}"
 					// runDbOperation("session_lock", "\"${params.dbName}\"")
