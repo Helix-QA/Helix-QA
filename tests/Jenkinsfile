@@ -22,7 +22,7 @@ pipeline {
 					}
 
 					// Чтение JSON-конфигурации
-					def config = readJSON file: "${env.WORKSPACE}/db_tasks.json"
+					def config = readJSON file: "${env.WORKSPACE}tests/tools/db_tasks.json"
 
 					// Выполнение обновления конфигурации
 					echo "[${new Date().format('HH:mm:ss')}] Начало обновления конфигурационного файла"
