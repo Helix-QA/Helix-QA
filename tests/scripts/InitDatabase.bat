@@ -11,7 +11,8 @@ if "%1"=="create" call vrunner create --db-server localhost --name %2 --dbms Pos
 if "%1"=="run" call vrunner run --command "Путь=%2\\tests\\cfe\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%2\\tests\\epf\\ЗагрузитьРасширениеВРежимеПредприятия.epf" --uccode "CICD"
 if "%1"=="unload" call vrunner unload "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2 --db-user Админ --uccode "CICD"
 if "%1"=="load" call vrunner load --src "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2 --uccode "CICD"
-if "%1"=="updatedb" call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ --uccode "CICD"
+if "%1"=="updatedbRep" call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ --uccode "CICD"
+if "%1"=="updatedb" call vrunner updatedb --ibconnection /Slocalhost/%2 --uccode "CICD"
 if "%1"=="vanessa" call vrunner vanessa --path "%2\\tests\\features\\ПервоначальноеЗаполнение\\%3.feature" --workspace tests --pathvanessa "%4" --ibconnection /Slocalhost/MenageTest --vanessasettings "tools/VAParams.json" --additional-keys ЗавершитьРаботуСистемы --uccode "CICD"
 if "%1"=="vanessaTest" call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ --additional-keys ЗавершитьРаботуСистемы --uccode "CICD"
 if "%1"=="allure" allure generate tests/build/results -o tests/allure-report --clean
