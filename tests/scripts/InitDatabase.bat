@@ -2,7 +2,7 @@
 chcp 65001
 
 REM Переходим к нужной функции
-if "%1"=="kill_session" call vrunner session kill --db %2 --db-user Админ --uccode "CICD"
+if "%1"=="session_kill" call vrunner session kill --db %2 --db-user Админ --uccode "CICD"
 if "%1"=="session_lock" call vrunner session lock --db %2 --db-user Админ --uccode "CICD"
 if "%1"=="session_unlock" call vrunner session unlock --db %2 --db-user Админ --uccode "CICD"
 if "%1"=="loadrepo" call vrunner loadrepo --storage-name %2 --storage-user %3 --ibconnection /Slocalhost/%4 --db-user Админ --uccode "CICD"
