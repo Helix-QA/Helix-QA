@@ -16,7 +16,7 @@ pipeline {
 					updateConfigFile()
 
 					// 1.0 Блокировка ИБ
-					runDbOperation("session_lock", "\"${params.dbName}\"")
+					runDbOperation("kill_session", "\"${params.dbName}\"")
 					// 1.1 Отключение пользователей
 					runDbOperation("session_kill", "\"${params.dbName}\"")
 					// 1.2 Получение данных из релизного хранилища
