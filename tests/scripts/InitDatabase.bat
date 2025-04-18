@@ -2,7 +2,7 @@
 chcp 65001
 
 REM Переходим к нужной функции
-if "%1"=="session_kill" call vrunner session kill --db %2 --db-user Админ -with-nolock
+if "%1"=="session_kill" call vrunner session kill -with-nolock --db %2 --db-user Админ
 if "%1"=="loadrepo" call vrunner loadrepo --storage-name %2 --storage-user %3 --ibconnection /Slocalhost/%4 --db-user Админ
 if "%1"=="remove" call vrunner remove --name %2 --drop-database --clear-database --db-user Админ 
 if "%1"=="create" call vrunner create --db-server localhost --name %2 --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
