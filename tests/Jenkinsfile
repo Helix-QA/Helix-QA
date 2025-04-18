@@ -17,53 +17,47 @@ pipeline {
 					println "Начало обновления конфигурационного файла"
 					updateConfigFile()
 
-					// println "Блокировка информационной базы: ${params.dbName}"
-					// runDbOperation("session_lock", "\"${params.dbName}\"")
+					println "Блокировка информационной базы: ${params.dbName}"
+					runDbOperation("session_lock", "\"${params.dbName}\"")
 
-					// println "Отключение пользователей от базы данных: ${params.dbName}"
-					// runDbOperation("session_kill", "\"${params.dbName}\"")
+					println "Отключение пользователей от базы данных: ${params.dbName}"
+					runDbOperation("session_kill", "\"${params.dbName}\"")
 
-					// println "Загрузка данных из хранилища: ${params.repository} в базу: ${params.dbName}"
-					// runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
+					println "Загрузка данных из хранилища: ${params.repository} в базу: ${params.dbName}"
+					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
 
-					// println "Обновление конфигурации базы данных: ${params.dbName}"
-					// runDbOperation("updatedbRep", "\"${params.dbName}\"")
+					println "Обновление конфигурации базы данных: ${params.dbName}"
+					runDbOperation("updatedbRep", "\"${params.dbName}\"")
 
-					// println "Выгрузка файла .cf из базы данных: ${params.dbName}"
-					// runDbOperation("unload", "\"${params.dbName}\"")
+					println "Выгрузка файла .cf из базы данных: ${params.dbName}"
+					runDbOperation("unload", "\"${params.dbName}\"")
 
-					// println "Снятие блокировки сеансов для базы: ${params.dbName}"
-					// runDbOperation("session_unlock", "\"${params.dbName}\"")
+					println "Снятие блокировки сеансов для базы: ${params.dbName}"
+					runDbOperation("session_unlock", "\"${params.dbName}\"")
 
-					// println "Создание новой пустой базы данных: ${env.dbTests}"
-					// runDbOperation("create", "\"${env.dbTests}\"")
+					println "Создание новой пустой базы данных: ${env.dbTests}"
+					runDbOperation("create", "\"${env.dbTests}\"")
 
-					// println "Установка расширения ${NAME_EPF} для базы: ${env.dbTests}"
-					// runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"")
+					println "Установка расширения ${NAME_EPF} для базы: ${env.dbTests}"
+					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"")
 
-					// println "Установка расширения ${VA_EXTENSION} для базы: ${env.dbTests}"
-					// runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"")
+					println "Установка расширения ${VA_EXTENSION} для базы: ${env.dbTests}"
+					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"")
 
-					// println "Загрузка файла .cf в базу данных: ${env.dbTests}"
-					// runDbOperation("load", "\"${env.dbTests}\"")
+					println "Загрузка файла .cf в базу данных: ${env.dbTests}"
+					runDbOperation("load", "\"${env.dbTests}\"")
 
-					// println "Обновление конфигурации новой базы данных: ${env.dbTests}"
-					// runDbOperation("updatedb", "\"${env.dbTests}\"")
+					println "Обновление конфигурации новой базы данных: ${env.dbTests}"
+					runDbOperation("updatedb", "\"${env.dbTests}\"")
 
-					// println "Блокировка информационной базы: ${env.dbTests}"
-					// runDbOperation("session_lock", "\"${env.dbTests}\"")
+					println "Отключение пользователей от базы данных: ${env.dbTests}"
+					runDbOperation("session_kill", "\"${env.dbTests}\"")
 
-					// println "Отключение пользователей от базы данных: ${env.dbTests}"
-					// runDbOperation("session_kill", "\"${env.dbTests}\"")
+					println "Выполнение первоначального заполнения для продукта: ${params.product}"
+					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"")
 
-					// println "Выполнение первоначального заполнения для продукта: ${params.product}"
-					// runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"")
-
-					// println "Наполнение базы данных данными: ${snakCase}"
-					// runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${snakCase}\" \"${env.pathvanessa}\"")
-
-				//	println "Снятие блокировки сеансов для базы: ${env.dbTests}"
-				//	runDbOperation("session_unlock", "\"${env.dbTests}\"")
+					println "Наполнение базы данных данными: ${snakCase}"
+					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${snakCase}\" \"${env.pathvanessa}\"")
 				}
 			}
 		}
@@ -72,14 +66,10 @@ pipeline {
                 script {
 					updateConfigFile()
 					try	{
-					// 4.0 Блокировка ИБ
-					// runDbOperation("session_lock", "\"${env.dbTests}\"")
-					// // 4.1 Отключение пользователей
-					// runDbOperation("session_kill", "\"${env.dbTests}\"")
+					// 4.1 Отключение пользователей
+					runDbOperation("session_kill", "\"${env.dbTests}\"")
 					// 4.2 Сценарное тестирование
 					runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
-					// 4.3 Снятие блокировки сеансов
-					runDbOperation("session_unlock", "\"${env.dbTests}\"")
 					// 4.4 Генерация Allure отчета
 					runDbOperation("allure")
 
