@@ -2,139 +2,149 @@ pipeline {
     agent {
         label "OneS"
     }
-    environment {
+	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
-        dbTests = "AvtotestQA"
+		dbTests = "AvtotestQA"
     }
     stages {
-        stage("Подготовка и создание БД") {
+		stage("Подготовка и создание БД") {
+			steps {
+				script {
+					// Константы
+					final NAME_EPF = "ConnectedEquipment"
+					final VA_EXTENSION = "VAExtension"
+					final LOADING_DATA = "Наполнение"
+
+				
+					def runOperation(String operation, String args, String message) {
+						echo "[${new Date().format('HH:mm:ss')}] ${message}"
+						try {
+							runDbOperation(operation, args)
+						} catch (Exception e) {
+							echo "Ошибка в операции '${message}': ${e.message}"
+							throw e 
+						}
+					}
+
+					def tasks = [
+						// Работа с исходной базой
+						"Исходная база": [
+							[op: "session_kill", args: "\"${params.dbName}\"", msg: "Отключение пользователей от ${params.dbName}"],
+							[op: "loadrepo", args: "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"", msg: "Загрузка данных из ${params.repository}"],
+							[op: "updatedbRep", args: "\"${params.dbName}\"", msg: "Обновление конфигурации ${params.dbName}"],
+							[op: "unload", args: "\"${params.dbName}\"", msg: "Выгрузка .cf из ${params.dbName}"]
+						],
+						// Создание новой базы
+						"Новая база": [
+							[op: "create", args: "\"${env.dbTests}\"", msg: "Создание ${env.dbTests}"],
+							[op: "run", args: "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"", msg: "Установка ${NAME_EPF}"],
+							[op: "run", args: "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"", msg: "Установка ${VA_EXTENSION}"],
+							[op: "load", args: "\"${env.dbTests}\"", msg: "Загрузка .cf в ${env.dbTests}"],
+							[op: "updatedb", args: "\"${env.dbTests}\"", msg: "Обновление конфигурации ${env.dbTests}"],
+							[op: "session_kill", args: "\"${env.dbTests}\"", msg: "Отключение пользователей от ${env.dbTests}"]
+						],
+						// Наполнение данными
+						"Наполнение": [
+							[op: "vanessa", args: "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"", msg: "Первоначальное заполнение: ${params.product}"],
+							[op: "vanessa", args: "\"${env.WORKSPACE}\" \"${LOADING_DATA}\" \"${env.pathvanessa}\"", msg: "Наполнение данными: ${LOADING_DATA}"]
+						]
+					]
+
+					// Выполнение обновления конфигурации
+					echo "[${new Date().format('HH:mm:ss')}] Начало обновления конфигурационного файла"
+					updateConfigFile()
+
+					// Выполнение задач по категориям
+					tasks.each { category, ops ->
+						echo "=== ${category} ==="
+						ops.each { task ->
+							if (!params.skipSteps?.contains(task.op)) { 
+								runOperation(task.op, task.args, task.msg)
+							}
+						}
+					}
+				}
+			}
+		}
+        stage('Сценарное тестирвоание') {
             steps {
                 script {
-                    runStageFromJson("Подготовка и создание БД", "${env.WORKSPACE}/tests/tools/db_tasks.json") {
-                        echo "[${new Date().format('HH:mm:ss')}] Начало обновления конфигурационного файла"
-                        updateConfigFile()
-                    }
+					try	{
+					// 4.1 Отключение пользователей
+					runDbOperation("session_kill", "\"${env.dbTests}\"")
+					// 4.2 Сценарное тестирование
+					runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
+					// 4.4 Генерация Allure отчета
+					runDbOperation("allure")
+
+ 					}catch(Exception Exc){
+						currentBuild.result = 'UNSTABLE'
+					}
                 }
             }
         }
-        stage("Сценарное тестирование") {
-            steps {
-                script {
-                    runStageFromJson("Сценарное тестирование", "${env.WORKSPACE}/tests/tools/test_tasks.json")
-                }
-            }
-        }
-        // stage("Дымовые тесты") {
-        //     steps {
-        //         script {
-        //             runStageFromJson("Дымовые тесты", "${env.WORKSPACE}/tests/tools/smoke_tasks.json")
-        //         }
-        //     }
-        // }
-        // stage("Синтаксический контроль") {
-        //     steps {
-        //         script {
-        //             runStageFromJson("Синтаксический контроль", "${env.WORKSPACE}/tests/tools/syntax_tasks.json")
-        //         }
-        //     }
-        // }
-        // stage("Сонар") {
-        //     steps {
-        //         script {
-        //             runStageFromJson("Сонар", "${env.WORKSPACE}/tests/tools/sonar_tasks.json")
-        //         }
-        //     }
-        // }
-        // stage("Удаление базы") {
-        //     steps {
-        //         script {
-        //             runStageFromJson("Удаление базы", "${env.WORKSPACE}/tests/tools/drop_tasks.json")
-        //         }
-        //     }
-        // }
-    }
-    post {
-        always {
-            script {
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    results: [['path': 'tests/build/results']]
-                ])
-                if (currentBuild.currentResult in ["SUCCESS", "UNSTABLE"]) {
-                    def logoMap = [
-                        "VAFitness": "tests/notifications/logo.png",
-                        "VASPA": "tests/notifications/logo1.png",
-                        "VAStoma": "tests/notifications/logo2.png"
-                    ]
-                    env.logo = logoMap[params.dbName] ?: "tests/notifications/default_logo.png"
+	}
+	post {
+		always {
+			script {
+				allure([
+					includeProperties: false,
+					jdk: '',
+					results: [['path': 'tests/build/results']]
+				])
+				// Отправка уведомлений только при SUCCESS или UNSTABLE
+				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
+					if ("${params.dbName}" == "VAFitness") {
+						env.logo = "tests/notifications/logo.png"
+					}
+					else if ("${params.dbName}" == "VASPA") {
+						env.logo = "tests/notifications/logo1.png"
+					}
+					else if ("${params.dbName}" == "VAStoma") {
+						env.logo = "tests/notifications/logo2.png"
+					}
 
-                    def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-                    def configJson = readFile(file: 'tests/notifications/config.json')
-                    def updatedConfigJson = configJson
-                        .replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-                        .replace('"${logo}"', "\"${env.logo}\"")
-                    writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+					def configJson = readFile(file: 'tests/notifications/config.json')
+					def updatedConfigJson = configJson
+						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+						.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+						.replace('"${logo}"', "\"${env.logo}\"")
+					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
-                    try {
-                        runDbOperation("notifications")
-                    } catch (Exception e) {
-                        echo "Ошибка при отправке уведомления: ${e.message}"
-                    }
-                }
-            }
-        }
-    }
+					try {
+						runDbOperation("notifications")
+					}
+					catch (Exception e) {
+						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+					}
+				}
+			}
+		}
+	 }
 }
+def runDbOperation(operation, params) {
+		try {
+			bat """
+				chcp 65001
+				@call ${env.InitDatabase} ${operation} ${params}
+			"""
+		} catch (Exception e) {
+			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+			throw e
+		}
+	}
 
-// Вспомогательная функция для выполнения операций
-def runOperation(String operation, String args, String message) {
-    echo "[${new Date().format('HH:mm:ss')}] ${message}"
-    try {
-        runDbOperation(operation, args)
-    } catch (Exception e) {
-        echo "Ошибка в операции '${message}': ${e.message}"
-        throw e
-    }
-}
-
-// Вспомогательная функция для выполнения этапа из JSON
-def runStageFromJson(String stageName, String jsonFile, Closure preSteps = {}) {
-    echo "=== ${stageName} ==="
-    try {
-        def config = readJSON file: jsonFile
-        preSteps() // Выполнение предварительных шагов, если есть
-        config.categories.each { category ->
-            echo "=== ${category.name} ==="
-            category.tasks.each { task ->
-                if (!params.skipSteps?.contains(task.operation)) {
-                    runOperation(task.operation, task.args, task.message)
-                }
-            }
-        }
-    } catch (Exception e) {
-        currentBuild.result = 'UNSTABLE'
-        echo "Ошибка в этапе '${stageName}': ${e.message}"
-    }
-}
-
-// Выполнение операции через bat
-def runDbOperation(String operation, params = "") {
-    try {
-        bat """
-            chcp 65001
-            @call ${env.InitDatabase} ${operation} ${params}
-        """
-    } catch (Exception e) {
-        echo "Ошибка при выполнении операции ${operation}: ${e.message}"
-        throw e
-    }
-}
-
-// Обновление конфигурационного файла
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
+		// 1) Этап создание базы 
+		// 2) Загрузка .cf из релизного
+		// 3) Первоначальное заполнение
+		// 4) Сценарное тестирование 
+		// 5) Дымовые тесты
+		// 6) Синтаксический контроль
+		// 7) Сонар 
+		// 8) Удаление базы
