@@ -217,13 +217,13 @@
 		И Пауза 1
 		Дано Я открываю основную форму обработки "VAExtension_ОткрытьВнешнююОбработкуИлиОтчет"
 		И я активизирую окно "VAExtension открыть внешнюю обработку или отчет"	
-		И в поле с именем 'ПутьКОбработке' я ввожу текст "C:\VA_test\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
+		И в поле с именем 'ПутьКОбработке' я ввожу текст "D:\Моя документация(данные)\Обработки\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
 		И я нажимаю на кнопку с именем 'ФормаВыполнитьКод'
 		Если открылось окно "1С:Предприятие" Тогда
 			Тогда я нажимаю на кнопку с именем 'OK'
 	//	И я выбираю файл "C:\VA_test\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" ВК
 	//	"C:\Users\Димитрий\Desktop\Документация\Обработки\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
-	//Сервер: "C:\VA_test\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
+	//Сервер: "C:\VA_test\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
 		И я активизирую окно "Универсальный редактор реквизитов v 2.1"
 		И я нажимаю кнопку выбора у поля с именем "ВыбСсылка"
 		И в таблице "ДеревоОбъектов" я разворачиваю строку:
