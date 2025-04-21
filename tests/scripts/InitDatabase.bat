@@ -14,4 +14,3 @@ if "%1"=="updatedb" call vrunner updatedb --ibconnection /Slocalhost/%2
 if "%1"=="vanessa" call vrunner vanessa --path "%2\\tests\\features\\ПервоначальноеЗаполнение\\%3.feature" --workspace tests --pathvanessa "%4" --ibconnection /Slocalhost/MenageTest --vanessasettings "tools/VAParams.json" --additional-keys ЗавершитьРаботуСистемы
 if "%1"=="vanessaTest" call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ --additional-keys ЗавершитьРаботуСистемы
 if "%1"=="allure" allure generate tests/build/results -o tests/allure-report --clean
-if "%1"=="notifications" java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar

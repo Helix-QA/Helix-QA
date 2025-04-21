@@ -66,9 +66,10 @@ pipeline {
 					// 4.4 Генерация Allure отчета
 					runDbOperation("allure")
 
- 					}catch(Exception Exc){
+ 					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
-					}
+          			}
                 }
             }
         }
@@ -102,7 +103,9 @@ pipeline {
 					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
 					try {
-						runDbOperation("notifications")
+						bat """
+	 					java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar
+	 					"""
 					}
 					catch (Exception e) {
 						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
