@@ -64,7 +64,7 @@ pipeline {
 					// // 4.2 Сценарное тестирование
 					// runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
 					// // 4.4 Генерация Allure отчета
-					runDbOperation("allure")
+						bat "allure generate tests/build/results -o tests/allure-report --clean"
 
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
