@@ -13,45 +13,19 @@ pipeline {
 					def NAME_EPF = "ConnectedEquipment"
 					def VA_EXTENSION = "VAExtension"
 					def loadingData = "Наполнение"
-
-					println "Начало обновления конфигурационного файла"
 					updateConfigFile()
-
-					println "Отключение пользователей от базы данных: ${params.dbName}"
-					runDbOperation("session_kill", "\"${params.dbName}\"")
-
-					println "Загрузка данных из хранилища: ${params.repository} в базу: ${params.dbName}"
-					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"")
-
-					println "Обновление конфигурации базы данных: ${params.dbName}"
-					runDbOperation("updatedbRep", "\"${params.dbName}\"")
-
-					println "Выгрузка файла .cf из базы данных: ${params.dbName}"
-					runDbOperation("unload", "\"${params.dbName}\"")
-
-					println "Создание новой пустой базы данных: ${env.dbTests}"
-					runDbOperation("create", "\"${env.dbTests}\"")
-
-					println "Установка расширения ${NAME_EPF} для базы: ${env.dbTests}"
-					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"")
-
-					println "Установка расширения ${VA_EXTENSION} для базы: ${env.dbTests}"
-					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"")
-
-					println "Загрузка файла .cf в базу данных: ${env.dbTests}"
-					runDbOperation("load", "\"${env.dbTests}\"")
-
-					println "Обновление конфигурации новой базы данных: ${env.dbTests}"
-					runDbOperation("updatedb", "\"${env.dbTests}\"")
-
-					println "Отключение пользователей от базы данных: ${env.dbTests}"
-					runDbOperation("session_kill", "\"${env.dbTests}\"")
-
-					println "Первоначальное заполнение: ${params.product}"
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"")
-
-					println "Наполнение базы данных данными: ${loadingData}"
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${loadingData}\" \"${env.pathvanessa}\"")
+					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
+					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища
+					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных
+					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных
+					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных:
+					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"") 				// Установка расширения ConnectedEquipment
+					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"") 			// Установка расширения VAExtension
+					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных
+					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации новой базы данных
+					runDbOperation("session_kill", "\"${env.dbTests}\"") 											// Отключение пользователей от базы данных
+					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"") 	// Первоначальное заполнение
+					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${loadingData}\" \"${env.pathvanessa}\"") 	// Наполнение базы данных данными
 				}
 			}
 		}
@@ -59,13 +33,9 @@ pipeline {
             steps {
                 script {
 					try{
-					// 4.1 Отключение пользователей
-					runDbOperation("session_kill", "\"${env.dbTests}\"")
-					// 4.2 Сценарное тестирование
-					runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
-					// 4.4 Генерация Allure отчета
-					bat "allure generate tests/build/results -o tests/allure-report --clean"
-
+					runDbOperation("session_kill", "\"${env.dbTests}\"")																				// Отключение пользователей
+					runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")	// Сценарное тестирование
+					bat "allure generate tests/build/results -o tests/allure-report --clean"															// Генерация Allure отчета
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
