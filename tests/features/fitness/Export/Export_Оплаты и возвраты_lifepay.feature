@@ -65,7 +65,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"$СистемаНалогообложения$\",*'     |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}*'                                                 |
@@ -108,7 +108,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                           |
 		| '\"tax_system\": \"$СистемаНалогообложения2$\",*'    |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}*'                                                 |
@@ -164,7 +164,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}*'                                                 |
