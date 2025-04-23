@@ -13,6 +13,7 @@ pipeline {
 					def NAME_EPF = "ConnectedEquipment"
 					def VA_EXTENSION = "VAExtension"
 					def loadingData = "Наполнение"
+					def paymentFormCafe = "PaymentFormCafe"
 					updateConfigFile()
 					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища
@@ -20,7 +21,8 @@ pipeline {
 					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных
 					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных:
 					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"") 				// Установка расширения ConnectedEquipment
-					runDbOperation("run", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"") 			// Установка расширения VAExtension
+					runDbOperation("run1", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"") 			// Установка расширения VAExtension
+					runDbOperation("run2", "\"${env.WORKSPACE}\" \"${paymentFormCafe}\" \"${env.dbTests}\"") 		// Установка расширения PaymentFormCafe
 					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных
 					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации новой базы данных
 					runDbOperation("session_kill", "\"${env.dbTests}\"") 											// Отключение пользователей от базы данных

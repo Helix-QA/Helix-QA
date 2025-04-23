@@ -7,6 +7,8 @@ if "%1"=="loadrepo" call vrunner loadrepo --storage-name %2 --storage-user %3 --
 if "%1"=="remove" call vrunner remove --name %2 --drop-database --clear-database --db-user Админ 
 if "%1"=="create" call vrunner create --db-server localhost --name %2 --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
 if "%1"=="run" call vrunner run --command "Путь=%2\\tests\\cfe\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%2\\tests\\epf\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
+if "%1"=="run1" call vrunner run --command "Путь=%2\\tests\\cfe\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%2\\tests\\epf\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
+if "%1"=="run2" call vrunner run --command "Путь=%2\\tests\\cfe\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --execute "%2\\tests\\epf\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
 if "%1"=="unload" call vrunner unload "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="load" call vrunner load --src "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2
 if "%1"=="updatedbRep" call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
