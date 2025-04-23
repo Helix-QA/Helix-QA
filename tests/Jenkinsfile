@@ -20,9 +20,9 @@ pipeline {
 					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных
 					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных
 					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных:
-					runDbOperation("run", "\"${env.WORKSPACE}\" \"${NAME_EPF}\" \"${env.dbTests}\"") 				// Установка расширения ConnectedEquipment
-					runDbOperation("run1", "\"${env.WORKSPACE}\" \"${VA_EXTENSION}\" \"${env.dbTests}\"") 			// Установка расширения VAExtension
-					runDbOperation("run2", "\"${env.WORKSPACE}\" \"${paymentFormCafe}\" \"${env.dbTests}\"") 		// Установка расширения PaymentFormCafe
+					[NAME_EPF, VA_EXTENSION, paymentFormCafe].each { ext ->											// Установка расширений 
+						runDbOperation("run", "\"${env.WORKSPACE}\" \"${ext}\" \"${env.dbTests}\"")					
+					}																								 
 					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных
 					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации новой базы данных
 					runDbOperation("session_kill", "\"${env.dbTests}\"") 											// Отключение пользователей от базы данных
