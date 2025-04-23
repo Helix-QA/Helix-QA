@@ -73,9 +73,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -123,9 +124,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                           |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -180,9 +182,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -223,9 +226,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -271,9 +275,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 200,*'                           |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -324,9 +329,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 250,*'                           |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -368,7 +374,7 @@
 		| '\"credit_amount\": 0,*'                             |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
