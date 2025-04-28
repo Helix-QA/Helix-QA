@@ -388,6 +388,7 @@
 	И я нажимаю на кнопку с именем 'ФормаКнопкаСохранитьИЗакрыть'
 	//Настройка описания через универсальный редактор.
 	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)	
+//серверный путь: "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
 	И я нажимаю кнопку выбора у поля с именем 'ВыбСсылка'
 	И в таблице 'ДеревоОбъектов' я разворачиваю строку:
 		| "Вид объекта" |
@@ -1876,7 +1877,7 @@
 		| 'id'               | '*'        |
 		| 'start_date'       | '*'        |
 		| 'end_date'         | '*'        |
-		| 'total_results'    | '1'        |
+		| 'total_results'    | '2'        |
 
 	//Проверка метода "available_slots" --- POST
 	И я нажимаю на кнопку с именем 'ТипЗапроса'
