@@ -10,10 +10,6 @@ pipeline {
 		stage("Подготовка и создание БД") {
 			steps {
 				script {
-					def NAME_EPF = "ConnectedEquipment"
-					def VA_EXTENSION = "VAExtension"
-					def loadingData = "Наполнение"
-					def paymentFormCafe = "PaymentFormCafe"
 					updateConfigFile()
 					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища
@@ -22,32 +18,26 @@ pipeline {
 					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных
 					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных:
 					runDbOperation("restore", "\"${env.dbTests}\"") 												// Загрузка .dt в новую базу	
-					[NAME_EPF, VA_EXTENSION, paymentFormCafe].each { ext ->											// Установка расширений 
-						runDbOperation("run", "\"${env.WORKSPACE}\" \"${ext}\" \"${env.dbTests}\"")					
-					}
 					runDbOperation("session_kill", "\"${env.dbTests}\"")											// Отключение пользователей от базы данных													 
 					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных
 					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации новой базы данных
-					runDbOperation("session_kill", "\"${env.dbTests}\"") 											// Отключение пользователей от базы данных
-					// runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"") 	// Первоначальное заполнение
-					// runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${loadingData}\" \"${env.pathvanessa}\"") 	// Наполнение базы данных данными
 				}
 			}
 		}
-        // stage('Сценарное тестирвоание') {
-        //     steps {
-        //         script {
-		// 			try{
-		// 			runDbOperation("session_kill", "\"${env.dbTests}\"")																				// Отключение пользователей
-		// 			runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")	// Сценарное тестирование
-		// 			bat "allure generate tests/build/results -o tests/allure-report --clean"															// Генерация Allure отчета
- 		// 			} catch (Exception Exc) {
-		// 				echo "Error occurred: ${Exc.message}"
-		// 				currentBuild.result = 'UNSTABLE'
-        //   			}
-        //         }
-        //     }
-        // }
+        stage('Сценарное тестирвоание') {
+            steps {
+                script {
+					try{
+					runDbOperation("session_kill", "\"${env.dbTests}\"")																				// Отключение пользователей
+					runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")	// Сценарное тестирование
+					bat "allure generate tests/build/results -o tests/allure-report --clean"															// Генерация Allure отчета
+ 					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+          			}
+                }
+            }
+        }
 	}
 	post {
 		always {
