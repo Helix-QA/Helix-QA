@@ -1888,7 +1888,7 @@
 		| 'id'               | '*'        |
 		| 'start_date'       | '*'        |
 		| 'end_date'         | '*'        |
-		| 'total_results'    | '2'        |
+		| 'total_results'    | '1'        |
 
 	//Проверка метода "available_slots" --- POST
 	И я нажимаю на кнопку с именем 'ТипЗапроса'
