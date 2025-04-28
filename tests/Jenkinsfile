@@ -10,24 +10,17 @@ pipeline {
 		stage("Подготовка и создание БД") {
 			steps {
 				script {
-					def NAME_EPF = "ConnectedEquipment"
-					def VA_EXTENSION = "VAExtension"
-					def loadingData = "Наполнение"
-					def paymentFormCafe = "PaymentFormCafe"
 					updateConfigFile()
 					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища
 					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных
+					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
 					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных
 					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных:
-					[NAME_EPF, VA_EXTENSION, paymentFormCafe].each { ext ->											// Установка расширений 
-						runDbOperation("run", "\"${env.WORKSPACE}\" \"${ext}\" \"${env.dbTests}\"")					
-					}																								 
+					runDbOperation("restore", "\"${env.dbTests}\"") 												// Загрузка .dt в новую базу	
+					runDbOperation("session_kill", "\"${env.dbTests}\"")											// Отключение пользователей от базы данных													 
 					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных
 					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации новой базы данных
-					runDbOperation("session_kill", "\"${env.dbTests}\"") 											// Отключение пользователей от базы данных
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.product}\" \"${env.pathvanessa}\"") 	// Первоначальное заполнение
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${loadingData}\" \"${env.pathvanessa}\"") 	// Наполнение базы данных данными
 				}
 			}
 		}
