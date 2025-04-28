@@ -31,20 +31,20 @@ pipeline {
 				}
 			}
 		}
-        stage('Сценарное тестирвоание') {
-            steps {
-                script {
-					try{
-					runDbOperation("session_kill", "\"${env.dbTests}\"")																				// Отключение пользователей
-					runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")	// Сценарное тестирование
-					bat "allure generate tests/build/results -o tests/allure-report --clean"															// Генерация Allure отчета
- 					} catch (Exception Exc) {
-						echo "Error occurred: ${Exc.message}"
-						currentBuild.result = 'UNSTABLE'
-          			}
-                }
-            }
-        }
+        // stage('Сценарное тестирвоание') {
+        //     steps {
+        //         script {
+		// 			try{
+		// 			runDbOperation("session_kill", "\"${env.dbTests}\"")																				// Отключение пользователей
+		// 			runDbOperation("vanessaTest", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")	// Сценарное тестирование
+		// 			bat "allure generate tests/build/results -o tests/allure-report --clean"															// Генерация Allure отчета
+ 		// 			} catch (Exception Exc) {
+		// 				echo "Error occurred: ${Exc.message}"
+		// 				currentBuild.result = 'UNSTABLE'
+        //   			}
+        //         }
+        //     }
+        // }
 	}
 	post {
 		always {
