@@ -18,6 +18,7 @@ pipeline {
 					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища
 					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных
+					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных
 					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных
 					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных:
 					[NAME_EPF, VA_EXTENSION, paymentFormCafe].each { ext ->											// Установка расширений 
