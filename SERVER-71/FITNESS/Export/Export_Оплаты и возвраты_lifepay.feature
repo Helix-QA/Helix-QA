@@ -49,7 +49,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -63,13 +62,19 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"$СистемаНалогообложения$\",*'     |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}*'                                                 |
+
 // Убрал проверку supplier_name (организация) и supplier_inn (кассир)
+
+
+
+
 
 Сценарий: Я проверяю XML_lifepay_TaxationSystem (СПриоритетомНоменклатуры)
 	Дано Я открываю основную форму документа "Реализация"
@@ -92,7 +97,6 @@
 		| '\"price\": 350,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -106,9 +110,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
-		| '\"supplier_inn\": \"*\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"$СистемаНалогообложения2$\",*'    |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}*'                                                 |
@@ -148,7 +153,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"$VAT$\",*'                               |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"$PaymentMethod$\",*'                    |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -162,6 +166,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                             |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |

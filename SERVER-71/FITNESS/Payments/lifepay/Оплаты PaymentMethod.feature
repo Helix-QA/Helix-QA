@@ -59,7 +59,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"1\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -110,7 +109,6 @@
 		| '\"price\": 50,*'                                    |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"2\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -127,7 +125,7 @@
 		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"*\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}'                                                  |
@@ -168,7 +166,6 @@
 		| '\"price\": 25000,*'                                 |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"3\",*'                                  |
 		| '\"item_type\": \"10\",*'                            |
 		| '\"measurement_unit\": 255*'                         |
@@ -212,7 +209,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -261,7 +257,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"5\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -315,7 +310,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"6\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -358,7 +352,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"7\",*'                                  |
 		| '\"item_type\": \"10\",*'                            |
 		| '\"measurement_unit\": 0*'                           |
