@@ -51,7 +51,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -65,6 +64,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
@@ -107,7 +107,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 0.1,*'                                |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -121,6 +120,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"О*\",*'                        |
 		| '\"supplier_inn\": \"*\",*'                          |
@@ -155,7 +155,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 0.9,*'                                |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -169,6 +168,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
@@ -210,7 +210,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"5\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -224,6 +223,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 50,*'                            |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
@@ -259,7 +259,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -273,6 +272,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
@@ -311,7 +311,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"5\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -325,6 +324,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 50,*'                            |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
