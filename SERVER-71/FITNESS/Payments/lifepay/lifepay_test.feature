@@ -47,7 +47,6 @@
 		| '\"price\": 250,*'                                   |
 		| '\"quantity\": 1,*'                                  |
 		| '\"tax\": \"none\",*'                                |
-		| '\"unit\": \"piece\",*'                              |
 		| '\"type\": \"4\",*'                                  |
 		| '\"item_type\": \"4\",*'                             |
 		| '\"measurement_unit\": 0*'                           |
@@ -61,9 +60,10 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"Админ\",*'                      |
 		| '\"supplier_name\": \"Основная ораганизация\",*'     |
-		| '\"supplier_inn\": \"\",*'                           |
+		| '\"supplier_inn\": \"*\",*'                          |
 		| '\"tax_system\": \"osn\",*'                          |
 		| '\"target_serial\": \"00106701076650\"*'             |
 		| '}*'                                                 |
