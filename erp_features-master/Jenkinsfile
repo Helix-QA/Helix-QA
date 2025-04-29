@@ -32,14 +32,14 @@ pipeline {
         stage('Подготовка') {
             steps {
                 script {
-                    // Преобразование строк в списки
-                    env.TEMPLATE_BASES_LIST = params.templatebases.toLowerCase().split(',').collect { it.trim() }
-                    env.STORAGES_LIST = params.storages1cPath ? params.storages1cPath.toLowerCase().split(',').collect { it.trim() } : []
+                    // // Преобразование строк в списки
+                    // env.TEMPLATE_BASES_LIST = params.templatebases.toLowerCase().split(',').collect { it.trim() }
+                    // env.STORAGES_LIST = params.storages1cPath ? params.storages1cPath.toLowerCase().split(',').collect { it.trim() } : []
                     
-                    // Проверка соответствия количества баз и хранилищ
-                    if (env.STORAGES_LIST.size() > 0 && env.STORAGES_LIST.size() != env.TEMPLATE_BASES_LIST.size()) {
-                        error "Количество хранилищ (${env.STORAGES_LIST.size()}) не соответствует количеству баз (${env.TEMPLATE_BASES_LIST.size()})"
-                    }
+                    // // Проверка соответствия количества баз и хранилищ
+                    // if (env.STORAGES_LIST.size() > 0 && env.STORAGES_LIST.size() != env.TEMPLATE_BASES_LIST.size()) {
+                    //     error "Количество хранилищ (${env.STORAGES_LIST.size()}) не соответствует количеству баз (${env.TEMPLATE_BASES_LIST.size()})"
+                    // }
 
                     // Установка значений по умолчанию
                     env.SERVER_1C = params.server1c ?: 'localhost'
