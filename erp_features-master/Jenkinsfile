@@ -6,16 +6,16 @@ pipeline {
         string(name: 'server1c', defaultValue: 'localhost', description: 'Имя сервера 1С')
         string(name: 'server1cPort', defaultValue: '1540', description: 'Порт рабочего сервера 1С')
         string(name: 'agent1cPort', defaultValue: '1541', description: 'Порт агента кластера 1С')
-        string(name: 'platform1c', defaultValue: '', description: 'Версия платформы 1С (например, 8.3.12.1685)')
+        string(name: 'platform1c', defaultValue: '8.3.24.1368', description: 'Версия платформы 1С (например, 8.3.12.1685)')
         string(name: 'serverSql', defaultValue: 'localhost', description: 'Имя сервера PostgreSQL')
-        string(name: 'admin1cUser', defaultValue: '', description: 'Имя администратора 1С')
+        string(name: 'admin1cUser', defaultValue: 'Админ', description: 'Имя администратора 1С')
         string(name: 'admin1cPwd', defaultValue: '', description: 'Пароль администратора 1С')
         string(name: 'sqlUser', defaultValue: 'postgres', description: 'Имя администратора PostgreSQL')
         string(name: 'sqlPwd', defaultValue: 'postgres', description: 'Пароль администратора PostgreSQL')
-        string(name: 'templatebases', defaultValue: 'work_erp,work_upp', description: 'Список эталонных баз через запятую')
-        string(name: 'storages1cPath', defaultValue: '', description: 'Пути к хранилищам 1С через запятую')
-        string(name: 'storageUser', defaultValue: '', description: 'Администратор хранилищ 1С')
-        string(name: 'storagePwd', defaultValue: '', description: 'Пароль администратора хранилищ 1С')
+        string(name: 'templatebases', defaultValue: 'AvtotestQA', description: 'Список эталонных баз через запятую')
+        string(name: 'storages1cPath', defaultValue: 'http://192.168.2.16/hran1c/repository.1ccr/fitness_release', description: 'Пути к хранилищам 1С через запятую')
+        string(name: 'storageUser', defaultValue: 'МихаилБ', description: 'Администратор хранилищ 1С')
+        string(name: 'storagePwd', defaultValue: '3AqH649z0B', description: 'Пароль администратора хранилищ 1С')
     }
 
     options {
