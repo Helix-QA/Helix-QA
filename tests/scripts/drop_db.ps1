@@ -2,7 +2,7 @@
 # Скрипт для удаления базы данных из кластера 1С и PostgreSQL
 
 # Название базы 1С и PostgreSQL
-$infobase = "test1"
+$infobase = "avtotestqa"
 
 # Параметры подключения
 $server1c = "localhost"
