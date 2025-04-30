@@ -1,4 +1,4 @@
-@Library("helix-lib@erp_features-master")
+@Library("helix-lib@main")
 import io.libs.SqlUtils
 import io.libs.ProjectHelpers
 import io.libs.Utils
