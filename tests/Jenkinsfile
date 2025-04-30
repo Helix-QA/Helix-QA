@@ -100,8 +100,13 @@ def updateConfigFile() {
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
 def killSessions(dbName) {
-	runDbOperation("session_kill", "\"${dbName}\"")
+	try {
+		runDbOperation("session_kill", "\"${dbName}\"")
+	} catch (Exception e) {
+		echo "⚠️ Не удалось отключить пользователей от базы ${dbName}: ${e.message}"
+	}
 }
+
 		// 1) Этап создание базы 
 		// 2) Загрузка .cf из релизного
 		// 3) Первоначальное заполнение
