@@ -14,7 +14,6 @@ pipeline {
 			steps {
 				script {
 					updateConfigFile()
-					runDbOperation("session_kill", "\"${env.dbTests}\"")
 					bat "python -X utf8 tests/scripts/drop_db.py"													// Удаление существующей базы
 					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 												
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища 			
