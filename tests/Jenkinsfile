@@ -2,6 +2,9 @@ pipeline {
     agent {
         label "OneS"
     }
+	triggers {
+        cron('H 20 * * *')  // Запускать каждый день в 20:00
+    }
 	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "avtotestqa"
