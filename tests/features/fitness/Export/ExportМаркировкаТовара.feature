@@ -71,12 +71,12 @@
 		
 Сценарий: Я проверяю XML маркированного чека.
 Если переменная "Маркировка" имеет значение "0104640033503572215Y!OkcBHelix93iTAJ" Тогда
-	И Я запоминаю значение выражения 'MarkingCode=\"MDEwNDY0MDAzMzUwMzU3MjIxNVkhT2tjQh05M2lUQUo=\" ' в переменную "MarkingCode"
+	И Я запоминаю значение выражения 'MarkingCode=\"MDEwNDY0MDAzMzUwMzU3MjIxNVkhT2tjQh05M2lUQUo=\"' в переменную "MarkingCode"
 	И Я запоминаю значение выражения 'Time=11231456789\"' в переменную "Time"
 	И Я запоминаю значение выражения '0104640033503572215Y!OkcB93iTAJ' в переменную "Штрихкод"
 	И Я запоминаю значение выражения 'AttributeValue=\"UUID=test-cd41xs5a1w15d1&amp;' в переменную "AttributeValue"
 Если переменная "Маркировка" имеет значение "0104640033503572220Y!OkcBHelix93iTAJ" Тогда
-	И Я запоминаю значение выражения 'MarkingCode=\"MDEwNDY0MDAzMzUwMzU3MjIyMFkhT2tjQh05M2lUQUo=\" ' в переменную "MarkingCode"
+	И Я запоминаю значение выражения 'MarkingCode=\"MDEwNDY0MDAzMzUwMzU3MjIyMFkhT2tjQh05M2lUQUo=\"' в переменную "MarkingCode"
 	И Я запоминаю значение выражения 'Time=11231456789\"' в переменную "Time"
 	И Я запоминаю значение выражения '0104640033503572220Y!OkcB93iTAJ' в переменную "Штрихкод"
 	И Я запоминаю значение выражения 'AttributeValue=\"UUID=test-cd41xs5a1w15d1&amp;' в переменную "AttributeValue"
@@ -91,7 +91,7 @@
 	| '		<IndustryAttribute/>'                                                                                                                                                                                                                                          |
 	| '	</Parameters>'                                                                                                                                                                                                                                                  |
 	| '	<Positions>'                                                                                                                                                                                                                                                    |
-	| '		<FiscalString Name=\" $$МаркированныйТовар$$\" Quantity=\"1\" PriceWithDiscount=\"500\" AmountWithDiscount=\"500\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"33\" $MarkingCode$MeasureOfQuantity=\"0\">' |
+	| '		<FiscalString Name=\" $$МаркированныйТовар$$\" Quantity=\"1\" PriceWithDiscount=\"500\" AmountWithDiscount=\"500\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"33\" $MarkingCode$ MeasureOfQuantity=\"0\">' |
 	| '			<IndustryAttribute IdentifierFOIV=\"030\" DocumentDate=\"21.11.2023\" DocumentNumber=\"1944\" $AttributeValue$$Time$/>'                                                                                             |
 	| '			<AgentData/>'                                                                                                                                                                                                                                                 |
 	| '			<VendorData/>'                                                                                                                                                                                                                                                |
@@ -102,5 +102,61 @@
 И таблица 'ПозицииЧека' стала равной:
 	| 'Наименование'            | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета'                              | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод'   | 'Признак способа расчета'   |
 	| ' $$МаркированныйТовар$$' | '1,00'       | ''             | '500,00' | '500,00'           | '500,00' | '1'            | 'Товар маркируемый средством идентификации, имеющий КМ' | ''           | ''          | '$Штрихкод$' | 'Передача с полной оплатой' |
+
+
+Сценарий: Проверяю XML когда константа "Ложь"
+Дано Я открываю основную форму списка регистра сведений "ФискальныеОперации"
+И в таблице "Список" я перехожу к последней строке
+И в таблице "Список" я выбираю текущую строку
+И я перехожу к закладке с именем 'XML'
+И элемент формы с именем 'ТекстXML' стал равен по шаблону: 
+	| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'         |
+	| '<CheckPackage>'                                     |
+	| '  <Parameters CashierName=\"*\"'                    |
+	| '      OperationType=\"1\"'                          |
+	| '      TaxationSystem=\"0\"'                         |
+	| '      CustomerEmail=\"\"'                           |
+	| '      CustomerPhone=\"\">'                          |
+	| '    <AgentData/>'                                   |
+	| '    <VendorData/>'                                  |
+	| '    <CustomerDetail/>'                              |
+	| '    <OperationalAttribute/>'                        |
+	| '    <IndustryAttribute/>'                           |
+	| '  </Parameters>'                                    |
+	| '  <Positions>'                                      |
+	| '    <FiscalString Name=\" $$МаркированныйТовар$$\"' |
+	| '        Quantity=\"1\"'                             |
+	| '        PriceWithDiscount=\"500\"'                  |
+	| '        AmountWithDiscount=\"500\"'                 |
+	| '        DiscountAmount=\"0\"'                       |
+	| '        Department=\"1\"'                           |
+	| '        VATRate=\"none\"'                           |
+	| '        PaymentMethod=\"4\"'                        |
+	| '        CalculationSubject=\"33\"'                  |
+	| '        $MarkingCode$'                              |
+	| '        MeasureOfQuantity=\"0\">'                   |
+	| '      <IndustryAttribute IdentifierFOIV=\"030\"'    |
+	| '          DocumentDate=\"21.11.2023\"'              |
+	| '          DocumentNumber=\"1944\"'                  |
+	| '          $AttributeValue$$Time$"/>'                |
+	| '      <AgentData/>'                                 |
+	| '      <VendorData/>'                                |
+	| '    </FiscalString>'                                |
+	| '  </Positions>'                                     |
+	| '  <Payments Cash=\"500\"'                           |
+	| '      ElectronicPayment=\"0\"'                      |
+	| '      PrePayment=\"0\"'                             |
+	| '      PostPayment=\"0\"'                            |
+	| '      Barter=\"0\"/>'                               |
+	| '</CheckPackage>'                                    |
+
+Сценарий: Я оплачиваю документ без константы ККТ.
+	И я нажимаю на кнопку с именем 'КнопкаОплатитьРеализацию'
+	И я нажимаю на кнопку с именем 'КнопкаВидыОплатаНаименованиеСтрока_0'
+	И я нажимаю на кнопку с именем 'КнопкаВидыОплатПрименитьеСуммуСтрока_0'
+	И я нажимаю на кнопку с именем 'Оплатить'
+	Тогда открылось окно "Чек напечатан?"
+	И я нажимаю на кнопку с именем 'Да'
+	И Я проверяю ЗакрытиеСмены		
 
 
