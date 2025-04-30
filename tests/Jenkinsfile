@@ -14,18 +14,18 @@ pipeline {
 			steps {
 				script {
 					updateConfigFile()
-					bat "python -X utf8 tests/scripts/drop_db.py"													// Удаление существующей базы
-					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 												
-					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища 			
-					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных 											
-					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 					
-					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных 						
-					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных 						
-					runDbOperation("restore", "\"${env.dbTests}\"") 												// Загрузка .dt в новую базы 										
-					runDbOperation("session_kill", "\"${env.dbTests}\"")											// Отключение пользователей от базы данных 												
-					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных 													
-					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации базы данных										
-				}
+					bat "python -X utf8 tests/scripts/drop_db.py"                             // Удаление существующей базы
+					killSessions(params.dbName)                                              // Отключение пользователей от базы данных
+					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Загрузка данных из хранилища
+					runDbOperation("updatedbRep", "\"${params.dbName}\"")                    // Обновление конфигурации базы данных
+					killSessions(params.dbName)                                              // Повторное отключение пользователей
+					runDbOperation("unload", "\"${params.dbName}\"")                         // Выгрузка файла .cf из базы данных
+					runDbOperation("create", "\"${env.dbTests}\"")                           // Создание новой пустой базы данных
+					runDbOperation("restore", "\"${env.dbTests}\"")                          // Загрузка .dt в новую базу
+					killSessions(env.dbTests)                                               // Отключение пользователей от тестовой базы
+					runDbOperation("load", "\"${env.dbTests}\"")                             // Загрузка файла .cf в базу данных
+					runDbOperation("updatedb", "\"${env.dbTests}\"")                         // Обновление конфигурации базы данных
+}
 			}
 		}
         stage('Сценарное тестирвоание') {
@@ -98,6 +98,9 @@ def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+}
+def killSessions(dbName) {
+	runDbOperation("session_kill", "\"${dbName}\"")
 }
 		// 1) Этап создание базы 
 		// 2) Загрузка .cf из релизного
