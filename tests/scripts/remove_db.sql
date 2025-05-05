@@ -1,14 +1,12 @@
-USE master
-GO
+-- Для PostgreSQL (правильный синтаксис)
+\echo 'Удаление базы :infobase...'
 
-DECLARE @mydb nvarchar(50);
--- Ввести имя базы данных
-set @mydb = '$(infobase)';
+-- Принудительно завершаем все подключения к базе
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+FROM pg_stat_activity
+WHERE pg_stat_activity.datname = :'infobase' AND pid <> pg_backend_pid();
 
-PRINT 'Removing ' + @mydb + ' from database...'
+-- Удаляем базу
+DROP DATABASE IF EXISTS :"infobase";
 
-EXEC('ALTER DATABASE ' + @mydb + ' SET SINGLE_USER WITH ROLLBACK IMMEDIATE')
-
-EXEC ('DROP DATABASE ' + @mydb)
-
-PRINT @mydb + ' removed sucessfully'
+\echo 'База :infobase удалена.'
