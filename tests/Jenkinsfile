@@ -16,7 +16,7 @@ pipeline {
 					// Создаем пустые каталоги
 					updateConfigFile()
 					bat "python -X utf8 tests/scripts/drop_db.py"                             						// Удаление существующей базы
-					
+					killSessions(env.dbTests)  
 					killSessions(params.dbName)                                              						// Отключение пользователей от базы данных
 					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища
 					runDbOperation("updatedbRep", "\"${params.dbName}\"")                    						// Обновление конфигурации базы данных
