@@ -6,32 +6,62 @@ import sys
 import shutil
 from colorama import init, Fore, Style
 import time
-
-# Инициализация colorama для цветного вывода
-init(autoreset=True)
+import subprocess
+import time
+from colorama import Fore, Style
 
 def restart_1c_service(service_name="1C:Enterprise 8.3 Server Agent (x86-64)"):
     """Перезапускает указанную службу Windows."""
     print(f"{Fore.CYAN}Перезапуск службы '{service_name}'...{Style.RESET_ALL}")
     try:
-        # Останавливаем службу
-        subprocess.run(['net', 'stop', service_name], check=True, capture_output=True, text=True)
-        print(f"{Fore.GREEN}Служба '{service_name}' остановлена{Style.RESET_ALL}")
-        
-        # Даем немного времени, чтобы служба полностью остановилась
-        time.sleep(5)
-        
+        # Проверяем, существует ли служба
+        check_service = subprocess.run(
+            ['sc', 'query', service_name],
+            capture_output=True,
+            text=True,
+            encoding='cp1251',  # Используем CP1251 для русской локализации
+            check=False
+        )
+        if check_service.returncode != 0:
+            print(f"{Fore.YELLOW}Служба '{service_name}' не найдена или недоступна{Style.RESET_ALL}")
+            return False
+
+        # Проверяем статус службы
+        status_output = check_service.stdout.lower()
+        if 'running' not in status_output:
+            print(f"{Fore.YELLOW}Служба '{service_name}' уже остановлена, пытаемся запустить...{Style.RESET_ALL}")
+        else:
+            # Останавливаем службу
+            subprocess.run(
+                ['net', 'stop', service_name],
+                capture_output=True,
+                text=True,
+                encoding='cp1251',  # Используем CP1251
+                check=True
+            )
+            print(f"{Fore.GREEN}Служба '{service_name}' остановлена{Style.RESET_ALL}")
+            time.sleep(5)  # Даем время на завершение остановки
+
         # Запускаем службу
-        subprocess.run(['net', 'start', service_name], check=True, capture_output=True, text=True)
+        subprocess.run(
+            ['net', 'start', service_name],
+            capture_output=True,
+            text=True,
+            encoding='cp1251',  # Используем CP1251
+            check=True
+        )
         print(f"{Fore.GREEN}Служба '{service_name}' запущена{Style.RESET_ALL}")
-        
-        # Даем время для инициализации службы
-        time.sleep(5)
+        time.sleep(5)  # Даем время на инициализацию
         return True
+
     except subprocess.CalledProcessError as e:
         print(f"{Fore.RED}Ошибка при перезапуске службы '{service_name}': {str(e)}{Style.RESET_ALL}")
+        if e.stderr:
+            print(f"{Fore.RED}Детали ошибки: {e.stderr}{Style.RESET_ALL}")
         return False
-
+    except Exception as e:
+        print(f"{Fore.RED}Неизвестная ошибка при перезапуске службы '{service_name}': {str(e)}{Style.RESET_ALL}")
+        return False
 def drop_1c_database():
     # Настройки
     infobase = "avtotestqa"
