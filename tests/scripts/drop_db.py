@@ -10,7 +10,7 @@ import time
 # Инициализация colorama для цветного вывода
 init(autoreset=True)
 
-def restart_1c_service(service_name="1C:Enterprise 8.3 Server Agent"):
+def restart_1c_service(service_name="1C:Enterprise 8.3 Server Agent (x86-64)"):
     """Перезапускает указанную службу Windows."""
     print(f"{Fore.CYAN}Перезапуск службы '{service_name}'...{Style.RESET_ALL}")
     try:
