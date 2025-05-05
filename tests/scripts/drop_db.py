@@ -5,9 +5,32 @@ import pythoncom
 import sys
 import shutil
 from colorama import init, Fore, Style
+import time
 
 # Инициализация colorama для цветного вывода
 init(autoreset=True)
+
+def restart_1c_service(service_name="1C:Enterprise 8.3 Server Agent"):
+    """Перезапускает указанную службу Windows."""
+    print(f"{Fore.CYAN}Перезапуск службы '{service_name}'...{Style.RESET_ALL}")
+    try:
+        # Останавливаем службу
+        subprocess.run(['net', 'stop', service_name], check=True, capture_output=True, text=True)
+        print(f"{Fore.GREEN}Служба '{service_name}' остановлена{Style.RESET_ALL}")
+        
+        # Даем немного времени, чтобы служба полностью остановилась
+        time.sleep(5)
+        
+        # Запускаем службу
+        subprocess.run(['net', 'start', service_name], check=True, capture_output=True, text=True)
+        print(f"{Fore.GREEN}Служба '{service_name}' запущена{Style.RESET_ALL}")
+        
+        # Даем время для инициализации службы
+        time.sleep(5)
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"{Fore.RED}Ошибка при перезапуске службы '{service_name}': {str(e)}{Style.RESET_ALL}")
+        return False
 
 def drop_1c_database():
     # Настройки
@@ -22,6 +45,11 @@ def drop_1c_database():
     pg_password = "postgres"  # Пароль PostgreSQL
 
     try:
+        # Перезапуск службы 1С перед началом
+        print(f"{Fore.CYAN}0. Перезапуск службы агента сервера 1С...{Style.RESET_ALL}")
+        if not restart_1c_service():
+            print(f"{Fore.YELLOW}Не удалось перезапустить службу, продолжаем выполнение...{Style.RESET_ALL}")
+
         # Инициализация COM
         pythoncom.CoInitialize()
         
