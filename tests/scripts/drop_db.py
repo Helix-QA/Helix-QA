@@ -127,6 +127,10 @@ def clean_1c_cache():
         f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv82"
     ]
     
+    # Добавляем путь к дополнительной папке
+    additional_folder = r"D:\jENKINS\workspace\1_FITNESS_VA\FITNESS_All\tests\build\results"  # Укажите ваш путь здесь
+    
+    # Очистка стандартных путей кэша
     for path in cache_paths:
         if not os.path.exists(path):
             continue
@@ -146,6 +150,16 @@ def clean_1c_cache():
                     print(f"{Fore.YELLOW}Не удалось удалить {item_path}: {str(e)}{Style.RESET_ALL}")
         except Exception as e:
             print(f"{Fore.YELLOW}Не удалось очистить кэш в {path}: {str(e)}{Style.RESET_ALL}")
+    
+    # Удаление дополнительной папки
+    if os.path.exists(additional_folder):
+        try:
+            shutil.rmtree(additional_folder, ignore_errors=True)
+            print(f"{Fore.GREEN}Дополнительная папка {additional_folder} успешно удалена{Style.RESET_ALL}")
+        except Exception as e:
+            print(f"{Fore.YELLOW}Не удалось удалить дополнительную папку {additional_folder}: {str(e)}{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.YELLOW}Дополнительная папка {additional_folder} не существует{Style.RESET_ALL}")
 
 if __name__ == "__main__":
     print(f"{Fore.BLUE}=== Начало удаления базы ==={Style.RESET_ALL}")
