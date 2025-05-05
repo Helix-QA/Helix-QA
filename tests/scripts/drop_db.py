@@ -14,7 +14,7 @@ def parse_arguments():
     parser.add_argument("--serverPg", default="localhost", help="Адрес PostgreSQL-сервера")
     parser.add_argument("--pgPort", default="5432", help="Порт PostgreSQL-сервера")
     parser.add_argument("--infobase", default="avtotestqa", help="Имя информационной базы")
-    parser.add_argument("--user", default="Админ", help="Имя администратора кластера 1С")
+    parser.add_argument("--user", default="", help="Имя администратора кластера 1С")
     parser.add_argument("--passw", default="", help="Пароль администратора кластера 1С")
     parser.add_argument("--dbUser", default="Админ", help="Логин от базы 1С")
     parser.add_argument("--dbPwd", default="", help="Пароль от базы 1С")
