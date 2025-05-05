@@ -1,9 +1,7 @@
-USE master
-GO
+\echo 'Завершение подключений к базе :infobase...'
 
-DECLARE @mydb nvarchar(50);
--- Ввести имя базы данных
-set @mydb = '$(infobase)';
-PRINT 'Processing ' + @mydb + ' to offline mode...'
-EXEC('ALTER DATABASE ' + @mydb + ' SET OFFLINE WITH ROLLBACK IMMEDIATE')
-PRINT @mydb + ' switched to offline mode sucessfully'
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+FROM pg_stat_activity
+WHERE pg_stat_activity.datname = :'infobase' AND pid <> pg_backend_pid();
+
+\echo 'Все подключения к базе :infobase завершены.'

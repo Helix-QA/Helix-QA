@@ -1,9 +1,15 @@
-use master
-DECLARE @mydb nvarchar(50);
-set @mydb = '$(restoreddb)';
-if db_id(@mydb) is null
-begin
-declare @sqltext nvarchar(50);
-set @sqltext = 'create database '+@mydb;
-exec(@sqltext)
-end
+\echo 'Проверка и создание базы :restoreddb...'
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT FROM pg_database WHERE datname = :'restoreddb'
+    ) THEN
+        EXECUTE 'CREATE DATABASE "' || :'restoreddb' || '"';
+        RAISE NOTICE 'База данных % создана.', :'restoreddb';
+    ELSE
+        RAISE NOTICE 'База данных % уже существует.', :'restoreddb';
+    END IF;
+END $$;
+
+\echo 'Операция с базой :restoreddb завершена.'
