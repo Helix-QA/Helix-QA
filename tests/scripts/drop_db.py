@@ -134,6 +134,9 @@ def clean_1c_cache():
         try:
             for item in os.listdir(path):
                 item_path = os.path.join(path, item)
+                # Пропускаем папку ExtCompT
+                if item == 'ExtCompT':
+                    continue
                 try:
                     if os.path.isdir(item_path):
                         shutil.rmtree(item_path, ignore_errors=True)

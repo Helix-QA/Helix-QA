@@ -12,4 +12,4 @@ if "%1"=="unload"       call vrunner unload "D:\\cf\\1Cv8.cf" --ibconnection /Sl
 if "%1"=="load"         call vrunner load --src "D:\\cf\\1Cv8.cf" --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="updatedbRep"  call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="updatedb"     call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
-if "%1"=="vanessa"      call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ --additional-keys ЗавершитьРаботуСистемы
+if "%1"=="vanessa"      call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ
