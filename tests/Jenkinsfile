@@ -13,10 +13,7 @@ pipeline {
 		stage("Подготовка и создание БД") {
 			steps {
 				script {
-					// Создаем пустые каталоги
-				
 					updateConfigFile()
-					killSessions(env.dbTests)  
 					bat "python -X utf8 tests/scripts/drop_db.py"                             						// Удаление существующей базы
 	
 					killSessions(params.dbName)                                              						// Отключение пользователей от базы данных
