@@ -1,231 +1,183 @@
+import argparse
 import os
 import subprocess
 import win32com.client
-import pythoncom
+import re
 import sys
-import shutil
-from colorama import init, Fore, Style
-import time
-import subprocess
-import time
-from colorama import Fore, Style
+from pathlib import Path
 
-def restart_1c_service(service_name="1C:Enterprise 8.3 Server Agent (x86-64)"):
-    """Перезапускает указанную службу Windows."""
-    print(f"{Fore.CYAN}Перезапуск службы '{service_name}'...{Style.RESET_ALL}")
-    try:
-        # Проверяем, существует ли служба
-        check_service = subprocess.run(
-            ['sc', 'query', service_name],
-            capture_output=True,
-            text=True,
-            encoding='cp1251',  # Используем CP1251 для русской локализации
-            check=False
-        )
-        if check_service.returncode != 0:
-            print(f"{Fore.YELLOW}Служба '{service_name}' не найдена или недоступна{Style.RESET_ALL}")
-            return False
+def parse_arguments():
+    """Парсинг аргументов командной строки."""
+    parser = argparse.ArgumentParser(description="Удаление базы 1С из кластера и PostgreSQL")
+    parser.add_argument("--server1c", default="localhost", help="Адрес сервера 1С")
+    parser.add_argument("--agentPort", default="1550", help="Порт агента 1С")
+    parser.add_argument("--serverPg", default="localhost", help="Адрес PostgreSQL-сервера")
+    parser.add_argument("--pgPort", default="5432", help="Порт PostgreSQL-сервера")
+    parser.add_argument("--infobase", default="avtotestqa", help="Имя информационной базы")
+    parser.add_argument("--user", default="", help="Имя администратора 1С")
+    parser.add_argument("--passw", default="", help="Пароль администратора 1С")
+    parser.add_argument("--pgUser", default="postgres", help="Имя пользователя PostgreSQL")
+    parser.add_argument("--pgPwd", default="", help="Пароль PostgreSQL")
+    parser.add_argument("--fulldrop", action="store_true", help="Полное удаление, включая базу PostgreSQL")
+    return parser.parse_args()
 
-        # Проверяем статус службы
-        status_output = check_service.stdout.lower()
-        if 'running' not in status_output:
-            print(f"{Fore.YELLOW}Служба '{service_name}' уже остановлена, пытаемся запустить...{Style.RESET_ALL}")
-        else:
-            # Останавливаем службу
-            subprocess.run(
-                ['net', 'stop', service_name],
-                capture_output=True,
-                text=True,
-                encoding='cp1251',  # Используем CP1251
-                check=True
-            )
-            print(f"{Fore.GREEN}Служба '{service_name}' остановлена{Style.RESET_ALL}")
-            time.sleep(5)  # Даем время на завершение остановки
-
-        # Запускаем службу
-        subprocess.run(
-            ['net', 'start', service_name],
-            capture_output=True,
-            text=True,
-            encoding='cp1251',  # Используем CP1251
-            check=True
-        )
-        print(f"{Fore.GREEN}Служба '{service_name}' запущена{Style.RESET_ALL}")
-        time.sleep(5)  # Даем время на инициализацию
-        return True
-
-    except subprocess.CalledProcessError as e:
-        print(f"{Fore.RED}Ошибка при перезапуске службы '{service_name}': {str(e)}{Style.RESET_ALL}")
-        if e.stderr:
-            print(f"{Fore.RED}Детали ошибки: {e.stderr}{Style.RESET_ALL}")
-        return False
-    except Exception as e:
-        print(f"{Fore.RED}Неизвестная ошибка при перезапуске службы '{service_name}': {str(e)}{Style.RESET_ALL}")
-        return False
-def drop_1c_database():
-    # Настройки
-    infobase = "avtotestqa"
-    db_username = "Админ"  # Логин от базы 1С
-    db_password = ""       # Пароль от базы 1С (пустой)
-    
-    # Настройки PostgreSQL
-    pg_server = "localhost"
-    pg_port = "5432"
-    pg_user = "postgres"
-    pg_password = "postgres"  # Пароль PostgreSQL
-
-    try:
-        # Перезапуск службы 1С перед началом
-        print(f"{Fore.CYAN}0. Перезапуск службы агента сервера 1С...{Style.RESET_ALL}")
-        if not restart_1c_service():
-            print(f"{Fore.YELLOW}Не удалось перезапустить службу, продолжаем выполнение...{Style.RESET_ALL}")
-
-        # Инициализация COM
-        pythoncom.CoInitialize()
-        
-        print(f"{Fore.CYAN}1. Подключение к агенту сервера 1С...{Style.RESET_ALL}")
-        v83_com = win32com.client.gencache.EnsureDispatch("V83.ComConnector")
-        agent = v83_com.ConnectAgent("localhost:1540")
-        
-        print(f"{Fore.CYAN}2. Получаем кластер...{Style.RESET_ALL}")
-        clusters = agent.GetClusters()
-        if not clusters:
-            print(f"{Fore.YELLOW}Не найден ни один кластер 1С, пропускаем удаление из кластера...{Style.RESET_ALL}")
-            base_obj = None
-        else:
-            cluster = clusters[0]
-            
-            print(f"{Fore.CYAN}3. Аутентификация в кластере...{Style.RESET_ALL}")
-            agent.Authenticate(cluster, "", "")  # Пустые данные для кластера
-            
-            print(f"{Fore.CYAN}4. Получаем рабочие процессы...{Style.RESET_ALL}")
-            processes = agent.GetWorkingProcesses(cluster)
-            if not processes:
-                print(f"{Fore.YELLOW}Не найдено рабочих процессов, пропускаем удаление из кластера...{Style.RESET_ALL}")
-                base_obj = None
-            else:
-                print(f"{Fore.CYAN}5. Подключение к рабочему процессу...{Style.RESET_ALL}")
-                wp = v83_com.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
-                
-                print(f"{Fore.CYAN}6. Добавляем аутентификацию для базы (логин: {db_username})...{Style.RESET_ALL}")
-                wp.AddAuthentication(db_username, db_password)
-                
-                print(f"{Fore.CYAN}7. Поиск базы в кластере...{Style.RESET_ALL}")
-                bases = wp.GetInfoBases()
-                base_obj = None
-                
-                for base in bases:
-                    if base.Name.lower() == infobase.lower():
-                        base_obj = base
-                        break
-                
-                if not base_obj:
-                    print(f"{Fore.YELLOW}База '{infobase}' не найдена в кластере 1С, пропускаем удаление из кластера...{Style.RESET_ALL}")
-                else:
-                    print(f"{Fore.CYAN}8. Удаляем базу '{infobase}'...{Style.RESET_ALL}")
-                    try:
-                        wp.DropInfoBase(base_obj, 0)
-                        print(f"{Fore.GREEN}База успешно удалена из кластера 1С{Style.RESET_ALL}")
-                    except Exception as e:
-                        print(f"{Fore.RED}Ошибка при удалении базы из кластера: {str(e)}{Style.RESET_ALL}")
-        
-        # Удаление из PostgreSQL
-        print(f"{Fore.CYAN}9. Удаление из PostgreSQL...{Style.RESET_ALL}")
-        try:
-            os.environ['PGPASSWORD'] = pg_password
-            db_name = infobase.lower()
-            
-            commands = [
-                f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{db_name}' AND pid <> pg_backend_pid();",
-                f"DROP DATABASE IF EXISTS {db_name};"
-            ]
-            
-            for cmd in commands:
-                result = subprocess.run([
-                    'psql',
-                    '-h', pg_server,
-                    '-p', pg_port,
-                    '-U', pg_user,
-                    '-d', 'postgres',
-                    '-c', cmd
-                ], check=True, capture_output=True, text=True)
-                
-                # Проверяем, если база не существует
-                if cmd.startswith("DROP DATABASE") and "does not exist" in result.stderr:
-                    print(f"{Fore.YELLOW}База '{db_name}' не найдена в PostgreSQL, пропускаем удаление...{Style.RESET_ALL}")
-                elif cmd.startswith("DROP DATABASE"):
-                    print(f"{Fore.GREEN}База успешно удалена из PostgreSQL{Style.RESET_ALL}")
-                    
-        except subprocess.CalledProcessError as e:
-            print(f"{Fore.YELLOW}Ошибка при удалении из PostgreSQL (возможно, база уже отсутствует): {str(e)}{Style.RESET_ALL}")
-        finally:
-            if 'PGPASSWORD' in os.environ:
-                del os.environ['PGPASSWORD']
-        
-        # Очистка кэша
-        print(f"{Fore.CYAN}10. Очистка кэша 1С...{Style.RESET_ALL}")
-        clean_1c_cache()
-        
-        print(f"{Fore.GREEN}Кэш 1С успешно очищен{Style.RESET_ALL}")
-        print(f"{Fore.GREEN}Скрипт успешно завершен{Style.RESET_ALL}")
-        return True
-        
-    except Exception as e:
-        print(f"{Fore.RED}Критическая ошибка: {str(e)}{Style.RESET_ALL}")
-        return False
-    finally:
-        pythoncom.CoUninitialize()
-
-def clean_1c_cache():
-    user = os.getenv('USERNAME')
-    cache_paths = [
-        f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv8",
-        f"C:\\Users\\{user}\\AppData\\Roaming\\1C\\1cv8",
-        f"C:\\Users\\{user}\\AppData\\Roaming\\1C\\1cv82",
-        f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv82"
+def run_psql(pg_server, pg_port, pg_user, pg_pwd, script, infobase, dbname="postgres"):
+    """Выполнение SQL-команды с помощью psql."""
+    env = os.environ.copy()
+    if pg_pwd:
+        env["PGPASSWORD"] = pg_pwd
+    cmd = [
+        "psql",
+        "-h", pg_server,
+        "-p", pg_port,
+        "-U", pg_user,
+        "-d", dbname,
+        "-v", f"infobase={infobase}",
+        "-f", script
     ]
+    try:
+        result = subprocess.run(cmd, env=env, check=True, capture_output=True, text=True)
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"Ошибка выполнения psql: {e.stderr}")
+        raise
+
+def terminate_pg_connections(pg_server, pg_port, pg_user, pg_pwd, infobase):
+    """Завершение активных подключений к базе PostgreSQL."""
+    env = os.environ.copy()
+    if pg_pwd:
+        env["PGPASSWORD"] = pg_pwd
+    query = f"""
+    SELECT pg_terminate_backend(pg_stat_activity.pid)
+    FROM pg_stat_activity
+    WHERE pg_stat_activity.datname = '{infobase}' AND pid <> pg_backend_pid();
+    """
+    cmd = [
+        "psql",
+        "-h", pg_server,
+        "-p", pg_port,
+        "-U", pg_user,
+        "-d", "postgres",
+        "-c", query
+    ]
+    try:
+        result = subprocess.run(cmd, env=env, check=True, capture_output=True, text=True)
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"Ошибка завершения подключений: {e.stderr}")
+        raise
+
+def clear_1c_cache():
+    """Очистка кэша 1С для текущего пользователя."""
+    users = [os.environ.get("USERNAME")]
+    for user in users:
+        user_path = f"C:\\Users\\{user}"
+        paths = [
+            f"{user_path}\\AppData\\Local\\1C\\1cv8",
+            f"{user_path}\\AppData\\Roaming\\1C\\1cv8",
+            f"{user_path}\\AppData\\Roaming\\1C\\1cv82",
+            f"{user_path}\\AppData\\Local\\1C\\1cv82",
+        ]
+        for path in paths:
+            if os.path.exists(path):
+                print(f"Очистка кэша 1С в {path}")
+                for item in os.listdir(path):
+                    if re.match(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", item):
+                        item_path = os.path.join(path, item)
+                        try:
+                            subprocess.run(f'rmdir /S /Q "{item_path}"', shell=True, check=True)
+                        except subprocess.CalledProcessError as e:
+                            print(f"Ошибка удаления {item_path}: {e}")
+
+def main():
+    """Основная логика удаления базы 1С."""
+    args = parse_arguments()
     
-    # Добавляем путь к дополнительной папке
-    additional_folder = r"D:\jENKINS\workspace\1_FITNESS_VA\FITNESS_All\tests\build\results"  # Укажите ваш путь здесь
+    # Подключение к серверу 1С
+    try:
+        com_connector = win32com.client.Dispatch("V83.COMConnector")
+        server_agent = com_connector.ConnectAgent(f"{args.server1c}:{args.agentPort}")
+    except Exception as e:
+        print(f"Ошибка подключения к агенту 1С: {e}")
+        sys.exit(1)
+
+    # Получение кластера
+    clusters = server_agent.GetClusters()
+    if not clusters:
+        print("Кластеры не найдены")
+        sys.exit(1)
     
-    # Очистка стандартных путей кэша
-    for path in cache_paths:
-        if not os.path.exists(path):
-            continue
-        
+    cluster = clusters[0]
+    server_agent.Authenticate(cluster, "", "")
+
+    # Подключение к рабочему процессу
+    working_processes = server_agent.GetWorkingProcesses(cluster)
+    if not working_processes:
+        print("Рабочие процессы не найдены")
+        sys.exit(1)
+
+    working_process = com_connector.ConnectWorkingProcess(f"tcp://{args.server1c}:{working_processes[0].MainPort}")
+    if args.user:
+        working_process.AddAuthentication(args.user, args.passw)
+
+    # Поиск информационной базы
+    base_found = False
+    base = None
+    for info_base in working_process.GetInfoBases():
+        if info_base.Name == args.infobase:
+            base_found = True
+            base = info_base
+            break
+
+    if not base_found:
+        print(f"Информационная база {args.infobase} не найдена в кластере 1С")
+        sys.exit(0)
+
+    # Блокировка заданий и сессий
+    base.ScheduledJobsDenied = True
+    base.SessionsDenied = True
+    working_process.UpdateInfoBase(base)
+
+    # Разрыв соединений
+    connections = working_process.GetInfoBaseConnections(base)
+    for conn in connections:
         try:
-            for item in os.listdir(path):
-                item_path = os.path.join(path, item)
-                # Пропускаем папку ExtCompT
-                if item == 'ExtCompT':
-                    continue
+            print(f"Разрыв соединения {conn.AppID} для базы {args.infobase}")
+            working_process.Disconnect(conn)
+        except Exception as e:
+            print(f"Ошибка разрыва соединения: {e}")
+
+    # Разрыв сессий
+    for curr_cluster in clusters:
+        sessions = server_agent.GetSessions(curr_cluster)
+        for session in sessions:
+            if session.InfoBase and session.InfoBase.Name == args.infobase:
+                print(f"Разрыв сессии {session.AppID} для пользователя {session.UserName}")
                 try:
-                    if os.path.isdir(item_path):
-                        shutil.rmtree(item_path, ignore_errors=True)
-                    else:
-                        os.remove(item_path)
+                    server_agent.TerminateSession(cluster, session)
                 except Exception as e:
-                    print(f"{Fore.YELLOW}Не удалось удалить {item_path}: {str(e)}{Style.RESET_ALL}")
-        except Exception as e:
-            print(f"{Fore.YELLOW}Не удалось очистить кэш в {path}: {str(e)}{Style.RESET_ALL}")
-    
-    # Удаление дополнительной папки
-    if os.path.exists(additional_folder):
-        try:
-            shutil.rmtree(additional_folder, ignore_errors=True)
-            print(f"{Fore.GREEN}Дополнительная папка {additional_folder} успешно удалена{Style.RESET_ALL}")
-        except Exception as e:
-            print(f"{Fore.YELLOW}Не удалось удалить дополнительную папку {additional_folder}: {str(e)}{Style.RESET_ALL}")
-    else:
-        print(f"{Fore.YELLOW}Дополнительная папка {additional_folder} не существует{Style.RESET_ALL}")
+                    print(f"Ошибка разрыва сессии: {e}")
+
+    # Удаление базы из кластера
+    print("Удаление базы из кластера...")
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Завершение активных подключений к базе PostgreSQL
+        terminate_pg_connections(args.serverPg, args.pgPort, args.pgUser, args.pgPwd, args.infobase)
+        
+        # Удаление базы из кластера 1С
+        working_process.DropInfoBase(base, 0)
+        
+        if args.fulldrop:
+            # Полное удаление базы PostgreSQL
+            run_psql(args.serverPg, args.pgPort, args.pgUser, args.pgPwd, f"{script_dir}\\remove_db.sql", args.infobase)
+        
+        clear_1c_cache()
+        print("База успешно удалена")
+    except Exception as e:
+        print(f"Ошибка удаления базы: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    print(f"{Fore.BLUE}=== Начало удаления базы ==={Style.RESET_ALL}")
-    success = drop_1c_database()
-    
-    if success:
-        print(f"{Fore.BLUE}=== Удаление завершено успешно ==={Style.RESET_ALL}")
-        sys.exit(0)
-    else:
-        print(f"{Fore.RED}=== Удаление завершено с ошибками ==={Style.RESET_ALL}")
-        sys.exit(1)
+    main()
