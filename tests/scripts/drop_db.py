@@ -14,8 +14,10 @@ def parse_arguments():
     parser.add_argument("--serverPg", default="localhost", help="Адрес PostgreSQL-сервера")
     parser.add_argument("--pgPort", default="5432", help="Порт PostgreSQL-сервера")
     parser.add_argument("--infobase", default="avtotestqa", help="Имя информационной базы")
-    parser.add_argument("--user", default="", help="Имя администратора 1С")
-    parser.add_argument("--passw", default="", help="Пароль администратора 1С")
+    parser.add_argument("--user", default="Админ", help="Имя администратора кластера 1С")
+    parser.add_argument("--passw", default="", help="Пароль администратора кластера 1С")
+    parser.add_argument("--dbUser", default="Админ", help="Логин от базы 1С")
+    parser.add_argument("--dbPwd", default="", help="Пароль от базы 1С")
     parser.add_argument("--pgUser", default="postgres", help="Имя пользователя PostgreSQL")
     parser.add_argument("--pgPwd", default="postgres", help="Пароль PostgreSQL")
     parser.add_argument("--fulldrop", action="store_true", help="Полное удаление, включая базу PostgreSQL")
@@ -108,7 +110,7 @@ def main():
         sys.exit(1)
     
     cluster = clusters[0]
-    server_agent.Authenticate(cluster, "", "")
+    server_agent.Authenticate(cluster, args.user, args.passw)
 
     # Подключение к рабочему процессу
     working_processes = server_agent.GetWorkingProcesses(cluster)
@@ -117,8 +119,7 @@ def main():
         sys.exit(1)
 
     working_process = com_connector.ConnectWorkingProcess(f"tcp://{args.server1c}:{working_processes[0].MainPort}")
-    if args.user:
-        working_process.AddAuthentication(args.user, args.passw)
+    working_process.AddAuthentication(args.dbUser, args.dbPwd)  # Аутентификация в базе
 
     # Поиск информационной базы
     base_found = False
