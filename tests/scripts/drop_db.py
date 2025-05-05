@@ -10,14 +10,14 @@ def parse_arguments():
     """Парсинг аргументов командной строки."""
     parser = argparse.ArgumentParser(description="Удаление базы 1С из кластера и PostgreSQL")
     parser.add_argument("--server1c", default="localhost", help="Адрес сервера 1С")
-    parser.add_argument("--agentPort", default="1550", help="Порт агента 1С")
+    parser.add_argument("--agentPort", default="1540", help="Порт агента 1С")
     parser.add_argument("--serverPg", default="localhost", help="Адрес PostgreSQL-сервера")
     parser.add_argument("--pgPort", default="5432", help="Порт PostgreSQL-сервера")
     parser.add_argument("--infobase", default="avtotestqa", help="Имя информационной базы")
     parser.add_argument("--user", default="", help="Имя администратора 1С")
     parser.add_argument("--passw", default="", help="Пароль администратора 1С")
     parser.add_argument("--pgUser", default="postgres", help="Имя пользователя PostgreSQL")
-    parser.add_argument("--pgPwd", default="", help="Пароль PostgreSQL")
+    parser.add_argument("--pgPwd", default="postgres", help="Пароль PostgreSQL")
     parser.add_argument("--fulldrop", action="store_true", help="Полное удаление, включая базу PostgreSQL")
     return parser.parse_args()
 
