@@ -151,7 +151,7 @@ def main():
     for curr_cluster in clusters:
         sessions = server_agent.GetSessions(curr_cluster)
         for session in sessions:
-            if session.InfoBase and session.InfoBase.Name == args.infobase:
+            if hasattr(session, 'infoBase') and session.infoBase and session.infoBase.Name == args.infobase:
                 print(f"Разрыв сессии {session.AppID} для пользователя {session.UserName}")
                 try:
                     server_agent.TerminateSession(cluster, session)
