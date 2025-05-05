@@ -37,7 +37,7 @@ pipeline {
 					try{
 						//runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																		
-						bat "allure generate tests/build/results -o tests/allure-report --clean" // Генерация Allure отчета													
+						//bat "allure generate tests/build/results -o tests/allure-report --clean" // Генерация Allure отчета													
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
@@ -49,11 +49,16 @@ pipeline {
 	post {
 		always {
 			script {
-				allure([
-					includeProperties: false,
-					jdk: '',
-					results: [['path': 'tests/build/results']]
-				])
+				
+				if (currentBuild.result == "ABORTED") {
+                    return
+                }
+
+                dir ('tests/build/results') {
+                    writeFile file:'environment.properties', text:"Build=${env.BUILD_URL}"
+                }
+
+                allure includeProperties: false, jdk: '', results: [[path: 'tests/build/results']]
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
 					if ("${params.dbName}" == "VAFitness") {
