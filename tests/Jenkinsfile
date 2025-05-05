@@ -14,9 +14,6 @@ pipeline {
 			steps {
 				script {
 					// Создаем пустые каталоги
-					dir ('tests/build') {
-						writeFile file:'dummy', text:''
-					}
 					updateConfigFile()
 					bat "python -X utf8 tests/scripts/drop_db.py"                             						// Удаление существующей базы
 					
