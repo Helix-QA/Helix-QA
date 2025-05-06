@@ -1,4 +1,3 @@
-def executePipeline() {
 pipeline {
     agent {
         label "OneS"
@@ -83,16 +82,7 @@ pipeline {
 		}
 	 }
 }
-	retry(3) {
-		try {
-			executePipeline()
-		} catch (Exception e) {
-			echo "Ошибка выполнения пайплайна: ${e.toString()}"
-			sleep(time: 10, unit: 'SECONDS') // пауза перед повтором
-			throw e
-		}
-	}
-}
+
 def runDbOperation(operation, params) {
 		try {
 			bat """
