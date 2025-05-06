@@ -13,18 +13,41 @@ pipeline {
 		stage("Подготовка и создание БД") {
 			steps {
 				script {
-					updateConfigFile()
-					bat "python -X utf8 tests/scripts/drop_db.py"													// Удаление существующей базы
-	//				runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 												
-					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища 			
-					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных 											
-	//				runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 					
-					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных 						
-					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных 						
-					runDbOperation("restore", "\"${env.dbTests}\"") 												// Загрузка .dt в новую базы 										
-					runDbOperation("session_kill", "\"${env.dbTests}\"")											// Отключение пользователей от базы данных 												
-					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных 													
-					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации базы данных										
+					def success = false
+					try {
+						// Первая попытка (с ретраем)
+						retry(3) {
+							runPreparationSteps()
+							success = true
+						}
+					} catch (Exception firstFail) {
+						echo "❌ Первая серия попыток не удалась. Перезапускаем службу агента 1С..."
+
+						// Перезапуск службы
+						try {
+							bat """
+							powershell -Command "Stop-Service -Name '1C:Enterprise 8.3 Server Agent (x86-64)' -Force"
+							timeout /t 3
+							powershell -Command "Start-Service -Name '1C:Enterprise 8.3 Server Agent (x86-64)'"
+							timeout /t 3
+							"""
+						} catch (Exception serviceError) {
+							error("❌ Не удалось перезапустить службу агента 1С: ${serviceError.message}")
+						}
+
+						// Вторая попытка, однократная
+						try {
+							runPreparationSteps()
+							success = true
+							echo "✅ Повторное выполнение успешно"
+						} catch (Exception secondFail) {
+							error("❌ Повтор после перезапуска службы тоже не удался: ${secondFail.message}")
+						}
+					}
+
+					if (!success) {
+						error("⛔ Не удалось выполнить подготовку БД")
+					}
 				}
 			}
 		}
@@ -46,24 +69,34 @@ pipeline {
 	post {
 		always {
 			script {
+				// Всегда генерируем Allure отчет
 				allure([
 					includeProperties: false,
 					jdk: '',
 					results: [['path': 'tests/build/results']]
 				])
+				
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-					if ("${params.dbName}" == "VAFitness") {
-						env.logo = "tests/notifications/logo.png"
+					// Определяем логотип в зависимости от базы данных
+					def logoPath = "tests/notifications/logo.png" // значение по умолчанию
+					switch("${params.dbName}") {
+						case "VAFitness":
+							logoPath = "tests/notifications/logo.png"
+							break
+						case "VASPA":
+							logoPath = "tests/notifications/logo1.png"
+							break
+						case "VAStoma":
+							logoPath = "tests/notifications/logo2.png"
+							break
 					}
-					else if ("${params.dbName}" == "VASPA") {
-						env.logo = "tests/notifications/logo1.png"
-					}
-					else if ("${params.dbName}" == "VAStoma") {
-						env.logo = "tests/notifications/logo2.png"
-					}
+					env.logo = logoPath
 
+					// Формируем URL для Allure отчета
 					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+					
+					// Обновляем конфигурационный файл для уведомлений
 					def configJson = readFile(file: 'tests/notifications/config.json')
 					def updatedConfigJson = configJson
 						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
@@ -71,18 +104,28 @@ pipeline {
 						.replace('"${logo}"', "\"${env.logo}\"")
 					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
+					// Отправляем уведомление с обработкой возможных ошибок
 					try {
 						bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
 					}
+				} else {
+					echo "Сборка завершилась со статусом ${currentBuild.currentResult}. Уведомление не отправляется."
 				}
 			}
 		}
-	 }
+		
+		failure {
+			echo "Stage 'Подготовка и создание БД' завершился с ошибкой после всех попыток"
+			// Дополнительные действия при окончательном падении
+		}
+		
+		success {
+			echo "Stage 'Подготовка и создание БД' успешно завершен"
+		}
+	}
 }
-
 def runDbOperation(operation, params) {
 		try {
 			bat """
