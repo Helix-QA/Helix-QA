@@ -16,7 +16,7 @@ pg_user = "postgres"
 pg_password = "postgres"  # Пароль PostgreSQL
 
 # Учетные данные для подключения к базе 1С (которую удаляем)
-base1c_user = "Администратор"  # Пользователь базы 1С
+base1c_user = "Админ"  # Пользователь базы 1С
 base1c_password = ""           # Пароль базы 1С
 
 base_found = False
