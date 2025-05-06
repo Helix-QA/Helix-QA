@@ -88,7 +88,7 @@ pipeline {
 			executePipeline()
 		} catch (Exception e) {
 			echo "Ошибка выполнения пайплайна: ${e.toString()}"
-			sleep(time: 30, unit: 'SECONDS') // пауза перед повтором
+			sleep(time: 10, unit: 'SECONDS') // пауза перед повтором
 			throw e
 		}
 	}
