@@ -18,7 +18,7 @@ pipeline {
 						// Первая попытка (с ретраем)
 						retry(3) {
 							runPreparationSteps()
-							success = true
+							success = true // Успех после успешного выполнения
 						}
 					} catch (Exception firstFail) {
 						echo "❌ Первая серия попыток не удалась. Перезапускаем службу агента 1С..."
@@ -37,7 +37,7 @@ pipeline {
 
 						// Вторая попытка, однократная
 						try {
-							runPreparationSteps()
+							runPreparationSteps() // Повторная попытка подготовки БД
 							success = true
 							echo "✅ Повторное выполнение успешно"
 						} catch (Exception secondFail) {
@@ -45,8 +45,9 @@ pipeline {
 						}
 					}
 
+					// Если после всех попыток не удалось выполнить
 					if (!success) {
-						error("⛔ Не удалось выполнить подготовку БД")
+						error("⛔ Не удалось выполнить подготовку БД после всех попыток")
 					}
 				}
 			}
