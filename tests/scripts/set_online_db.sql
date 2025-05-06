@@ -1,1 +1,0 @@
-\echo 'База :infobase уже доступна (online-режим не требуется в PostgreSQL).'
