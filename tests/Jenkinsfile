@@ -40,7 +40,7 @@ pipeline {
 					// 		if (attempt == 2 && !serviceRestarted) {
 					// 			echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
 					// 			// Команда для перезагрузки службы 1С (замените на актуальную)
-								bat 'chcp 1251 && python -X utf8 tests/scripts/AgentRestart.py'
+								bat 'chcp 65001 && python -X utf8 tests/scripts/AgentRestart.py'
 					// 			serviceRestarted = true
 					// 		}
 							
