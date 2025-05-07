@@ -50,13 +50,11 @@ pipeline {
 			steps {
 				script {
 						updateConfigFile()
-						runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Загрузка данных из хранилища
-						runDbOperation("updatedbRep", "\"${params.dbName}\"") // Обновление конфигурации базы данных
-						runDbOperation("unload", "\"${params.dbName}\"") // Выгрузка файла .cf из базы данных
 						runDbOperation("restore", "\"${env.dbTests}\"") // Загрузка .dt в новую базу
-						runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
-						runDbOperation("load", "\"${env.dbTests}\"") // Загрузка файла .cf в базу данных
 						runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+						runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbTests}\"") // Загрузка данных из хранилища
+						runDbOperation("updatedbRep", "\"${params.dbTests}\"") // Обновление конфигурации базы данных
+
 					}
 				}
 			}
