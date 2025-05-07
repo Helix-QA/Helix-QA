@@ -38,6 +38,8 @@ pipeline {
 							if (params.VERSION_NEW > version) {
 								echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
 								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление конфигурации базы данных
+								runDbOperation("session_kill", "\"${env.dbTests}\"")
+								runDbOperation("dump", "\"${env.dbTests}\"")
 								// Обновляем version
 								env.version = params.VERSION_NEW
 								// Сохраняем новую версию в файл
@@ -46,9 +48,6 @@ pipeline {
 							} else {
 								echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
 							}
-							runDbOperation("session_kill", "\"${env.dbTests}\"")
-							runDbOperation("dump", "\"${env.dbTests}\"")
-
 						  	break // Выход из цикла при успехе
 						} catch (Exception e) {
 							echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
