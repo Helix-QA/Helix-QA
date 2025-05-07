@@ -9,6 +9,17 @@ from colorama import init, Fore, Style
 # Инициализация colorama для цветного вывода
 init(autoreset=True)
 
+def delete_folder(folder_path):
+    """Удаляет указанную папку и её содержимое."""
+    if os.path.exists(folder_path):
+        try:
+            shutil.rmtree(folder_path, ignore_errors=True)
+            print(f"{Fore.GREEN}Папка {folder_path} успешно удалена{Style.RESET_ALL}")
+        except Exception as e:
+            print(f"{Fore.YELLOW}Не удалось удалить папку {folder_path}: {str(e)}{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.YELLOW}Папка {folder_path} не существует{Style.RESET_ALL}")
+
 def drop_1c_database():
     # Настройки
     infobase = "avtotestqa"
@@ -104,8 +115,13 @@ def drop_1c_database():
             if 'PGPASSWORD' in os.environ:
                 del os.environ['PGPASSWORD']
         
+        # Удаление папки
+        print(f"{Fore.CYAN}10. Удаление папки...{Style.RESET_ALL}")
+        folder_to_delete = "tests/build/results"  # Укажите путь к папке здесь
+        delete_folder(folder_to_delete)
+        
         # Очистка кэша
-        print(f"{Fore.CYAN}10. Очистка кэша 1С...{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}11. Очистка кэша 1С...{Style.RESET_ALL}")
         clean_1c_cache()
         
         print(f"{Fore.GREEN}Кэш 1С успешно очищен{Style.RESET_ALL}")
