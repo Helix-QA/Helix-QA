@@ -47,8 +47,6 @@ pipeline {
 									echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
 								}
 								echo "Stage успешно выполнен с попытки ${attempt}"
-							}
-
 						  	break // Выход из цикла при успехе
 						} catch (Exception e) {
 							echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
