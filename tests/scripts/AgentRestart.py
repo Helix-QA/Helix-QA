@@ -6,16 +6,12 @@ import os
 def run_command(command):
     """Выполняет команду и возвращает результат."""
     try:
-        # Устанавливаем кодировку cp1251 для декодирования вывода
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='cp1251')
+        result = subprocess.run(command, shell=True, capture_output=True)
         if result.returncode == 0:
-            print(f"Команда '{command}' выполнена успешно: {result.stdout}")
+            print(f"Команда '{command}' выполнена успешно.")
         else:
-            print(f"Ошибка при выполнении команды '{command}': {result.stderr}")
+            print(f"Ошибка при выполнении команды '{command}' (код возврата: {result.returncode}).")
         return result.returncode
-    except UnicodeDecodeError as ude:
-        print(f"Ошибка декодирования вывода команды '{command}': {str(ude)}")
-        return 0  # Предполагаем успешное выполнение
     except Exception as e:
         print(f"Исключение при выполнении команды '{command}': {str(e)}")
         return 1
@@ -44,9 +40,8 @@ def restart_1c_service():
 
 if __name__ == "__main__":
     try:
-        # Устанавливаем кодировку cp1251 для вывода в консоль
-        sys.stdout.reconfigure(encoding='cp1251')
-        os.environ['PYTHONIOENCODING'] = 'cp1251'
+        sys.stdout.reconfigure(encoding='utf-8')
+        os.environ['PYTHONIOENCODING'] = 'utf-8'
         restart_1c_service()
     except Exception as e:
         print(f"Критическая ошибка: {str(e)}")
