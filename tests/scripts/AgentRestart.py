@@ -6,7 +6,7 @@ import os
 def run_command(command):
     """Выполняет команду и возвращает результат."""
     try:
-        # Устанавливаем кодировку cp1251 для декодирования вывода
+        # Декодируем вывод как cp1251 (Windows-1251)
         result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='cp1251')
         if result.returncode == 0:
             print(f"Команда '{command}' выполнена успешно: {result.stdout}")
