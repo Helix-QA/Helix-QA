@@ -28,6 +28,7 @@ pipeline {
 							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
 							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
 							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление конфигурации базы данных
 							echo "Stage успешно выполнен с попытки ${attempt}"
 							break // Выход из цикла при успехе
 						} catch (Exception e) {
