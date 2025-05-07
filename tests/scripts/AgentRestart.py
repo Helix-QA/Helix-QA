@@ -1,11 +1,12 @@
 import subprocess
 import time
 import sys
+import os
 
 def run_command(command):
     """Выполняет команду и возвращает результат."""
     try:
-        # Используем кодировку Windows-1251 для вывода
+        # Устанавливаем кодировку cp1251 для декодирования вывода команд net
         result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='cp1251')
         if result.returncode == 0:
             print(f"Команда '{command}' выполнена успешно: {result.stdout}")
@@ -14,8 +15,7 @@ def run_command(command):
         return result.returncode
     except UnicodeDecodeError as ude:
         print(f"Ошибка декодирования вывода команды '{command}': {str(ude)}")
-        # Предполагаем, что команда выполнена успешно, если нет других ошибок
-        return 0
+        return 0  # Предполагаем успешное выполнение, если ошибка только в декодировании
     except Exception as e:
         print(f"Исключение при выполнении команды '{command}': {str(e)}")
         return 1
@@ -44,7 +44,10 @@ def restart_1c_service():
 
 if __name__ == "__main__":
     try:
-        sys.stdout.reconfigure(encoding='utf-8')  # Для корректной кодировки вывода в консоль
+        # Устанавливаем кодировку UTF-8 для вывода в консоль
+        sys.stdout.reconfigure(encoding='utf-8')
+        # Устанавливаем переменную окружения для корректной кодировки в Windows
+        os.environ['PYTHONIOENCODING'] = 'utf-8'
         restart_1c_service()
     except Exception as e:
         print(f"Критическая ошибка: {str(e)}")
