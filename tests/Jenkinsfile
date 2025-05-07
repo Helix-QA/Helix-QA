@@ -10,9 +10,9 @@ pipeline {
 		dbTests = "avtotestqa"
     }
     stages {
-		stage("Подготовка и создание БД") {
-			steps {
-				script {
+		stage("Создание БД"){
+			steps{
+				script{
 					def maxAttempts = 3
 					def attempt = 1
 					def serviceRestarted = false
@@ -20,18 +20,9 @@ pipeline {
 					while (attempt <= maxAttempts) {
 						try {
 							echo "Попытка ${attempt} из ${maxAttempts}"
-							
 							updateConfigFile()
 							bat "python -X utf8 tests/scripts/drop_db.py" // Удаление существующей базы
-							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Загрузка данных из хранилища
-							runDbOperation("updatedbRep", "\"${params.dbName}\"") // Обновление конфигурации базы данных
-							runDbOperation("unload", "\"${params.dbName}\"") // Выгрузка файла .cf из базы данных
 							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
-							runDbOperation("restore", "\"${env.dbTests}\"") // Загрузка .dt в новую базу
-							runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
-							runDbOperation("load", "\"${env.dbTests}\"") // Загрузка файла .cf в базу данных
-							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
-
 							echo "Stage успешно выполнен с попытки ${attempt}"
 							break // Выход из цикла при успехе
 						} catch (Exception e) {
@@ -55,6 +46,20 @@ pipeline {
 				}
 			}
 		}
+		stage("Подготовка БД") {
+			steps {
+				script {
+						updateConfigFile()
+						runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Загрузка данных из хранилища
+						runDbOperation("updatedbRep", "\"${params.dbName}\"") // Обновление конфигурации базы данных
+						runDbOperation("unload", "\"${params.dbName}\"") // Выгрузка файла .cf из базы данных
+						runDbOperation("restore", "\"${env.dbTests}\"") // Загрузка .dt в новую базу
+						runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
+						runDbOperation("load", "\"${env.dbTests}\"") // Загрузка файла .cf в базу данных
+						runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+					}
+				}
+			}
         stage('Сценарное тестирвоание') {
             steps {
                 script {
