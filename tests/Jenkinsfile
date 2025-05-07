@@ -37,9 +37,9 @@ pipeline {
 							echo "Текущая версия: ${env.version}"
 							if (params.VERSION_NEW > version) {
 								echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
-								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление конфигурации базы данных
-								runDbOperation("session_kill", "\"${env.dbTests}\"")
-								runDbOperation("dump", "\"${env.dbTests}\"")
+								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
+								runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключаем активные саенсы
+								runDbOperation("dump", "\"${env.dbTests}\"") // Выгружаем .dt нового релиза
 								// Обновляем version
 								env.version = params.VERSION_NEW
 								// Сохраняем новую версию в файл
@@ -73,9 +73,8 @@ pipeline {
             steps {
                 script {
 					try{
-					runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
-						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																		
-						bat "allure generate tests/build/results -o tests/allure-report --clean" // Генерация Allure отчета													
+						runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
