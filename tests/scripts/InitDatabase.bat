@@ -13,5 +13,5 @@ if "%1"=="load"         call vrunner load --src "D:\\cf\\1Cv8.cf" --ibconnection
 if "%1"=="updatedbRep"  call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="updatedb"     call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="vanessa"      call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ
-if "%1"=="update1C"     call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "%3\\ЗакрытьПредприятие.epf"
+if "%1"=="update1C"     call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "%3"\\ЗакрытьПредприятие.epf
 REM if "%1"=="updatedb"      call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "%3\\УбратьОкноПеремещенияИБ.epf"
