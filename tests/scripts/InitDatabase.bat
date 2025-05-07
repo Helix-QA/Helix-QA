@@ -14,4 +14,5 @@ if "%1"=="updatedbRep"  call vrunner updatedb --ibconnection /Slocalhost/%2 --db
 if "%1"=="updatedb"     call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="vanessa"      call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ
 if "%1"=="update1C"     call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "C:\\Program Files\\OneScript\\lib\\vanessa-runner\\epf\\ЗакрытьПредприятие.epf"
+if "%1"=="dump"         call vrunner dump "D:\\Vanessa-Automation\\DT\\Эталонная_база_Фитнес.dt" --ibconnection /Slocalhost/%2 --db-user Админ 
 REM if "%1"=="updatedb"      call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "%3\\УбратьОкноПеремещенияИБ.epf"

@@ -64,7 +64,10 @@ pipeline {
 					} else {
 						echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
 					}
+					runDbOperation("session_kill", "\"${env.dbTests}\"")
+					runDbOperation("dump", "\"${env.dbTests}\"")
 					echo "Stage успешно выполнен с попытки ${attempt}"
+
 				}
 			}
 		}
