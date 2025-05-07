@@ -5,10 +5,6 @@ import pythoncom
 import sys
 import shutil
 from colorama import init, Fore, Style
-import warnings
-
-# Подавление предупреждений COM
-warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # Инициализация colorama для цветного вывода
 init(autoreset=True)
@@ -30,7 +26,7 @@ def drop_1c_database():
         pythoncom.CoInitialize()
         
         print(f"{Fore.CYAN}1. Подключение к агенту сервера 1С...{Style.RESET_ALL}")
-        v83_com = win32com.client.Dispatch("V83.ComConnector")
+        v83_com = win32com.client.gencache.EnsureDispatch("V83.ComConnector")
         agent = v83_com.ConnectAgent("localhost:1540")
         
         print(f"{Fore.CYAN}2. Получаем кластер...{Style.RESET_ALL}")
@@ -75,14 +71,6 @@ def drop_1c_database():
                     except Exception as e:
                         print(f"{Fore.RED}Ошибка при удалении базы из кластера: {str(e)}{Style.RESET_ALL}")
         
-        # Явное освобождение COM-объектов
-        if 'wp' in locals():
-            del wp
-        if 'agent' in locals():
-            del agent
-        if 'v83_com' in locals():
-            del v83_com
-        
         # Удаление из PostgreSQL
         print(f"{Fore.CYAN}9. Удаление из PostgreSQL...{Style.RESET_ALL}")
         try:
@@ -102,8 +90,9 @@ def drop_1c_database():
                     '-U', pg_user,
                     '-d', 'postgres',
                     '-c', cmd
-                ], check=True, capture_output=True, text=True, encoding='cp1251')
+                ], check=True, capture_output=True, text=True)
                 
+                # Проверяем, если база не существует
                 if cmd.startswith("DROP DATABASE") and "does not exist" in result.stderr:
                     print(f"{Fore.YELLOW}База '{db_name}' не найдена в PostgreSQL, пропускаем удаление...{Style.RESET_ALL}")
                 elif cmd.startswith("DROP DATABASE"):
@@ -145,6 +134,7 @@ def clean_1c_cache():
         try:
             for item in os.listdir(path):
                 item_path = os.path.join(path, item)
+                # Пропускаем папку ExtCompT
                 if item == 'ExtCompT':
                     continue
                 try:
@@ -159,17 +149,11 @@ def clean_1c_cache():
 
 if __name__ == "__main__":
     print(f"{Fore.BLUE}=== Начало удаления базы ==={Style.RESET_ALL}")
-    try:
-        sys.stdout.reconfigure(encoding='cp1251')
-        os.environ['PYTHONIOENCODING'] = 'cp1251'
-        success = drop_1c_database()
-        
-        if success:
-            print(f"{Fore.BLUE}=== Удаление завершено успешно ==={Style.RESET_ALL}")
-            sys.exit(0)
-        else:
-            print(f"{Fore.RED}=== Удаление завершено с ошибками ==={Style.RESET_ALL}")
-            sys.exit(1)
-    except Exception as e:
-        print(f"{Fore.RED}Критическая ошибка в главном блоке: {str(e)}{Style.RESET_ALL}")
+    success = drop_1c_database()
+    
+    if success:
+        print(f"{Fore.BLUE}=== Удаление завершено успешно ==={Style.RESET_ALL}")
+        sys.exit(0)
+    else:
+        print(f"{Fore.RED}=== Удаление завершено с ошибками ==={Style.RESET_ALL}")
         sys.exit(1)
