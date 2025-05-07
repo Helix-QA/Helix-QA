@@ -13,62 +13,62 @@ pipeline {
 		stage("Подготовка и создание БД") {
 			steps {
 				script {
-					// def maxAttempts = 3
-					// def attempt = 1
-					// def serviceRestarted = false
+					def maxAttempts = 3
+					def attempt = 1
+					def serviceRestarted = false
 
-					// while (attempt <= maxAttempts) {
-					// 	try {
-					// 		echo "Попытка ${attempt} из ${maxAttempts}"
+					while (attempt <= maxAttempts) {
+						try {
+							echo "Попытка ${attempt} из ${maxAttempts}"
 							
-					// 		updateConfigFile()
-					// 		bat "python -X utf8 tests/scripts/drop_db.py" // Удаление существующей базы
-					// 		runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Загрузка данных из хранилища
-					// 		runDbOperation("updatedbRep", "\"${params.dbName}\"") // Обновление конфигурации базы данных
-					// 		runDbOperation("unload", "\"${params.dbName}\"") // Выгрузка файла .cf из базы данных
-					// 		runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
-					// 		runDbOperation("restore", "\"${env.dbTests}\"") // Загрузка .dt в новую базу
-					// 		runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
-					// 		runDbOperation("load", "\"${env.dbTests}\"") // Загрузка файла .cf в базу данных
-					// 		runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							updateConfigFile()
+							bat "python -X utf8 tests/scripts/drop_db.py" // Удаление существующей базы
+							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") // Загрузка данных из хранилища
+							runDbOperation("updatedbRep", "\"${params.dbName}\"") // Обновление конфигурации базы данных
+							runDbOperation("unload", "\"${params.dbName}\"") // Выгрузка файла .cf из базы данных
+							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
+							runDbOperation("restore", "\"${env.dbTests}\"") // Загрузка .dt в новую базу
+							runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
+							runDbOperation("load", "\"${env.dbTests}\"") // Загрузка файла .cf в базу данных
+							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
 
-					// 		echo "Stage успешно выполнен с попытки ${attempt}"
-					// 		break // Выход из цикла при успехе
-					// 	} catch (Exception e) {
-					// 		echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
+							echo "Stage успешно выполнен с попытки ${attempt}"
+							break // Выход из цикла при успехе
+						} catch (Exception e) {
+							echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
 							
-					// 		if (attempt == 2 && !serviceRestarted) {
-					// 			echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
-					// 			// Команда для перезагрузки службы 1С (замените на актуальную)
+							if (attempt == 2 && !serviceRestarted) {
+								echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
+								// Команда для перезагрузки службы 1С (замените на актуальную)
 								bat 'chcp 65001 && python -X utf8 tests/scripts/AgentRestart.py'
-					// 			serviceRestarted = true
-					// 		}
+								serviceRestarted = true
+							}
 							
-					// 		if (attempt == maxAttempts) {
-					// 			error "Не удалось выполнить stage после ${maxAttempts} попыток"
-					// 		}
+							if (attempt == maxAttempts) {
+								error "Не удалось выполнить stage после ${maxAttempts} попыток"
+							}
 							
-					// 		attempt++
-					// 		sleep 3 // Пауза перед следующей попыткой (в секундах)
-					// 	}
-					// }
+							attempt++
+							sleep 3 // Пауза перед следующей попыткой (в секундах)
+						}
+					}
 				}
 			}
 		}
-    //     stage('Сценарное тестирвоание') {
-    //         steps {
-    //             script {
-	// 				try{
-	// 				runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
-	// 					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																		
-	// 					bat "allure generate tests/build/results -o tests/allure-report --clean" // Генерация Allure отчета													
- 	// 				} catch (Exception Exc) {
-	// 					echo "Error occurred: ${Exc.message}"
-	// 					currentBuild.result = 'UNSTABLE'
-    //       			}
-    //             }
-    //         }
-    //     }
+        stage('Сценарное тестирвоание') {
+            steps {
+                script {
+					try{
+					runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																		
+						bat "allure generate tests/build/results -o tests/allure-report --clean" // Генерация Allure отчета													
+ 					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+          			}
+                }
+            }
+        }
 	 }
 	post {
 		always {
