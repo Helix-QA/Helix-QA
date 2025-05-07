@@ -13,7 +13,7 @@ pipeline {
 		stage("Создание БД"){
 			steps{
 				script{
-					def maxAttempts = 3
+					def maxAttempts = 4
 					def attempt = 1
 					def serviceRestarted = false
 
@@ -21,7 +21,7 @@ pipeline {
 						try {
 							echo "Попытка ${attempt} из ${maxAttempts}"
 							updateConfigFile()
-							
+
 							bat "python -X utf8 tests/scripts/drop_db.py" // Удаление существующей базы
 							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
 							runDbOperation("restore", "\"${env.dbTests}\"") // Загрузка .dt в новую базу
@@ -43,9 +43,8 @@ pipeline {
 							if (attempt == maxAttempts) {
 								error "Не удалось выполнить stage после ${maxAttempts} попыток"
 							}
-							
 							attempt++
-							sleep 3 // Пауза перед следующей попыткой (в секундах)
+
 						}
 					}
 				}
