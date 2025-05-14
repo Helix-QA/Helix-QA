@@ -16,7 +16,7 @@ pipeline {
 					def maxAttempts = 4
 					def attempt = 1
 					def serviceRestarted = false
-					def versionFile = "D:\\Vanessa-Automation\\version.txt"
+					def versionFile = "D:\\Vanessa-Automation\\version\\${env.product}.txt"
 					def drop_db = "tests/scripts/drop_db.py"
 					while (attempt <= maxAttempts) {
 						try {
