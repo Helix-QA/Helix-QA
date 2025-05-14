@@ -4,11 +4,13 @@
 
 # Игнорировать папку node_modules
 Архив/
+
 # Игнорировать файл настроек
 #.env
 
 # Игнорировать папку build и всё внутри
 tests/build/
+tests/scripts/version.txt
 
 
 # Игнорировать файлы macOS

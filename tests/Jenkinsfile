@@ -2,29 +2,67 @@ pipeline {
     agent {
         label "OneS"
     }
-	triggers {
-        cron('H 20 * * *')  // Запускать каждый день в 20:00
-    }
 	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "avtotestqa"
     }
     stages {
-		stage("Подготовка и создание БД") {
-			steps {
-				script {
-					updateConfigFile()
-					bat "python -X utf8 tests/scripts/drop_db.py"													// Удаление существующей базы
-					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 												
-					runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${params.dbName}\"") 	// Загрузка данных из хранилища 			
-					runDbOperation("updatedbRep", "\"${params.dbName}\"") 											// Обновление конфигурации базы данных 											
-					runDbOperation("session_kill", "\"${params.dbName}\"") 											// Отключение пользователей от базы данных 					
-					runDbOperation("unload", "\"${params.dbName}\"") 												// Выгрузка файла .cf из базы данных 						
-					runDbOperation("create", "\"${env.dbTests}\"") 													// Создание новой пустой базы данных 						
-					runDbOperation("restore", "\"${env.dbTests}\"") 												// Загрузка .dt в новую базы 										
-					runDbOperation("session_kill", "\"${env.dbTests}\"")											// Отключение пользователей от базы данных 												
-					runDbOperation("load", "\"${env.dbTests}\"") 													// Загрузка файла .cf в базу данных 													
-					runDbOperation("updatedb", "\"${env.dbTests}\"") 												// Обновление конфигурации базы данных										
+		stage("Создание БД"){
+			steps{
+				script{
+					def maxAttempts = 4
+					def attempt = 1
+					def serviceRestarted = false
+					def versionFile = "D:\\Vanessa-Automation\\version\\${env.product}.txt"
+					def drop_db = "tests/scripts/drop_db.py"
+					while (attempt <= maxAttempts) {
+						try {
+							echo "Попытка ${attempt} из ${maxAttempts}"
+							updateConfigFile()
+
+							bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
+							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
+							runDbOperation("restore", "\"${env.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
+							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
+							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							if (fileExists(versionFile)) {
+								env.version = readFile(versionFile).trim()
+							} else {
+								env.version = '1.0.0' // Начальная версия, если файла нет
+							}
+							echo "Текущая версия: ${env.version}"
+							if (params.VERSION_NEW > version) {
+								echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
+								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
+								runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключаем активные саенсы
+								runDbOperation("dump", "\"${env.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
+								// Обновляем version
+								env.version = params.VERSION_NEW
+								// Сохраняем новую версию в файл
+								writeFile file: "D:\\Vanessa-Automation\\version\\${env.product}.txt", text: env.version
+								echo "Версия обновлена до ${env.version}"
+							} else {
+								echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
+							}
+						  	break // Выход из цикла при успехе
+						} catch (Exception e) {
+							echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
+							
+							if (attempt == 2 && !serviceRestarted) {
+								echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
+								// Команда для перезагрузки службы 1С
+								bat 'chcp 65001 && python -X utf8 tests/scripts/AgentRestart.py'
+								serviceRestarted = true
+							}
+							
+							if (attempt == maxAttempts) {
+								error "Не удалось выполнить stage после ${maxAttempts} попыток"
+							}
+							attempt++
+							echo "Stage успешно выполнен с попытки ${attempt}"
+						}
+					}
 				}
 			}
 		}
@@ -32,9 +70,8 @@ pipeline {
             steps {
                 script {
 					try{
-					runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
-						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																		
-						bat "allure generate tests/build/results -o tests/allure-report --clean" // Генерация Allure отчета													
+						runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
@@ -53,13 +90,13 @@ pipeline {
 				])
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-					if ("${params.dbName}" == "VAFitness") {
+					if ("${params.product}" == "fitness") {
 						env.logo = "tests/notifications/logo.png"
 					}
-					else if ("${params.dbName}" == "VASPA") {
+					else if ("${params.product}" == "salon") {
 						env.logo = "tests/notifications/logo1.png"
 					}
-					else if ("${params.dbName}" == "VAStoma") {
+					else if ("${params.product}" == "stoma") {
 						env.logo = "tests/notifications/logo2.png"
 					}
 
@@ -82,6 +119,7 @@ pipeline {
 		}
 	 }
 }
+
 def runDbOperation(operation, params) {
 		try {
 			bat """
@@ -99,11 +137,3 @@ def updateConfigFile() {
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
-		// 1) Этап создание базы 
-		// 2) Загрузка .cf из релизного
-		// 3) Первоначальное заполнение
-		// 4) Сценарное тестирование 
-		// 5) Дымовые тесты
-		// 6) Синтаксический контроль
-		// 7) Сонар 
-		// 8) Удаление базы
