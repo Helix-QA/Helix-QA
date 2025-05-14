@@ -84,7 +84,7 @@
 
 # Автоматическое тестирование
 
-**Автотесты** — Тетсирование функционала.
+Непрерывное тестирование продукта перед выпуском релиза
 
 ## Файлы
 
@@ -163,7 +163,7 @@
 
 ![Этапы выполнения][def]
 
-[def]: docs/build.png
-[def2]: docs/pipeline.png
-[def3]: docs/trigger.png
+[def]: docs/build.jpg
+[def2]: docs/pipeline.jpg
+[def3]: docs/trigger.jpg
 
