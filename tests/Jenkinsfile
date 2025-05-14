@@ -93,13 +93,13 @@ pipeline {
 				])
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-					if ("${params.dbName}" == "VAFitness") {
+					if ("${params.product}" == "fitness") {
 						env.logo = "tests/notifications/logo.png"
 					}
-					else if ("${params.dbName}" == "VASPA") {
+					else if ("${params.product}" == "salon") {
 						env.logo = "tests/notifications/logo1.png"
 					}
-					else if ("${params.dbName}" == "VAStoma") {
+					else if ("${params.product}" == "stoma") {
 						env.logo = "tests/notifications/logo2.png"
 					}
 
