@@ -2,9 +2,6 @@ pipeline {
     agent {
         label "OneS"
     }
-	triggers {
-        cron('H 20 * * *')  // Запускать каждый день в 20:00
-    }
 	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "avtotestqa"
@@ -82,7 +79,7 @@ pipeline {
                 }
             }
         }
-	 }
+	}
 	post {
 		always {
 			script {
@@ -140,11 +137,3 @@ def updateConfigFile() {
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
-		// 1) Этап создание базы 
-		// 2) Загрузка .cf из релизного
-		// 3) Первоначальное заполнение
-		// 4) Сценарное тестирование 
-		// 5) Дымовые тесты
-		// 6) Синтаксический контроль
-		// 7) Сонар 
-		// 8) Удаление базы
