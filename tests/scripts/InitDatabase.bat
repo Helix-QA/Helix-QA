@@ -4,7 +4,7 @@ chcp 65001
 REM Переходим к нужной функции
 if "%1"=="session_kill" call vrunner session kill --with-nolock --db %2 --db-user Админ
 if "%1"=="loadrepo"     call vrunner loadrepo --storage-name %2 --storage-user %3 --ibconnection /Slocalhost/%4 --db-user Админ
-if "%1"=="restore"      call vrunner restore "D:\\Vanessa-Automation\\DT\\Эталонная_база_Фитнес.dt" --ibconnection /Slocalhost/%2
+if "%1"=="restore"      call vrunner restore "D:\\Vanessa-Automation\\DT\\%2.dt" --ibconnection /Slocalhost/%3
 if "%1"=="remove"       call vrunner remove --name %2 --drop-database --clear-database --db-user Админ 
 if "%1"=="create"       call vrunner create --db-server localhost --name %2 --dbms PostgreSQL --db-admin postgres --db-admin-pwd postgres
 if "%1"=="run"          call vrunner run --command "Путь=%2\\tests\\cfe\\%3.cfe;ЗавершитьРаботуСистемы" --ibconnection /Slocalhost/%4 --db-user Админ --execute "%2\\tests\\epf\\ЗагрузитьРасширениеВРежимеПредприятия.epf"
@@ -14,5 +14,5 @@ if "%1"=="updatedbRep"  call vrunner updatedb --ibconnection /Slocalhost/%2 --db
 if "%1"=="updatedb"     call vrunner updatedb --ibconnection /Slocalhost/%2 --db-user Админ
 if "%1"=="vanessa"      call vrunner vanessa --path "%2%3" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa %4 --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/%5 --db-user Админ
 if "%1"=="update1C"     call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "C:\\Program Files\\OneScript\\lib\\vanessa-runner\\epf\\ЗакрытьПредприятие.epf"
-if "%1"=="dump"         call vrunner dump "D:\\Vanessa-Automation\\DT\\Эталонная_база_Фитнес.dt" --ibconnection /Slocalhost/%2 --db-user Админ 
+if "%1"=="dump"         call vrunner dump "D:\\Vanessa-Automation\\DT\\%2.dt" --ibconnection /Slocalhost/%3 --db-user Админ 
 REM if "%1"=="updatedb"      call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "%3\\УбратьОкноПеремещенияИБ.epf"

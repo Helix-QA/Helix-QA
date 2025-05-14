@@ -6,6 +6,7 @@ import sys
 import shutil
 from colorama import init, Fore, Style
 
+
 # Инициализация colorama для цветного вывода
 init(autoreset=True)
 
@@ -22,7 +23,7 @@ def delete_folder(folder_path):
 
 def drop_1c_database():
     # Настройки
-    infobase = "avtotestqa"
+    infobase = sys.argv[1] # Имя базы 1С
     db_username = "Админ"  # Логин от базы 1С
     db_password = ""       # Пароль от базы 1С (пустой)
     
