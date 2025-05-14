@@ -161,9 +161,15 @@
 
 На 71 сервере `D:\Vanessa-Automation` хранятися файлы эталонных баз и версий.
 
+### Этапы выполнения
+
 ![Этапы выполнения][def]
+
+### Allure отчет
+
+![Этапы выполнения][def4]
 
 [def]: docs/build.jpg
 [def2]: docs/pipeline.jpg
 [def3]: docs/trigger.jpg
-
+[def4]: docs/allure.jpg
