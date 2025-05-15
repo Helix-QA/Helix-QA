@@ -7,7 +7,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner compare --secondFile "D:\\addocs\\old\\${params.oldversion}.cf" --reportFile "D:\\addocs\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost\VAFitness --db-user Админ --ibcmd
+                        @call vrunner compare --secondFile "D:\\addocs\\old\\${params.oldversion}.cf" --reportFile "D:\\addocs\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
