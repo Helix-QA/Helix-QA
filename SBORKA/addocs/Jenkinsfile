@@ -1,0 +1,33 @@
+pipeline {
+    agent { label "${params.jenkinsAgent}" }
+    stages {
+        stage('Подключение и обновление из хранилища') {
+            parallel {
+                stage('Сравнение конфигураций') {
+                    steps {
+                        bat """
+                        chcp 65001
+                        @call vrunner compare --secondFile "D:\\addocs\\old\\${params.oldversion}.cf" --reportFile "D:\\addocs\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost\VAFitness --db-user Админ --ibcmd
+                        """
+                    }
+                }
+                stage("Выгрузка ${params.newversion}") {
+                    steps {
+                        bat """
+                        chcp 65001
+                        @call vrunner decompile --out D:\\addocs\\xml_old --in "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        """
+                    }
+                }
+                stage("Выгрузка ${params.oldversion}") {
+                    steps {
+                        bat """
+                        chcp 65001
+                        @call vrunner decompile --out D:\\addocs\\xml_new --in "D:\\addocs\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
