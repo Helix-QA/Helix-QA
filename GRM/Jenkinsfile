@@ -64,6 +64,7 @@ pipeline {
                     sh "python -X utf8 ${transfer} \"${env.foldercf}\" \"${params.version}\"" // Копирование .cf
                     bat """
                     chcp 65001
+                    @call vrunner session kill --ibconnection /Slocalhost/grm
                     @call vrunner load --src ${env.foldercf}\\${params.version}.cf --ibconnection /Slocalhost/grm
                     @call vrunner updatedb --ibconnection /Slocalhost/grm
                     @call vrunner dump D:\\dt\\1Cv8.dt --ibconnection /Slocalhost/grm
