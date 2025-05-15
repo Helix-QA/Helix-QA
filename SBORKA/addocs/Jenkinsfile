@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "${params.jenkinsAgent}" }
+    agent { label "OneS" }
     stages {
         stage('Подключение и обновление из хранилища') {
             parallel {
