@@ -15,7 +15,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out D:\\addocs\\xml_old --in "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        @call vrunner decompile --out D:\\addocs\\xml_new --in "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
@@ -23,7 +23,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out D:\\addocs\\xml_new --in "D:\\addocs\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        @call vrunner decompile --out D:\\addocs\\xml_old --in "D:\\addocs\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
