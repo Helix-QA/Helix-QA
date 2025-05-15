@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "OneS" }
+    agent { label "TwoS" }
     stages {
         stage('Подключение и обновление из хранилища') {
             parallel {
