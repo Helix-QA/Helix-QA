@@ -11,7 +11,7 @@ pipeline {
                         """
                     }
                 }
-                stage("Выгрузка ${params.newversion}") {
+                stage('Выгрузка новой версии') {
                     steps {
                         bat """
                         chcp 65001
@@ -19,7 +19,7 @@ pipeline {
                         """
                     }
                 }
-                stage("Выгрузка ${params.oldversion}") {
+                stage('Выгрузка старой версии') {
                     steps {
                         bat """
                         chcp 65001
