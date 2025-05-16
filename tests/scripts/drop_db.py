@@ -154,6 +154,9 @@ def clean_1c_cache():
                 # Пропускаем папку ExtCompT
                 if item == 'ExtCompT':
                     continue
+                # Пропускаем файл 1cv8strt.pfl
+                if item == '1cv8strt.pfl':
+                    continue
                 try:
                     if os.path.isdir(item_path):
                         shutil.rmtree(item_path, ignore_errors=True)
