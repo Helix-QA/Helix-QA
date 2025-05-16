@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label "OneS"
+        label "${params.jenkinsAgent}"
     }
 	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
