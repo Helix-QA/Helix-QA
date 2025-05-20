@@ -1,6 +1,6 @@
 pipeline {
 
-    agent { label 'master' }
+    agent { "${params.jenkinsAgent}" }
 
     environment {
         releaseServer = "localhost/VASPA"
