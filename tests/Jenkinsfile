@@ -70,7 +70,7 @@ pipeline {
             steps {
                 script {
 					try{
-						runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
+						//runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
