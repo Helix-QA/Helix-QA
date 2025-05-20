@@ -10,7 +10,7 @@ pipeline {
 		stage("Создание БД"){
 			steps{
 				script{
-					def maxAttempts = 4
+					def maxAttempts = 5
 					def attempt = 1
 					def serviceRestarted = false
 					def versionFile = "D:\\Vanessa-Automation\\version\\${env.product}.txt"
