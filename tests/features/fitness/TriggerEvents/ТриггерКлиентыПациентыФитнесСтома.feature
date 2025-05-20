@@ -150,10 +150,8 @@
 		Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\Test_Api.epf" (Расширение)
 		Если открылось окно "1С:Предприятие" Тогда
 			Тогда я нажимаю на кнопку с именем 'OK'
-//		И я выбираю файл "C:\VA_test\Test_Api_Fitness4.epf" ВК
-//		И я активизирую окно "Api test fitness4"
-	//""D:\Моя документация(данные)\Обработки\Test_Api_Fitness4.epf""
-	// серверный путь: "C:\VA_test\Test_Api_Fitness4.epf"
+//		"D:\Helix\Helix-QA\tests\epf\Test_Api.epf"
+//		"C:\GitHu\Helix-QA\tests\epf\Test_Api.epf"
 		И я нажимаю на кнопку с именем 'Api_v3'
 		И я нажимаю на кнопку с именем 'ТипЗапроса'
 //POST
