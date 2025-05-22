@@ -21,8 +21,8 @@ pipeline {
 							updateConfigFile()
 
 							bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
-							runDbOperation("session_kill", "\"${env.dbTests}\"")
 							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
+							runDbOperation("session_kill", "\"${env.dbTests}\"")
 							runDbOperation("restore", "\"${env.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
 							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
 							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
