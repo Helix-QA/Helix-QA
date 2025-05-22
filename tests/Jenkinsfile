@@ -36,7 +36,6 @@ pipeline {
 							if (params.VERSION_NEW > version) {
 								echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
 								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
-								runDbOperation("session_kill", "\"${env.dbTests}\"") // Отключаем активные саенсы
 								runDbOperation("dump", "\"${env.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
 								// Обновляем version
 								env.version = params.VERSION_NEW
@@ -49,7 +48,7 @@ pipeline {
 						  	break // Выход из цикла при успехе
 						} catch (Exception e) {
 							echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
-							
+
 							if (attempt == 2 && !serviceRestarted) {
 								echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
 								// Команда для перезагрузки службы 1С
