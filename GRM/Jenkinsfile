@@ -17,8 +17,10 @@ pipeline {
                     env.folderProduct = "FITNESSCORP"
                     } else if (params.nameProduct.contains('SpaSalon3')) {
 					env.applicationId = "ff808081811401680182257b91c0002d"
+                    env.folderProduct = "SpaSalon3"
                     } else if (params.nameProduct.contains('salon30')) {
 					env.applicationId = "ff8080817ccbb453017d0ee91ffe000d"
+                    env.folderProduct = "salon30"
                     }
                     env.foldercf = "D:\\release_build\\${folderProduct}\\Old_versions_cf"
                     def params = [
