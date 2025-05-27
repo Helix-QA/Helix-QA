@@ -1,6 +1,6 @@
 pipeline {
 
-    agent { "${params.jenkinsAgent}" }
+    agent { label "${params.jenkinsAgent}" }
 
 	environment {
         releaseServer = "localhost/VAFitness"
