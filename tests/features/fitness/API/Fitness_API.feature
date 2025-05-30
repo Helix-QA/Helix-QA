@@ -387,7 +387,7 @@
 	И из выпадающего списка с именем 'ПолеПомещение_0' я выбираю по строке "$$Помещение$$"
 	И я нажимаю на кнопку с именем 'ФормаКнопкаСохранитьИЗакрыть'
 	//Настройка описания через универсальный редактор.
-	Дано я открываю внешнюю обработку или отчет "D:\Helix\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)	
+	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)	
 //серверный путь: "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"
 //мой путь: "D:\Helix\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"	
 	И я нажимаю кнопку выбора у поля с именем 'ВыбСсылка'
@@ -437,7 +437,7 @@
 	
 	//Серверный путь до обработки: "C:\GitHu\Helix-QA\tests\epf\Test_Api.epf"
 	//Мой путь: "D:\Helix\Helix-QA\tests\epf\Test_Api.epf"
-	Дано я открываю внешнюю обработку или отчет "D:\Helix\Helix-QA\tests\epf\Test_Api.epf" (Расширение)
+	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\Test_Api.epf" (Расширение)
 	
 
 	// Настройка внешней обработки
