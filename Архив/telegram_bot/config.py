@@ -1,0 +1,8 @@
+# config.py
+
+TOKEN = '7117726988:AAFJFXz3rF7XyNXK23vtcy6MQG1E9x3DmRc'
+JENKINS_URL = 'http://192.168.2.71:8080'
+JENKINS_USER = 'root'
+JENKINS_API_TOKEN = '115c10bd20a16f783fbb86d7c253a0738a'
+
+chat_id = '-1002167629740' # Чат тестеров

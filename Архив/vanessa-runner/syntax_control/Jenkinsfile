@@ -1,0 +1,71 @@
+pipeline {
+	agent {
+		label "${params.jenkinsAgent}"
+	}
+	environment {
+		VRUNNER_PATH = 'vrunner' // Путь к исполняемому файлу Vanessa Runner
+		allureResultsDir = "${env.WORKSPACE.replace('\\', '\\\\')}\\\\results"
+		allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+	} 
+	stages {
+		stage('Инициализация параметров'){
+			steps{
+				script{
+					// Установка значений переменных
+					if (params.NameBaseRelease.contains('FitnessRel')) {
+						env.nameBaseUserRelease = "Администратор"
+						env.namefeature =  "fitness"
+						env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/fitness_release"
+					} else if (params.NameBaseRelease.contains('StomaRel')) {
+						env.nameBaseUserRelease = "admin"
+						env.namefeature = "stoma"
+						env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release"
+					} else if (params.NameBaseRelease.contains('SalonRel')) {
+						envnameBaseUserRelease = "Администратор"
+						env.namefeature = "salon"
+						env.releaseRepository = "http://192.168.2.16/hran1c/repository.1ccr/salon_release"
+					}
+				}
+			}
+		}
+		stage('Обновление в релизном хранилище'){
+			steps{
+				script{
+					bat """
+					chcp 65001
+					@call ${VRUNNER_PATH} session kill --with-nolock --db ${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+					@call ${VRUNNER_PATH} loadrepo --storage-name ${releaseRepository} --storage-user МихаилБ --storage-pwd 3AqH649z0B --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+					@call ${VRUNNER_PATH} updatedb --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease}
+					"""
+				}
+			}
+		}
+		stage('Синтаксический контроль') {
+				steps {
+					script {
+						bat """
+						chcp 65001
+						@call ${VRUNNER_PATH} syntax-check --groupbymetadata --allure-results ${allureResultsDir} --ibconnection /Slocalhost/${params.NameBaseRelease} --db-user ${env.nameBaseUserRelease} --mode -ExtendedModulesCheck -ThinClient -WebClient -Server -ExternalConnection -ThickClientOrdinaryApplication -EmptyHandlers -UnreferenceProcedures -ExtendedModulesCheck -HandlersExistence
+						"""
+						}
+					}
+				}
+			}
+		post {
+				always {
+					script {
+							allure([
+							includeProperties: false,
+							jdk: '',
+							results: [[path: "results"]]
+						])
+						def reportMessage = """
+		Синтаксический контроль: ${params.NameBaseRelease}
+		Allure отчет доступен по ссылке:
+		${allureReportUrl}
+							"""
+							httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(reportMessage.trim(), 'UTF-8')}")
+				}
+			}
+		}
+	}

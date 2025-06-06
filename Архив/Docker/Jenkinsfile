@@ -1,0 +1,47 @@
+pipeline {
+    agent {
+        label "${params.jenkinsAgent}"
+    }
+    environment {
+        IMAGE_NAME = "1c-java-vanessa"
+        TAG = "latest"
+    }
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    bat "docker build -t ${env.IMAGE_NAME}:${env.TAG} -f Docker\\Dockerfile ."
+                    
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    def containerName = "1c_env"
+                    bat "docker run -it --name ${containerName} -d ${env.IMAGE_NAME}:${env.TAG}"
+                   
+                }
+            }
+        }
+        stage('Run VanessaAutomation Tests') {
+            steps {
+                script {
+                    // Предполагаем, что VanessaAutomation запускается командой 
+                    // и использует конфигурационный файл для тестов
+                    bat "docker exec ${env.CONTAINER_NAME} powershell -Command \"& 'C:\\Program Files\\Vanessa-Automation\\Vanessa-Automation.exe' /Execute 'C:\\Path\\To\\Your\\Test.json'\""
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                // Остановка и удаление контейнера после завершения тестов
+                bat "docker stop ${env.CONTAINER_NAME}"
+                bat "docker rm ${env.CONTAINER_NAME}"
+            }
+        }
+    }
+}
