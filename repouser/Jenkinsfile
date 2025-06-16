@@ -23,7 +23,7 @@ pipeline {
                         'salon-release': 'http://192.168.2.16/hran1c/repository.1ccr/salon_release',
                         'dentistry-release': 'http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release',
                         'fitness-work': 'http://192.168.2.16/hran1c/repository.1ccr/fitness4',
-                        'salon-work': 'http://192.168.2.16/hran1c/repository.1ccr/salon_release',
+                        'salon-work': 'http://192.168.2.16/hran1c/repository.1ccr/salon_spa_2',
                         'dentistry-work': 'http://192.168.2.16/hran1c/repository.1ccr/stomatology2'
                     ]
 
