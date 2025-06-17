@@ -3,7 +3,7 @@
 	"Lang": "ru",
 	"DebugLog": false,
 	"ВерсияVA": "ver 1.2.041.30",
-	"КаталогФич": "$workspaceRoot/features",
+	"КаталогФич": "$workspaceRoot\\features",
 	"ДобавлятьКИмениСценарияУсловияВыгрузки": false,
 	"ЗаписыватьВидеоВыполненияТестов": false,
 	"КоличествоКадровВидеоВыполненияТестов": 5,
@@ -101,7 +101,7 @@
 	"ДелатьОтчетВоВнутреннемФормате": false,
 	"КаталогиБиблиотек": [
 		"C:/VA_test/vanessa-automation/features/Libraries",
-		"$workspaceRoot/features"
+		"$workspaceRoot\\features"
 
 	],
 	"СписокТеговИсключение": [
