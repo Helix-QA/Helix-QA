@@ -21,6 +21,12 @@ pipeline {
                         env.dir = "${env.rootDir}\\1С_Стоматология 2.1\\CF"
                         env.rep = "${repositoryReleaseStom}"
                     }
+                    // Очистка предыдущих данных
+                    bat""" 
+                    chcp 65001
+                    if exist "${env.workDir}" rmdir /S /Q "${env.workDir}"
+                    mkdir "${env.workDir}\\new" "${env.workDir}\\old" "${env.workDir}\\xml_new" "${env.workDir}\\xml_old"
+                    """
                     echo "STORAGE=${params.STORAGE}, base=${env.base}, dir=${env.dir}"
                 }
             }
@@ -41,8 +47,6 @@ pipeline {
                     steps {
                         bat """
                             chcp 65001
-                            if exist "${env.workDir}" rmdir /S /Q "${env.workDir}"
-                            mkdir "${env.workDir}\\new" "${env.workDir}\\old" "${env.workDir}\\xml_new" "${env.workDir}\\xml_old"
                             if exist "${env.dir}\\${params.oldversion}.cf" move "${env.dir}\\${params.oldversion}.cf" "${env.workDir}\\old"
                         """
                     }
