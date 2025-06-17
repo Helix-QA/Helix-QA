@@ -7,31 +7,33 @@ pipeline {
     stages {
         stage('Подготовка .cf'){
             parallel{
-                if (params.STORAGE == 'Fitness'){
-                    def base = "VAFitness"
-                    def dir = "${rootDir}\\Фитнес клуб КОРП 4.0\\cf"
-                }
-                if (params.STORAGE == 'Salon'){
-                    def base = "VASPA"
-                    def dir = "${rootDir}\\SPA-Салон 3.0"
-                }
-                else{
-                    def base = "VAStoma"
-                    def dir = "${rootDir}\\1С_Стоматология 2.1\\CF"
+                stage('Инициализация данных'){
+
+                    if (params.STORAGE == 'Fitness'){
+                        def env.base = "VAFitness"
+                        def env.dir = "${env.rootDir}\\Фитнес клуб КОРП 4.0\\cf"
+                    }
+                    if (params.STORAGE == 'Salon'){
+                        def base = "VASPA"
+                        def env.dir = "${env.rootDir}\\SPA-Салон 3.0"
+                    }
+                    else{
+                        def base = "VAStoma"
+                        def env.dir = "${env.rootDir}\\1С_Стоматология 2.1\\CF"
+                    }
                 }
                 stage('Выгрузка .cf из релизного'){
 
-    
                     bat """
-                    @call vrunner unload "${workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${base} --db-user Админ 
+                    @call vrunner unload "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${env.base} --db-user Админ 
                     """
                 }
                 stage('Перенос .cf'){
                     
                     bat """
-                    rmdir /S /Q "${workDir}"
-                    mkdir "${workDir}\\new" "${workDir}\\old" "${workDir}\\xml_new" "${workDir}\\xml_old" 
-                    move ${dir}\\${params.oldversion}.cf ${workDir}\\old
+                    rmdir /S /Q "${env.workDir}"
+                    mkdir "${env.workDir}\\new" "${env.workDir}\\old" "${env.workDir}\\xml_new" "${env.workDir}\\xml_old" 
+                    move ${env.dir}\\${params.oldversion}.cf ${env.workDir}\\old
                     """
 
                 }
@@ -44,7 +46,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner compare --secondFile "${workDir}\\old\\${params.oldversion}.cf" --reportFile "${workDir}\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "${workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
+                        @call vrunner compare --secondFile "${env.workDir}\\old\\${params.oldversion}.cf" --reportFile "${env.workDir}\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
                         """
                     }
                 }
@@ -52,7 +54,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out ${workDir}\\xml_new --in "${workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        @call vrunner decompile --out ${env.workDir}\\xml_new --in "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
@@ -60,7 +62,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out ${workDir}\\xml_old --in "${workDir}\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        @call vrunner decompile --out ${env.workDir}\\xml_old --in "${env.workDir}\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
