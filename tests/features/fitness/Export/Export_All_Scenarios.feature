@@ -396,8 +396,8 @@
 	Затем я останавливаю выполнение сценариев данной фичи
 
 Сценарий: Я открываю обработку - универсальный редактор.
-	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)
-
+	Дано я открываю внешнюю обработку или отчет "$КаталогПроекта$\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)
+//"$КаталогПроекта$\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf"	
 Сценарий: Я открываю обработку - ТестАпиОбщую.
-	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\Test_Api.epf" (Расширение)
-
+	Дано я открываю внешнюю обработку или отчет "$КаталогПроекта$\epf\Test_Api.epf" (Расширение)
+//"$КаталогПроекта$\tests\epf\Test_Api.epf"
