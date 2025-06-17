@@ -100,7 +100,9 @@
 	},
 	"ДелатьОтчетВоВнутреннемФормате": false,
 	"КаталогиБиблиотек": [
-		"C:/VA_test/vanessa-automation/features/Libraries"
+		"C:/VA_test/vanessa-automation/features/Libraries",
+		"$workspaceRoot/features"
+
 	],
 	"СписокТеговИсключение": [
 		"IgnoreOnCIMainBuild"
