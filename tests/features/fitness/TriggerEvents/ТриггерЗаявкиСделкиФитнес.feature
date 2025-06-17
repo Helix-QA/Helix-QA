@@ -107,7 +107,8 @@
 //Редактирование через универсальный редактор
 	И Пауза 1
 //		Дано я открываю внешнюю обработку или отчет "$КатологПроекта$\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)
-	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)
+	И Я открываю обработку - универсальный редактор.
+//	Дано я открываю внешнюю обработку или отчет "C:\GitHu\Helix-QA\tests\epf\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" (Расширение)
 	Если открылось окно "1С:Предприятие" Тогда
 		Тогда я нажимаю на кнопку с именем 'OK'
 //	И я выбираю файл "C:\VA_test\_Universal_nyy_redaktor_rekvizitov_8_2_upravlyaemyy_interfeys_2.epf" ВК
