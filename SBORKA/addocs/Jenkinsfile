@@ -47,7 +47,7 @@ pipeline {
                     steps {
                         bat """
                             chcp 65001
-                            if exist "${env.dir}\\${params.oldversion}.cf" move "${env.dir}\\${params.oldversion}.cf" "${env.workDir}\\old"
+                            if exist "${env.dir}\\${params.oldversion}.cf" copy "${env.dir}\\${params.oldversion}.cf" "${env.workDir}\\old"
                         """
                     }
                 }
