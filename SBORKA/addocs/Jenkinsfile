@@ -99,7 +99,7 @@ pipeline {
             steps{
                 script{
                     def filesend = "SBORKA/addocs/filesend.py"  
-                    bat "python -X utf8 \"${filesend}\" \"${env.workDir}\" \"${env.nameFile}\"" 
+                    sh "python -X utf8 \"${filesend}\" \"${env.workDir}\" \"${env.nameFile}\"" 
                 }
             }
         }
