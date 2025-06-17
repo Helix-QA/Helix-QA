@@ -1,13 +1,50 @@
 pipeline {
     agent { label "TwoS" }
+    environment{
+        workDir = "D:\\addocs"
+        rootDir = "D:\\ДЛЯ РЕЛИЗОВ\\work\\Данные конфигураций"
+    }
     stages {
+        stage('Подготовка .cf'){
+            parallel{
+                if (params.STORAGE == 'Fitness'){
+                    def base = "VAFitness"
+                    def dir = "${rootDir}\\Фитнес клуб КОРП 4.0\\cf"
+                }
+                if (params.STORAGE == 'Salon'){
+                    def base = "VASPA"
+                    def dir = "${rootDir}\\SPA-Салон 3.0"
+                }
+                else{
+                    def base = "VAStoma"
+                    def dir = "${rootDir}\\1С_Стоматология 2.1\\CF"
+                }
+                stage('Выгрузка .cf из релизного'){
+
+    
+                    bat """
+                    @call vrunner unload "${workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${base} --db-user Админ 
+                    """
+                }
+                stage('Перенос .cf'){
+                    
+                    bat """
+                    rmdir /S /Q "${workDir}"
+                    mkdir "${workDir}\\new" "${workDir}\\old" "${workDir}\\xml_new" "${workDir}\\xml_old" 
+                    move ${dir}\\${params.oldversion}.cf ${workDir}\\old
+                    """
+
+                }
+            }
+        }
+        
         stage('Подключение и обновление из хранилища') {
             parallel {
                 stage('Сравнение конфигураций') {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner compare --secondFile "D:\\addocs\\old\\${params.oldversion}.cf" --reportFile "D:\\addocs\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
+                        @call vrunner compare --secondFile "${workDir}\\old\\${params.oldversion}.cf" --reportFile "${workDir}\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "${workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
                         """
                     }
                 }
@@ -15,7 +52,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out D:\\addocs\\xml_new --in "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        @call vrunner decompile --out ${workDir}\\xml_new --in "${workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
@@ -23,7 +60,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out D:\\addocs\\xml_old --in "D:\\addocs\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                        @call vrunner decompile --out ${workDir}\\xml_old --in "${workDir}\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
