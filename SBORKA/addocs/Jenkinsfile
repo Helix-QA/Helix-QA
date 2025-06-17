@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "TwoS" }
+    agent { label "OneS" }
     environment {
         workDir = "D:\\addocs"
         rootDir = "D:\\ДЛЯ РЕЛИЗОВ\\work\\Данные конфигураций"
