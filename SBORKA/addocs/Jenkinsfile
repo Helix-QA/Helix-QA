@@ -90,7 +90,7 @@ pipeline {
                     updateConfigFile()
                     bat"""
                     chcp 65001
-                    call vrunner vanessa --path SBORKA/addocs --vanessasettings "SBORKA/addocs" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
+                    call vrunner vanessa --path SBORKA/addocs --vanessasettings "SBORKA/addocs" --workspace SBORKA/addocs --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
                     """
                 }
             }
