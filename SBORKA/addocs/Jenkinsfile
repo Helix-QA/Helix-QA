@@ -85,14 +85,15 @@ pipeline {
         //     }
         // }
         stage('Получение .htm файла'){
-           script{
-                updateConfigFile()
-                bat"""
-                chcp 65001
-                call vrunner vanessa --path SBORKA/addocs --vanessasettings "SBORKA/addocs" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
-                """
-           }
-            
+            steps{ 
+                script{
+                    updateConfigFile()
+                    bat"""
+                    chcp 65001
+                    call vrunner vanessa --path SBORKA/addocs --vanessasettings "SBORKA/addocs" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
+                    """
+                }
+            }
         }
     }
 }
