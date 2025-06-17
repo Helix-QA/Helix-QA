@@ -13,8 +13,8 @@ pipeline {
         dumpPathWork = "D:\\Identificators\\Rab"
         comparisonPath = "D:\\Identificators\\Obarabotka\\ПроверкаКонфигурации.epf"
         verificationServer = "localhost/SverkaIdentif"
-        userREl = "VATest"
-        userRab = "VATest"
+        userREl = "VATest2"
+        userRab = "VATest2"
         NameProduct = "Salon"
     }
 

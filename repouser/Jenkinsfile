@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'USERNAME', defaultValue: '', description: 'Имя пользователя для создания')
+        choice(name: 'STORAGE', choices: ['all', 'fitness-release', 'salon-release', 'dentistry-release', 'fitness-work', 'salon-work', 'dentistry-work'], description: 'Выберите хранилище для создания пользователя')
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                echo "Создание пользователя: ${params.USERNAME}"
+                echo "Выбрано хранилище: ${params.STORAGE}"
+            }
+        }
+
+        stage('Create Users') {
+            steps {
+                script {
+                    // Сопоставление STORAGE с URL хранилищ
+                    def storageMap = [
+                        'fitness-release': 'http://192.168.2.16/hran1c/repository.1ccr/fitness_release',
+                        'salon-release': 'http://192.168.2.16/hran1c/repository.1ccr/salon_release',
+                        'dentistry-release': 'http://192.168.2.16/hran1c/repository.1ccr/stomatology2_release',
+                        'fitness-work': 'http://192.168.2.16/hran1c/repository.1ccr/fitness4',
+                        'salon-work': 'http://192.168.2.16/hran1c/repository.1ccr/salon_spa_2',
+                        'dentistry-work': 'http://192.168.2.16/hran1c/repository.1ccr/stomatology2'
+                    ]
+
+                    if (params.STORAGE == 'all') {
+                        // Выполняем repouser() для всех хранилищ
+                        storageMap.each { storage, repoUrl ->
+                            echo "Создание пользователя ${params.USERNAME} в хранилище ${storage} (${repoUrl})..."
+                            repouser(repoUrl)
+                        }
+                    } else {
+                        // Выполняем repouser() только для выбранного хранилища
+                        def repoUrl = storageMap[params.STORAGE]
+                        echo "Создание пользователя ${params.USERNAME} в хранилище ${params.STORAGE} (${repoUrl})..."
+                        repouser(repoUrl)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline завершён.'
+        }
+        success {
+            echo "Пользователь ${params.USERNAME} успешно создан в хранилище: ${params.STORAGE}"
+        }
+        failure {
+            echo 'Pipeline завершился с ошибкой.'
+        }
+    }
+}
+
+def repouser(repository) {
+    try {
+        bat """
+            chcp 65001
+            @call vrunner createrepouser "${repository}" "Администратор" --storage-user "${params.USERNAME}" --storage-role "LockObjects" --ibconnection /Slocalhost\\repouser
+        """
+    } catch (Exception e) {
+        echo "Ошибка при создании пользователя в хранилище ${repository}: ${e.message}"
+        throw e
+    }
+}

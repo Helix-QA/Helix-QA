@@ -1,29 +1,81 @@
 pipeline {
     agent { label "TwoS" }
+    environment {
+        workDir = "D:\\addocs"
+        rootDir = "D:\\ДЛЯ РЕЛИЗОВ\\work\\Данные конфигураций"
+    }
     stages {
+        stage('Подготовка .cf') {
+            steps {
+                script {
+                    if (params.STORAGE == 'Fitness') {
+                        env.base = "VAFitness"
+                        env.dir = "${env.rootDir}\\Фитнес клуб КОРП 4.0\\cf"
+                        env.rep = "${repositoryReleaseFitness}"
+                    } else if (params.STORAGE == 'Salon') {
+                        env.base = "VASPA"
+                        env.dir = "${env.rootDir}\\SPA-Салон 3.0"
+                        env.rep = "${repositoryReleaseSalon}"
+                    } else {
+                        env.base = "VAStoma"
+                        env.dir = "${env.rootDir}\\1С_Стоматология 2.1\\CF"
+                        env.rep = "${repositoryReleaseStom}"
+                    }
+                    // Очистка предыдущих данных
+                    bat""" 
+                    chcp 65001
+                    if exist "${env.workDir}" rmdir /S /Q "${env.workDir}"
+                    mkdir "${env.workDir}\\new" "${env.workDir}\\old" "${env.workDir}\\xml_new" "${env.workDir}\\xml_old"
+                    """
+                    echo "STORAGE=${params.STORAGE}, base=${env.base}, dir=${env.dir}"
+                }
+            }
+        }
+        stage('Обработка .cf') {
+            parallel {
+                stage('Выгрузка .cf из релизного') {
+                    steps {
+                        bat """
+                            chcp 65001
+                            call vrunner loadrepo --storage-name ${env.rep} --storage-user VATest2 --ibconnection /Slocalhost/${env.base} --db-user Админ
+                            call vrunner updatedb --ibconnection /Slocalhost/${env.base} --db-user Админ
+                            @call vrunner unload "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${env.base} --db-user Админ
+                        """
+                    }
+                }
+                stage('Перенос .cf') {
+                    steps {
+                        bat """
+                            chcp 65001
+                            if exist "${env.dir}\\${params.oldversion}.cf" move "${env.dir}\\${params.oldversion}.cf" "${env.workDir}\\old"
+                        """
+                    }
+                }
+            }
+        }
         stage('Подключение и обновление из хранилища') {
             parallel {
                 stage('Сравнение конфигураций') {
                     steps {
                         bat """
-                        chcp 65001
-                        @call vrunner compare --secondFile "D:\\addocs\\old\\${params.oldversion}.cf" --reportFile "D:\\addocs\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
+                            chcp 65001
+                            @call vrunner compare --secondFile "${env.workDir}\\old\\${params.oldversion}.cf" --reportFile "${env.workDir}\\Отчет_${params.newversion}.txt" --reportType Brief --firstFile "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
                         """
                     }
                 }
                 stage('Выгрузка новой версии') {
                     steps {
                         bat """
-                        chcp 65001
-                        @call vrunner decompile --out D:\\addocs\\xml_new --in "D:\\addocs\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                            chcp 65001
+                            @call vrunner decompile --out ${env.workDir}\\xml_new --in "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
                 stage('Выгрузка старой версии') {
                     steps {
                         bat """
-                        chcp 65001
-                        @call vrunner decompile --out D:\\addocs\\xml_old --in "D:\\addocs\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                            chcp 65001
+                            @call vrunner decompile --out ${env.workDir}\\xml_old --in "${env.workDir}\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
                         """
                     }
                 }
