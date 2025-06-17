@@ -84,15 +84,21 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Получение .htm файла'){
-            steps{ 
-                script{
-                    updateConfigFile()
-                    bat"""
-                    chcp 65001
-                    @call vrunner vanessa --path features --vanessasettings "VAParams.json" --workspace SBORKA/addocs --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
-                    """
-                }
+        // stage('Получение .htm файла'){
+        //     steps{ 
+        //         script{
+        //             updateConfigFile()
+        //             bat"""
+        //             chcp 65001
+        //             @call vrunner vanessa --path features --vanessasettings "VAParams.json" --workspace SBORKA/addocs --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
+        //             """
+        //         }
+        //     }
+        // }
+        stage('Отправка файла в Telegram'){
+            steps{
+             def filesend = "SBORKA/addocs/filesend.py"  
+             bat "python -X utf8 \"${filesend}\" \"${env.workDir}\" \"${env.nameFile}\"" 
             }
         }
     }
