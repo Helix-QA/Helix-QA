@@ -97,8 +97,10 @@ pipeline {
         // }
         stage('Отправка файла в Telegram'){
             steps{
-             def filesend = "SBORKA/addocs/filesend.py"  
-             bat "python -X utf8 \"${filesend}\" \"${env.workDir}\" \"${env.nameFile}\"" 
+                script{
+                    def filesend = "SBORKA/addocs/filesend.py"  
+                    bat "python -X utf8 \"${filesend}\" \"${env.workDir}\" \"${env.nameFile}\"" 
+                }
             }
         }
     }
