@@ -12,12 +12,12 @@ pipeline {
                         env.base = "VAFitness"
                         env.dir = "${env.rootDir}\\Фитнес клуб КОРП 4.0\\cf"
                         env.rep = "${repositoryReleaseFitness}"
-                        //env.nameFile = 
+                        env.nameFile = "1С_Фитнес клуб КОРП. Сборка ${params.newversion}. Изменения и дополнения к документации.htm"
                     } else if (params.STORAGE == 'Salon') {
                         env.base = "VASPA"
                         env.dir = "${env.rootDir}\\SPA-Салон 3.0"
                         env.rep = "${repositoryReleaseSalon}"
-                        //env.nameFile = 
+                        env.nameFile = "1С_Салон красоты. Сборка ${params.newversion}. Изменения и дополнения к документации"
                     } else {
                         env.base = "VAStoma"
                         env.dir = "${env.rootDir}\\1С_Стоматология 2.1\\CF"
