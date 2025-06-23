@@ -72,7 +72,7 @@ pipeline {
                 script {
 					try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
-						runDbOperation("run", "\"${env.dbTests}\" \"${env.epfvrunner}\"")	 // Убрать окон перемещения
+						//runDbOperation("run", "\"${env.dbTests}\" \"${env.epfvrunner}\"")	 // Убрать окон перемещения
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
