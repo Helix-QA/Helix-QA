@@ -15,3 +15,4 @@ if "%1"=="vanessa"      call vrunner vanessa --path "%2%3" --vanessasettings "to
 if "%1"=="update1C"     call vrunner run --command ЗавершитьРаботуСистемы; --ibconnection /Slocalhost/%2 --db-user Админ --execute "C:\\Program Files\\OneScript\\lib\\vanessa-runner\\epf\\ЗакрытьПредприятие.epf" --uccode tester
 if "%1"=="dump"         call vrunner dump "D:\\Vanessa-Automation\\DT\\%2.dt" --ibconnection /Slocalhost/%3 --db-user Админ --uccode tester
 if "%1"=="session_unlock" call vrunner session unlock --db %2 --db-user Админ
+if "%1"=="run" call run --ibconnection /Slocalhost/%2 --db-user Админ --execute "%3\\УбратьОкноПеремещенияИБ.epf"
