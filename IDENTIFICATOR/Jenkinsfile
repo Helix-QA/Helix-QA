@@ -11,7 +11,7 @@ pipeline {
         dumpPathRelease = "D:\\Identificators\\Relis"                               // Путь выгрузки из релизного хранилища
         dumpPathWork = "D:\\Identificators\\Rab"                                    // Путь выгрузки из рабочего хранилища
         comparisonPath = "D:\\Identificators\\Obarabotka\\ПроверкаКонфигурации.epf" // Обработка сверки конфигурации
-        verificationServer = "localhost/SverkaIdentif"                              // Пустая база для сверки конфигураций 
+        verificationServer = "SverkaIdentif"                                        // Пустая база для сверки конфигураций 
     }
     stages {
         stage('Подготовка .cf') {
