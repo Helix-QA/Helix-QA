@@ -11,7 +11,7 @@ pipeline {
         dumpPathRelease = "D:\\Identificators\\Relis"                               // Путь выгрузки из релизного хранилища
         dumpPathWork = "D:\\Identificators\\Rab"                                    // Путь выгрузки из рабочего хранилища
         comparisonPath = "D:\\Identificators\\Obarabotka\\ПроверкаКонфигурации.epf" // Обработка сверки конфигурации
-        verificationServer = "SverkaIdentif"                                        // Пустая база для сверки конфигураций 
+        verificationServer = "localhost/SverkaIdentif"                              // Пустая база для сверки конфигураций 
     }
     stages {
         stage('Подготовка .cf') {
@@ -92,7 +92,7 @@ pipeline {
             steps {
                 bat """
                 chcp 65001
-                "${env.platformPath}" /Slocalhost/"${env.verificationServer}" /Execute "${env.comparisonPath}"
+                "${env.platformPath}" /S"${verificationServer}" /Execute "${env.comparisonPath}"
                 """
             }
         }
