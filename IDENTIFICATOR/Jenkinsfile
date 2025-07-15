@@ -31,7 +31,7 @@ pipeline {
                         env.releaseServer = "VASPA"                       // Релизное хранилище
                         env.workServer = "SPAsalonRab"                    // Рабочее хранилище 
 
-                    } else {
+                    } else (params.product == 'Stomatology') {
                         
                         env.repRelease = "${env.repositoryReleaseStom}"
                         env.repWork = "${env.repositoryRabStom}"
