@@ -17,7 +17,7 @@ pipeline {
 
 						} else if (params.product == 'salon') {
 						
-						env.testPathPlaceholder = "\\tests\\features\\salon\\test" // test - тестовые запуски
+						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
 
 						} else {
