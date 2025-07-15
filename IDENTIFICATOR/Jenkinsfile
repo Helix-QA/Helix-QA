@@ -47,8 +47,10 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner loadrepo --storage-name ${env.repRelease} --storage-user ${env.VATest2} --ibconnection /S${env.releaseServer} --db-user ${env.releaseUser}
-                        @call vrunner updatedb --ibconnection /S${env.releaseServer} --db-user ${env.releaseUser}
+                        @call vrunner session kill --db ${env.releaseBase} --db-user ${env.releaseUser} --uccode IDENTIF
+                        @call vrunner loadrepo --storage-name ${env.repRelease} --storage-user ${env.VATest2} --ibconnection /S${env.releaseServer} --db-user ${env.releaseUser} --uccode IDENTIF
+                        @call vrunner updatedb --ibconnection /S${env.releaseServer} --db-user ${env.releaseUser} --uccode IDENTIF
+                        @call vrunner session unlock --db ${env.releaseBase} --db-user ${env.releaseUser}
                         """
 
                     }
@@ -57,8 +59,10 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner loadrepo --storage-name ${env.repWork} --storage-user ${env.VATest2} --ibconnection /S${env.workServer} --db-user ${env.workUser}
-                        @call vrunner updatedb --ibconnection /S${env.workServer} --db-user ${env.workUser}
+                        @call vrunner session kill --db ${env.workServer} --db-user ${env.workUser} --uccode IDENTIF
+                        @call vrunner loadrepo --storage-name ${env.repWork} --storage-user ${env.VATest2} --ibconnection /S${env.workServer} --db-user ${env.workUser} --uccode IDENTIF
+                        @call vrunner updatedb --ibconnection /S${env.workServer} --db-user ${env.workUser} --uccode IDENTIF
+                        @call vrunner session unlock --db ${env.releaseBase} --db-user ${env.workUser}
                         """
                     }
                 }
