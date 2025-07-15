@@ -103,7 +103,7 @@ pipeline {
     //             }
     //         }
     //     }
-    // }
+     }
 }
 def updateConfigFile() {
     def configJson = readFile(file: 'SBORKA/addocs/VAParams.json')
