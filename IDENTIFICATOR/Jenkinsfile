@@ -47,10 +47,10 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner session kill --db ${env.releaseBase} --db-user ${env.releaseUser} --uccode IDENTIF
+                        @call vrunner session kill --db ${env.releaseServer} --db-user ${env.releaseUser} --uccode IDENTIF
                         @call vrunner loadrepo --storage-name ${env.repRelease} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser} --uccode IDENTIF
                         @call vrunner updatedb --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser} --uccode IDENTIF
-                        @call vrunner session unlock --db ${env.releaseBase} --db-user ${env.releaseUser}
+                        @call vrunner session unlock --db ${env.releaseServer} --db-user ${env.releaseUser}
                         """
 
                     }
