@@ -119,7 +119,6 @@ pipeline {
                 echo Удаление всех файлов и папок в каталоге
                 powershell -command "Get-ChildItem '${dumpPathRelease}' -Recurse | Remove-Item -Recurse -Force"
                 echo Удаление завершено.
-                pause
                 """
         }
     }
