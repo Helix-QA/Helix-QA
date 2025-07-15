@@ -31,12 +31,12 @@ pipeline {
                         env.releaseServer = "VASPA"                       // Релизное хранилище
                         env.workServer = "SPAsalonRab"                    // Рабочее хранилище 
 
-                    } else if (params.product == 'Stomatology') {
+                    } else {
                         
                         env.repRelease = "${env.repositoryReleaseStom}"
                         env.repWork = "${env.repositoryRabStom}"
-                        releaseServer = "VAStoma"                         // Релизное хранилище
-                        workServer = "Serv_Stoma_Rab"                     // Рабочее хранилище 
+                        env.releaseServer = "VAStoma"                         // Релизное хранилище
+                        env.workServer = "Serv_Stoma_Rab"                     // Рабочее хранилище 
                     }
                 }
             }
