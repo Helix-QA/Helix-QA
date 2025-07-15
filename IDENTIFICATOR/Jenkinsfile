@@ -74,7 +74,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out ${env.dumpPathRelease} --current --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser} --ibcmd
+                        @call vrunner decompile --out ${env.dumpPathRelease} --current --ibconnection /Slocalhost/${env.releaseServer} --db-user ${env.releaseUser}
                         """
                     }
                 }
@@ -82,7 +82,7 @@ pipeline {
                     steps {
                         bat """
                         chcp 65001
-                        @call vrunner decompile --out ${env.dumpPathWork} --current --ibconnection /Slocalhost/${env.workServer} --db-user ${env.workUser} --ibcmd
+                        @call vrunner decompile --out ${env.dumpPathWork} --current --ibconnection /Slocalhost/${env.workServer} --db-user ${env.workUser} 
                         """
                     }
                 }
