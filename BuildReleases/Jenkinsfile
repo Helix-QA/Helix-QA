@@ -25,15 +25,23 @@ pipeline {
                 script {
                     if (params.product == 'fitnesscorp') {
                         def configFile = "BuildReleases/tools/fitness.json"
+                        if (!fileExists(configFile)) {
+                            error "Configuration file ${configFile} not found!"
+                        }
                         def props = readJSON file: configFile
                         props.each { key, value -> env[key] = value }
-                        echo "${env.buildUser}"
                     } else if (params.product == 'salon') {
                         def configFile = "BuildReleases/tools/salon.json"
+                        if (!fileExists(configFile)) {
+                            error "Configuration file ${configFile} not found!"
+                        }
                         def props = readJSON file: configFile
                         props.each { key, value -> env[key] = value }
                     } else {
                         def configFile = "BuildReleases/tools/stoma.json"
+                        if (!fileExists(configFile)) {
+                            error "Configuration file ${configFile} not found!"
+                        }
                         def props = readJSON file: configFile
                         props.each { key, value -> env[key] = value }
                     }
