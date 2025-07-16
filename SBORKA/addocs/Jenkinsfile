@@ -40,7 +40,7 @@ pipeline {
                     steps {
                         bat """
                             chcp 65001
-                            @call vrunner loadrepo --storage-name ${env.rep} --storage-user VATest2 --ibconnection /Slocalhost/${env.base} --db-user Админ
+                            @call vrunner loadrepo --storage-name ${env.rep} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.base} --db-user Админ
                             @call vrunner updatedb --ibconnection /Slocalhost/${env.base} --db-user Админ
                             @call vrunner unload "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${env.base} --db-user Админ
                         """

@@ -1,0 +1,80 @@
+pipeline {
+    agent { label "OneS" }
+
+    parameters {
+        choice(name: 'product', choices: ['fitnesscorp', 'Stomatology'], description: 'Выберите продукт')
+        string(defaultValue: "4.0.44.1", description: 'Старая версия', name: 'oldversion_1')
+        string(defaultValue: "4.0.55.1", description: 'Новая версия', name: 'newversion_1')
+        string(defaultValue: "8.3.24.1368", description: 'Версия платформы 1с', name: 'platformversion_1')
+        string(defaultValue: "3.0.37.11710", description: 'Версия СЛК', name: 'slkversion')
+    }
+	environment {
+        FOLDERS_TEMP = "D:\\RELEASES\\${env.product}"
+        FOLDERS_OLDVERSION = "${env.FOLDERS_TEMP}\\OldVersion"
+        FOLDERS_SCRIPTS = "${env.FOLDERS_TEMP}\\Scripts"
+        FOLDERS_PACKAGE = "${env.FOLDERS_TEMP}\\Package"
+        FOLDERS_BUILD = "${env.FOLDERS_TEMP}\\Build"
+        sample = "C:\\automation\\sample\\${env.product}"
+        sampleEdf = "C:\\automation\\sample\\edf\\${env.product}"
+        target_path = "${env.FOLDERS_TEMP}\\${env.product}"  
+    }
+    stages {
+		stage('Подготовка') {
+				steps {
+					script {
+						if (params.product == 'fitnesscorp') {
+                            def configFile = "fitness.properties"
+                            if (!fileExists(configFile)) {
+                                error "Configuration file ${configFile} not found!"
+                            }
+                            def props = readProperties file: configFile
+
+                            props.each { key, value -> env[key] = value }
+
+                            echo "${env.buildUser}"
+
+						} else if (params.product == 'salon') {
+                            def configFile = "salon.properties"
+                            if (!fileExists(configFile)) {
+                                error "Configuration file ${configFile} not found!"
+                            }
+                            def props = readProperties file: configFile
+
+                            props.each { key, value -> env[key] = value }
+						} else {
+                            def configFile = "stoma.properties"
+                            if (!fileExists(configFile)) {
+                                error "Configuration file ${configFile} not found!"
+                            }
+                            def props = readProperties file: configFile
+
+                            props.each { key, value -> env[key] = value }
+					}
+				}
+			}
+		}
+
+        // stage('Обновление документации') {
+        //     steps {
+        //         script {
+        //             sh "python -X utf8 config/delete_folders_and_files.py \"${env.target_path}\""
+        //             sh "python -X utf8 config/update_files_and_contents.py \"${env.sample}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.FOLDERS_BUILD}\""
+        //             sh "python -X utf8 config/process_files.py \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.FOLDERS_SCRIPTS}\""
+        //             sh "python -X utf8 config/del.py \"${env.FOLDERS_TEMP}\"" // удаление папки основной и поставки обновления
+        //         }
+        //     }
+        // }
+        // stage("Обновление конфигурации из релизного хранилища") {
+        //     steps{
+        //         script {
+		// 			bat """
+		// 			chcp 65001
+		// 			@call vrunner session kill --db ${env.releaseBase} --db-user Админ --uccode BUILDER
+		// 			@call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
+		// 			@call vrunner updatedb --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
+        //             """
+        //         } // СЕАНСЫ ЗАБЛОКИРОВАНЫ
+        //     }
+        // }
+    }
+}
