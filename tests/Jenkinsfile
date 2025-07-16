@@ -13,16 +13,16 @@ pipeline {
 						if (params.product == 'fitness') {
 							
 						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
-						env.repository = "${repositoryReleaseFitness}"
+						echo "${env.testPathPlaceholder}"
 
 						} else if (params.product == 'salon') {
 						
-						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
+						env.testPathPlaceholder = "\\tests\\features\\salon${params.debug}" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
 
 						} else {
 							
-						env.testPathPlaceholder = "\\tests\\features\\stoma"
+						env.testPathPlaceholder = "\\tests\\features\\stoma${params.debug}"
 						env.repository = "${repositoryReleaseStom}"
 					}
 				}
