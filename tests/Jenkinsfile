@@ -12,7 +12,7 @@ pipeline {
 					script {
 						if (params.product == 'fitness') {
 							
-						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
+						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
 
 						} else if (params.product == 'salon') {
