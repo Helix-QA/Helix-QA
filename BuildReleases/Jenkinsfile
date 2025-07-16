@@ -23,7 +23,7 @@ pipeline {
 				steps {
 					script {
 						if (params.product == 'fitnesscorp') {
-                            def configFile = "tools/fitness.properties"
+                            def configFile = "BuildReleases/tools/fitness.properties"
                             if (!fileExists(configFile)) {
                                 error "Configuration file ${configFile} not found!"
                             }
@@ -34,7 +34,7 @@ pipeline {
                             echo "${env.buildUser}"
 
 						} else if (params.product == 'salon') {
-                            def configFile = "tools/salon.properties"
+                            def configFile = "BuildReleases/tools/salon.properties"
                             if (!fileExists(configFile)) {
                                 error "Configuration file ${configFile} not found!"
                             }
@@ -42,7 +42,7 @@ pipeline {
 
                             props.each { key, value -> env[key] = value }
 						} else {
-                            def configFile = "tools/stoma.properties"
+                            def configFile = "BuildReleases/tools/stoma.properties"
                             if (!fileExists(configFile)) {
                                 error "Configuration file ${configFile} not found!"
                             }
