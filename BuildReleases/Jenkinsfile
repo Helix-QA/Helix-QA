@@ -20,28 +20,37 @@ pipeline {
     }
     stages {
 		stage('Подготовка') {
-    steps {
-        bat "chcp 65001"
-        script {
-            if (params.product == 'fitnesscorp') {
-                def configFile = "BuildReleases/tools/fitness.properties"
-                def props = readProperties file: configFile, encoding: 'UTF-8'
-                props.each { key, value -> env[key] = value }
-                echo "BuildUser for fitnesscorp: ${env.buildUser}"
-            } else if (params.product == 'salon') {
-                def configFile = "BuildReleases/tools/salon.properties"
-                def props = readProperties file: configFile, encoding: 'UTF-8'
-                props.each { key, value -> env[key] = value }
-
-            } else {
-                def configFile = "BuildReleases/tools/stoma.properties"
-                def props = readProperties file: configFile, encoding: 'UTF-8'
-                props.each { key, value -> env[key] = value }
-
+        steps {
+            bat "chcp 65001"
+            script {
+                if (params.product == 'fitnesscorp') {
+                    def configFile = "BuildReleases/tools/fitness.json"
+                    if (!fileExists(configFile)) {
+                        error "Configuration file ${configFile} not found!"
+                    }
+                    def props = readJSON file: configFile
+                    props.each { key, value -> env[key] = value }
+                    echo "BuildUser for fitnesscorp: ${env.buildUser}"
+                } else if (params.product == 'salon') {
+                    def configFile = "BuildReleases/tools/salon.json"
+                    if (!fileExists(configFile)) {
+                        error "Configuration file ${configFile} not found!"
+                    }
+                    def props = readJSON file: configFile
+                    props.each { key, value -> env[key] = value }
+                    echo "BuildUser for salon: ${env.buildUser}"
+                } else {
+                    def configFile = "BuildReleases/tools/stoma.json"
+                    if (!fileExists(configFile)) {
+                        error "Configuration file ${configFile} not found!"
+                    }
+                    def props = readJSON file: configFile
+                    props.each { key, value -> env[key] = value }
+                    echo "BuildUser for Stomatology: ${env.buildUser}"
+                }
             }
         }
     }
-}
 
         // stage('Обновление документации') {
         //     steps {
