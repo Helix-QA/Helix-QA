@@ -140,7 +140,7 @@ pipeline {
                     chcp 65001
                     @call vrunner session kill  --db ${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
                     @call vrunner load --src ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
-                    @call vrunner updatedb --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}"--uccode BUILDER
+                    @call vrunner updatedb --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
                     """
                 }   // СЕАНСЫ ЗАБЛОКИРОВАНЫ
             }
