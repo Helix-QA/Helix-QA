@@ -20,40 +20,28 @@ pipeline {
     }
     stages {
 		stage('Подготовка') {
-				steps {
-                    bat "chcp 65001"
-					script {
-						if (params.product == 'fitnesscorp') {
-                            def configFile = "BuildReleases/tools/fitness.properties"
-                            if (!fileExists(configFile)) {
-                                error "Configuration file ${configFile} not found!"
-                            }
-                            def props = readProperties file: configFile
+    steps {
+        bat "chcp 65001"
+        script {
+            if (params.product == 'fitnesscorp') {
+                def configFile = "BuildReleases/tools/fitness.properties"
+                def props = readProperties file: configFile, encoding: 'UTF-8'
+                props.each { key, value -> env[key] = value }
+                echo "BuildUser for fitnesscorp: ${env.buildUser}"
+            } else if (params.product == 'salon') {
+                def configFile = "BuildReleases/tools/salon.properties"
+                def props = readProperties file: configFile, encoding: 'UTF-8'
+                props.each { key, value -> env[key] = value }
 
-                            props.each { key, value -> env[key] = value }
+            } else {
+                def configFile = "BuildReleases/tools/stoma.properties"
+                def props = readProperties file: configFile, encoding: 'UTF-8'
+                props.each { key, value -> env[key] = value }
 
-                            echo "${env.buildUser}"
-
-						} else if (params.product == 'salon') {
-                            def configFile = "BuildReleases/tools/salon.properties"
-                            if (!fileExists(configFile)) {
-                                error "Configuration file ${configFile} not found!"
-                            }
-                            def props = readProperties file: configFile
-
-                            props.each { key, value -> env[key] = value }
-						} else {
-                            def configFile = "BuildReleases/tools/stoma.properties"
-                            if (!fileExists(configFile)) {
-                                error "Configuration file ${configFile} not found!"
-                            }
-                            def props = readProperties file: configFile
-
-                            props.each { key, value -> env[key] = value }
-					}
-				}
-			}
-		}
+            }
+        }
+    }
+}
 
         // stage('Обновление документации') {
         //     steps {
