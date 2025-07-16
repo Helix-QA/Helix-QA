@@ -21,6 +21,7 @@ pipeline {
     stages {
 		stage('Подготовка') {
 				steps {
+                    bat "chcp 65001"
 					script {
 						if (params.product == 'fitnesscorp') {
                             def configFile = "BuildReleases/tools/fitness.properties"
