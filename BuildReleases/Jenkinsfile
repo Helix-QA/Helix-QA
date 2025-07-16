@@ -28,25 +28,50 @@ pipeline {
                     if (!fileExists(configFile)) {
                         error "Configuration file ${configFile} not found!"
                     }
-                    def props = readJSON file: configFile
-                    props.each { key, value -> env[key] = value }
-                    echo "BuildUser for fitnesscorp: ${env.buildUser}"
+                    // Отладка: чтение файла как текста для проверки содержимого
+                    def rawContent = readFile(file: configFile)
+                    if (rawContent.trim().isEmpty()) {
+                        error "Configuration file ${configFile} is empty!"
+                    }
+                    try {
+                        def props = readJSON file: configFile
+                        props.each { key, value -> env[key] = value }
+                        echo "BuildUser for fitnesscorp: ${env.buildUser}"
+                    } catch (Exception e) {
+                        error "Failed to parse JSON in ${configFile}: ${e.message}\nContent:\n${rawContent}"
+                    }
                 } else if (params.product == 'salon') {
                     def configFile = "BuildReleases/tools/salon.json"
                     if (!fileExists(configFile)) {
                         error "Configuration file ${configFile} not found!"
                     }
-                    def props = readJSON file: configFile
-                    props.each { key, value -> env[key] = value }
-                    echo "BuildUser for salon: ${env.buildUser}"
+                    def rawContent = readFile(file: configFile)
+                    if (rawContent.trim().isEmpty()) {
+                        error "Configuration file ${configFile} is empty!"
+                    }
+                    try {
+                        def props = readJSON file: configFile
+                        props.each { key, value -> env[key] = value }
+                        echo "BuildUser for salon: ${env.buildUser}"
+                    } catch (Exception e) {
+                        error "Failed to parse JSON in ${configFile}: ${e.message}\nContent:\n${rawContent}"
+                    }
                 } else {
                     def configFile = "BuildReleases/tools/stoma.json"
                     if (!fileExists(configFile)) {
                         error "Configuration file ${configFile} not found!"
                     }
-                    def props = readJSON file: configFile
-                    props.each { key, value -> env[key] = value }
-                    echo "BuildUser for Stomatology: ${env.buildUser}"
+                    def rawContent = readFile(file: configFile)
+                    if (rawContent.trim().isEmpty()) {
+                        error "Configuration file ${configFile} is empty!"
+                    }
+                    try {
+                        def props = readJSON file: configFile
+                        props.each { key, value -> env[key] = value }
+                        echo "BuildUser for Stomatology: ${env.buildUser}"
+                    } catch (Exception e) {
+                        error "Failed to parse JSON in ${configFile}: ${e.message}\nContent:\n${rawContent}"
+                    }
                 }
             }
         }
