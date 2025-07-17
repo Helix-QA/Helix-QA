@@ -1,6 +1,6 @@
 pipeline {
 
-    agent { label "OneS" }
+    agent { label "master" }
     
     parameters {
         choice(name: 'product', choices: ['Fitness', 'Stomatology','Salon'], description: 'Выберите продукт')
@@ -35,8 +35,8 @@ pipeline {
                         
                         env.repRelease = "${env.repositoryReleaseStom}"
                         env.repWork = "${env.repositoryRabStom}"
-                        releaseServer = "VAStoma"                         // Релизное хранилище
-                        workServer = "Serv_Stoma_Rab"                     // Рабочее хранилище 
+                        env.releaseServer = "VAStoma"                         // Релизное хранилище
+                        env.workServer = "Serv_Stoma_Rab"                     // Рабочее хранилище 
                     }
                 }
             }
