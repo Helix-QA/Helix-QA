@@ -177,18 +177,18 @@ pipeline {
                     def template_name
                     if (params.Product.contains('Stomatology')) {
                         echo "Загрузка расширения журнала записи"
-                        source_file = "${FOLDERS_SCRIPTS}\\Protected\\jurnal.cfe"
+                        source_file = "${env.FOLDERS_SCRIPTS}\\Protected\\jurnal.cfe"
                         template_name = "РасширениеЖурналаЗаписи"
                         sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
                     
                     }
                     echo  "Загрузка расширения мессенджера"
-                    source_file = "${FOLDERS_SCRIPTS}\\messenger.cfe"
+                    source_file = "${env.FOLDERS_SCRIPTS}\\messenger.cfe"
                     template_name = "РасширениеМессенджера"
                     sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
 
                     echo "Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
-                    source_file = "${FOLDERS_SCRIPTS}\\licenceaddin-${params.slkversion}-template.zip"
+                    source_file = "${env.FOLDERS_SCRIPTS}\\licenceaddin-${params.slkversion}-template.zip"
                     template_name = "КомпонентаСЛК"
                     sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
 
@@ -196,12 +196,12 @@ pipeline {
                     sh "python -X utf8 ${compiledatafile} \"${FOLDERS_SCRIPTS}\" \"${env.serie}\""
 
                     echo "Загрузка .datafile в макет 'ОбъектыСЛК'"
-                    source_file = "${FOLDERS_SCRIPTS}\\${env.serie}.datafile"
+                    source_file = "${env.FOLDERS_SCRIPTS}\\${env.serie}.datafile"
                     template_name = "ОбъектыСЛК"
                     sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
 
                     echo  "Создание файла 4FB1.zip"
-                    sh "python -X utf8 ${zip} \"${FOLDERS_SCRIPTS}\" \"${env.target_path}\" \"${env.serie}\""
+                    sh "python -X utf8 ${zip} \"${env.FOLDERS_SCRIPTS}\" \"${env.target_path}\" \"${env.serie}\""
                 }
             }
         }
