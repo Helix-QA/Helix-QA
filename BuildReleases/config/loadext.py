@@ -61,7 +61,7 @@ def main():
     if check_template:
         print("Проверка шаблона...")
         dump_cmd = [
-            designer_path, "DESIGNER", f"/S{base_build}",
+            designer_path, "DESIGNER", f"/Slocalhost{base_build}",
             f"/DumpConfigFiles{temp_dir}", "-Template"
         ]
         result = subprocess.run(dump_cmd, capture_output=True, text=True, encoding='cp1251')
@@ -85,7 +85,7 @@ def main():
 
     # Загрузка шаблона в базу с перекодированным именем пользователя
     load_cmd = [
-        designer_path, "DESIGNER", f"/S{base_build}", f"/N{build_user_cp1251}",
+        designer_path, "DESIGNER", f"/Slocalhost{base_build}", f"/N{build_user_cp1251}",
         f"/LoadConfigFiles{temp_dir}", "-Template", "/UpdateDBCfg"
     ]
     result = subprocess.run(load_cmd, capture_output=True, text=True, encoding='cp1251')
