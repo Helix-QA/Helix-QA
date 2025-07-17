@@ -201,7 +201,7 @@ pipeline {
                     sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
 
                     echo  "Создание файла 4FB1.zip"
-                    sh "python -X utf8 ${zip} \"${FOLDERS_SCRIPTS}\" \"${env.target_path}" \"${env.serie}\""
+                    sh "python -X utf8 ${zip} \"${FOLDERS_SCRIPTS}\" \"${env.target_path}\" \"${env.serie}\""
                 }
             }
         }
