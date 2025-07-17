@@ -58,13 +58,14 @@ pipeline {
         stage("Обновление конфигурации из релизного хранилища") {
             steps{
                 script {
+                    // СЕАНСЫ ЗАБЛОКИРОВАНЫ БАЗА - releaseBase
 					bat """
 					chcp 65001
 					@call vrunner session kill --db ${env.releaseBase} --db-user Админ --uccode BUILDER
 					@call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
 					@call vrunner updatedb --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
                     """
-                } // СЕАНСЫ ЗАБЛОКИРОВАНЫ
+                } 
             }
         }
         stage("Обновление расширений") {
@@ -115,7 +116,7 @@ pipeline {
                     @call vrunner unloadext ${env.FOLDERS_SCRIPTS}\\messenger.cfe ${env.extNameMess} --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
                     @call vrunner session unlock --db ${env.releaseBase} --db-user Админ
                     """
-                // СЕАНСЫ РАЗБЛОКИРОВАНЫ
+                    // СЕАНСЫ РАЗБЛОКИРОВАНЫ
                 }
             }
         }
@@ -133,13 +134,14 @@ pipeline {
         stage('Загрузка .cf в базу для сборки релиза') {
             steps {
                 script { 
+                    // СЕАНСЫ ЗАБЛОКИРОВАНЫ БАЗА - buildBase
                     bat """
                     chcp 65001
                     @call vrunner session kill  --db ${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
                     @call vrunner load --src ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
                     @call vrunner updatedb --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
                     """
-                }   // СЕАНСЫ ЗАБЛОКИРОВАНЫ
+                }   
             }
         }
         stage("Обновление базы в режиме 1С:Предприятие") {
@@ -147,9 +149,11 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    @call vrunner run --command ЗавершитьРаботуСистемы; --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf"
-                    @call vrunner run --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\УбратьОкноПеремещенияИБ.epf"
+                    @call vrunner run --command ЗавершитьРаботуСистемы; --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\ЗакрытьПредприятие.epf" --uccode BUILDER
+                    @call vrunner run --ibconnection /Slocalhost/${env.buildBase} --db-user "${env.buildUser}" --execute "${env.epfvrunner}\\УбратьОкноПеремещенияИБ.epf" --uccode BUILDER
+                    @call vrunner session unlock --db ${env.buildBase} --db-user "${env.buildUser}"
                     """
+                    // СЕАНСЫ РАЗБЛОКИРОВАНЫ
                 }
             }
         }
