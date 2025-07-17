@@ -15,8 +15,10 @@ pipeline {
         FOLDERS_PACKAGE = "${env.FOLDERS_TEMP}\\Package"
         FOLDERS_BUILD = "${env.FOLDERS_TEMP}\\Build"
         sample = "C:\\automation\\sample\\${params.product}"
-        sampleEdf = "C:\\automation\\sample\\edf\\${params.product}"
-        target_path = "${env.FOLDERS_TEMP}\\${params.product}"  
+        sampleEdf = "BuildReleases/edf/${params.product}"
+        target_path = "${env.FOLDERS_TEMP}\\${params.product}"
+        packageFull = "${env.FOLDERS_PACKAGE}\\full"
+        packageUpdate = "${env.FOLDERS_PACKAGE}\\updates"
     }
      stages {
         stage('Инициализация параметров') {
@@ -30,6 +32,8 @@ pipeline {
                         env.repositoryMess = "http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release"
                         env.buildBase = "FitnessCorpSborka"
                         env.buildUser = "Администратор БД"
+                        env.edfFull = "Комплект поставки.edf"
+                        env.edfUpdate = "Файл описания комплекта поставки.edf"
                     } else if (params.product.equals('Stomatology')) {
                         env.serie = "4FB1"
                         env.extNameMess = "Мессенджер_Стоматология"
@@ -40,6 +44,8 @@ pipeline {
                         env.repositoryShedule = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_shedule"
                         env.buildBase = "StomaSborka"
                         env.buildUser = "Николаев Лев (Полные права)"
+                        env.edfFull = "1С_Медицина_21_Внутренний_КомплектПоставки.edf"
+                        env.edfUpdate = "Файл описания комплекта поставки.edf"
                     } else {
                         error "Неизвестный продукт: ${params.product}. Ожидается 'Fitness' или 'Stomatology'."
                     }
@@ -167,41 +173,92 @@ pipeline {
         //         }
         //     }
         // }
-        stage("Загрузка расширений и СЛК") {
+        // stage("Загрузка расширений и СЛК") {
+        //     steps {
+        //         script {
+        //             def loadexmes = 'BuildReleases/config/loadext.py'
+        //             def compiledatafile = 'BuildReleases/config/compiledatafile.py'
+        //             def zip = 'BuildReleases/config/zip.py'
+        //             def source_file
+        //             def template_name
+        //             if (params.product.contains('Stomatology')) {
+        //                 echo "Загрузка расширения журнала записи"
+        //                 source_file = "${env.FOLDERS_SCRIPTS}\\Protected\\jurnal.cfe"
+        //                 template_name = "РасширениеЖурналаЗаписи"
+        //                 sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
+                    
+        //             }
+        //             echo  "Загрузка расширения мессенджера"
+        //             source_file = "${env.FOLDERS_SCRIPTS}\\messenger.cfe"
+        //             template_name = "РасширениеМессенджера"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
+
+        //             echo "Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
+        //             source_file = "${env.FOLDERS_SCRIPTS}\\licenceaddin-${params.slkversion}-template.zip"
+        //             template_name = "КомпонентаСЛК"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
+
+        //             echo "Создание файла .datafile"
+        //             sh "python -X utf8 ${compiledatafile} \"${env.FOLDERS_SCRIPTS}\" \"${env.serie}\""
+
+        //             echo "Загрузка .datafile в макет 'ОбъектыСЛК'"
+        //             source_file = "${env.FOLDERS_SCRIPTS}\\${env.serie}.datafile"
+        //             template_name = "ОбъектыСЛК"
+        //             sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
+
+        //             echo  "Создание файла 4FB1.zip"
+        //             sh "python -X utf8 ${zip} \"${env.FOLDERS_SCRIPTS}\" \"${env.target_path}\" \"${env.serie}\""
+        //         }
+        //     }
+        // }
+        stage('Основная поставка') {
             steps {
                 script {
-                    def loadexmes = 'BuildReleases/config/loadext.py'
-                    def compiledatafile = 'BuildReleases/config/compiledatafile.py'
-                    def zip = 'BuildReleases/config/zip.py'
-                    def source_file
-                    def template_name
-                    if (params.product.contains('Stomatology')) {
-                        echo "Загрузка расширения журнала записи"
-                        source_file = "${env.FOLDERS_SCRIPTS}\\Protected\\jurnal.cfe"
-                        template_name = "РасширениеЖурналаЗаписи"
-                        sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
-                    
-                    }
-                    echo  "Загрузка расширения мессенджера"
-                    source_file = "${env.FOLDERS_SCRIPTS}\\messenger.cfe"
-                    template_name = "РасширениеМессенджера"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
-
-                    echo "Загрузка компоненты СЛК в макет 'КомпонентаСЛК'"
-                    source_file = "${env.FOLDERS_SCRIPTS}\\licenceaddin-${params.slkversion}-template.zip"
-                    template_name = "КомпонентаСЛК"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
-
-                    echo "Создание файла .datafile"
-                    sh "python -X utf8 ${compiledatafile} \"${env.FOLDERS_SCRIPTS}\" \"${env.serie}\""
-
-                    echo "Загрузка .datafile в макет 'ОбъектыСЛК'"
-                    source_file = "${env.FOLDERS_SCRIPTS}\\${env.serie}.datafile"
-                    template_name = "ОбъектыСЛК"
-                    sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
-
-                    echo  "Создание файла 4FB1.zip"
-                    sh "python -X utf8 ${zip} \"${env.FOLDERS_SCRIPTS}\" \"${env.target_path}\" \"${env.serie}\""
+                    // СЕАНСЫ ЗАБЛОКИРОВАНЫ БАЗА - buildBase
+                    bat """
+                    chcp 65001
+                    @call vrunner session kill --db ${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
+                    "${env.platformPath}" DESIGNER /Slocalhost/"${env.buildBase}" /N"${env.buildUser}" /CreateDistributivePackage"${packageFull}" -File"${config.products[product].fbrb}\\${env.edfFull}" -PackageFileName setup.zip -Option"Основная поставка"
+                    """
+                    def unzipping = 'BuildReleases/config/unzipping.py'                    // Разархивирование
+                    bat "python -X utf8 ${unzipping} ${packageFull}"
+                    def install = 'BuildReleases/config/install.py'                        // Установка
+                    bat "python -X utf8 ${install} ${packageFull}"
+                }
+            }
+        }
+        stage("Выгрзка файла .cfu") {
+            steps {
+                script{
+                    bat """
+                    chcp 65001
+                    "${env.platformPath}" DESIGNER /S"${env.buildBase}}" /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${config.products[product].sbor}\\Update\\1Cv8.cfu -f ${config.products[product].old_cf}\\${oldversion_1}.cf
+                    """
+                }
+            }
+        }
+        stage('Поставка обновления') {
+            steps {
+                script {
+                    bat """
+                    chcp 65001
+                    "${env.platformPath}" DESIGNER /S"${env.buildBase}}" /N"${env.buildUser}" /CreateDistributivePackage"${packageUpdate}" -File"${config.products[product].fbrb}\\${env.edfUpdate}" -PackageFileName update.zip -Option"Поставка обновления"
+                    """
+                    def unzippingupdate = 'BuildReleases/config/unzippingupdate.py'           // Разархивирование
+                    bat "python -X utf8 ${unzippingupdate} ${packageUpdate}"
+                    def installupdate = 'BuildReleases/config/installupdate.py'               // Установка
+                    bat "python -X utf8 ${installupdate} ${packageUpdate}"
+                }
+            }
+        }
+        stage('Создание архива дистрибутива') {
+            steps {
+                script {
+                    def perenos = 'SBORKA/STOMA/Perenos.py'
+                    sh "python -X utf8 ${perenos} \"${newversion_1}\" \"${config.products[product].target_path}\" \"${packageFull}\" \"${config.products[product].old_cf}\" \"${packageUpdate}\" \"${config.products[product].fbrb}\" \"${config.products[product].product_name}\" \"${env.edfUpdate}\" \"${config.products[product].archive_name}\" \"${config.products[product].name_distr}\""
+                    def messagefinish = "Сборка «${params.Product}» успешно завершена."            // Отправка сообщения в Telegram
+                    def response = httpRequest(url: "https://api.telegram.org/bot${env.botToken}/sendMessage?chat_id=${env.chatId}&text=${URLEncoder.encode(messagefinish, 'UTF-8')}"
+                    )
                 }
             }
         }
