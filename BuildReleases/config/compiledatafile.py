@@ -14,7 +14,12 @@ def main():
     datafile = f"{serie}.datafile"
     source_file = "Helix.epf"
 
-    # Проверка наличия licenceedit.exe
+    print(f"Проверка: licenceedit_path = {licenceedit_path}")
+    print(f"Проверка: source_file = {source_file}")
+    print(f"Проверка: datafile = {datafile}")
+    print(f"Рабочая директория: {os.getcwd()}")
+    
+    # Проверка наличия licenceedit.exe   
     if not os.path.exists(licenceedit_path):
         print(f"Файл 'licenceedit.exe' не найден в '{working_dir}'!")
         sys.exit(1)
@@ -31,6 +36,14 @@ def main():
     print()  # Пустая строка (аналог echo.)
     result = subprocess.run(cmd, capture_output=True, text=True)
 
+    # После subprocess.run
+    print(f"Команда: {' '.join(cmd)}")  # Вывод команды для отладки
+    if result.returncode != 0:
+        print(f"Error ({result.returncode}), press any key to quit...")
+        print(f"stdout: {result.stdout}")
+        print(f"stderr: {result.stderr}")
+        sys.exit(result.returncode)
+        
     # Проверка кода завершения
     if result.returncode != 0:
         print(f"Error ({result.returncode}), press any key to quit...")

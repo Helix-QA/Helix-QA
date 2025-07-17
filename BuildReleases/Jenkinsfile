@@ -193,7 +193,7 @@ pipeline {
                     sh "python -X utf8 ${loadexmes} \"${source_file}\" \"${env.platformPath}\" \"${env.buildBase}\" \"${env.buildUser}\" \"${template_name}\""
 
                     echo "Создание файла .datafile"
-                    sh "python -X utf8 ${compiledatafile} \"${FOLDERS_SCRIPTS}\" \"${env.serie}\""
+                    sh "python -X utf8 ${compiledatafile} \"${env.FOLDERS_SCRIPTS}\" \"${env.serie}\""
 
                     echo "Загрузка .datafile в макет 'ОбъектыСЛК'"
                     source_file = "${env.FOLDERS_SCRIPTS}\\${env.serie}.datafile"
