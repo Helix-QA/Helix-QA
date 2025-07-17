@@ -175,7 +175,7 @@ pipeline {
                     def zip = 'BuildReleases/config/zip.py'
                     def source_file
                     def template_name
-                    if (params.Product.contains('Stomatology')) {
+                    if (params.product.contains('Stomatology')) {
                         echo "Загрузка расширения журнала записи"
                         source_file = "${env.FOLDERS_SCRIPTS}\\Protected\\jurnal.cfe"
                         template_name = "РасширениеЖурналаЗаписи"
