@@ -103,6 +103,22 @@ pipeline {
                 }
             }
         }
+		stage("Дымовые тесты"){
+			steps{
+				script{
+					try{
+						runDbOperation("smoke", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+ 					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+          			}	
+				}
+			}
+		}
+
+
+
+
 	}
 	post {
 		always {
