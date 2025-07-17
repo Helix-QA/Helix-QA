@@ -4,6 +4,8 @@ import fnmatch
 import logging
 import sys
 
+
+
 sys.stdout.reconfigure(encoding='utf-8')
 # Настройка логирования
 logger = logging.getLogger()
@@ -29,6 +31,7 @@ logger.addHandler(console_handler)
 # Пути к папкам
 target_path = None #r"D:\SBORKA\Stomatology"
 target_path = sys.argv[1]
+archive_name = sys.argv[2]
 
 # Папки, которые нужно удалить
 folders_to_delete = [
@@ -70,3 +73,22 @@ for root, dirs, files in os.walk(target_path):
                 logger.info(f".xls файл удален: {file_path}")
             except Exception as e:
                 logger.error(f"Ошибка при удалении .xls файла {file_path}: {str(e)}")
+
+################################### Удаление папки сборок
+        path = rf"{archive_name}"
+
+        # Проверяем, существует ли путь
+        if os.path.exists(path):
+            # Получаем список всех элементов в директории
+            for item in os.listdir(path):
+                item_path = os.path.join(path, item)
+                # Проверяем, является ли элемент папкой
+                if os.path.isdir(item_path):
+                    try:
+                        # Удаляем папку и всё её содержимое
+                        shutil.rmtree(item_path)
+                        print(f"Удалена папка: {item_path}")
+                    except Exception as e:
+                        print(f"Ошибка при удалении {item_path}: {str(e)}")
+        else:
+            print(f"Указанный путь не существует: {path}")
