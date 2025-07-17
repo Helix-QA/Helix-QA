@@ -2,28 +2,27 @@ pipeline {
     agent { label "OneS" }
 
     parameters {
-        choice(name: 'product', choices: ['fitnesscorp', 'Stomatology'], description: 'Выберите продукт')
+        choice(name: 'product', choices: ['Fitness', 'Stomatology'], description: 'Выберите продукт')
         string(defaultValue: "4.0.44.1", description: 'Старая версия', name: 'oldversion_1')
         string(defaultValue: "4.0.55.1", description: 'Новая версия', name: 'newversion_1')
         string(defaultValue: "8.3.24.1368", description: 'Версия платформы 1с', name: 'platformversion_1')
         string(defaultValue: "3.0.37.11710", description: 'Версия СЛК', name: 'slkversion')
     }
 	environment {
-        FOLDERS_TEMP = "D:\\RELEASES\\${env.product}"
+        FOLDERS_TEMP = "D:\\RELEASES\\${params.product}"
         FOLDERS_OLDVERSION = "${env.FOLDERS_TEMP}\\OldVersion"
         FOLDERS_SCRIPTS = "${env.FOLDERS_TEMP}\\Scripts"
         FOLDERS_PACKAGE = "${env.FOLDERS_TEMP}\\Package"
         FOLDERS_BUILD = "${env.FOLDERS_TEMP}\\Build"
-        sample = "C:\\automation\\sample\\${env.product}"
-        sampleEdf = "C:\\automation\\sample\\edf\\${env.product}"
-        target_path = "${env.FOLDERS_TEMP}\\${env.product}"  
+        sample = "C:\\automation\\sample\\${params.product}"
+        sampleEdf = "C:\\automation\\sample\\edf\\${params.product}"
+        target_path = "${env.FOLDERS_TEMP}\\${params.product}"  
     }
      stages {
         stage('Инициализация параметров') {
             steps {
                 script {
-                    if (params.product.equalsIgnoreCase('fitnesscorp')) {
-                        env.product = 'fitnesscorp'
+                    if (params.product.equalsIgnoreCase('Fitness')) {
                         env.serie = "5415"
                         env.extNameMess = "Мессенджер"
                         env.releaseBase = "VAFitness"
@@ -32,7 +31,6 @@ pipeline {
                         env.buildBase = "FitnessCorpSborka"
                         env.buildUser = "Администратор БД"
                     } else if (params.product.equals('Stomatology')) {
-                        env.product = 'Stomatology'
                         env.serie = "4FB1"
                         env.extNameMess = "Мессенджер_Стоматология"
                         env.extNameShedule = "ЖурналЗаписи_Стоматология"
@@ -43,7 +41,7 @@ pipeline {
                         env.buildBase = "StomaSborka"
                         env.buildUser = "Николаев Лев (Полные права)"
                     } else {
-                        error "Неизвестный продукт: ${params.product}. Ожидается 'fitnesscorp' или 'Stomatology'."
+                        error "Неизвестный продукт: ${params.product}. Ожидается 'Fitness' или 'Stomatology'."
                     }
                 }
             }

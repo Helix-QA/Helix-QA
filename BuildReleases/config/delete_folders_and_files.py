@@ -75,7 +75,7 @@ for root, dirs, files in os.walk(target_path):
                 logger.error(f"Ошибка при удалении .xls файла {file_path}: {str(e)}")
 
 ################################### Удаление папки сборок
-        path = rf"{archive_name}\Build"
+        path = rf"{archive_name}"
 
         # Проверяем, существует ли путь
         if os.path.exists(path):
