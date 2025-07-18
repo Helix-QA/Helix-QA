@@ -218,7 +218,6 @@ pipeline {
                     // @call vrunner session kill --db ${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
                     bat """
                     chcp 65001
-                    
                     "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributivePackage"${env.packageFull}" -File"${env.FOLDERS_SCRIPTS}\\${env.edfFull}" -PackageFileName setup.zip -Option"Основная поставка"
                     """
                     def unzipping = 'BuildReleases/config/unzipping.py'                    // Разархивирование
