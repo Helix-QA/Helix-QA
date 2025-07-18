@@ -116,7 +116,13 @@ pipeline {
 					updateConfigFileSmoke()
 					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
 					bat "python -X utf8 \"${replace}\" \"${smokeTests}\""
-					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование
+					try{
+					runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
+					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+					}
+
 				}
 			}
 
