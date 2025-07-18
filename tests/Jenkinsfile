@@ -10,6 +10,7 @@ pipeline {
 		stage('Подготовка .cf') {
 				steps {
 					script {
+						updateConfigFile()
 						if (params.product == 'fitness') {
 							
 						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
@@ -40,7 +41,7 @@ pipeline {
 		// 			while (attempt <= maxAttempts) {
 		// 				try {
 		// 					echo "Попытка ${attempt} из ${maxAttempts}"
-		// 					updateConfigFile()
+		// 					
 
 		// 					bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
 		// 					runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
