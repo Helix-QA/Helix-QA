@@ -181,6 +181,7 @@ def updateConfigFile() {
 
 def updateConfigFileSmoke() {
     def configJson = readFile(file: 'tests/tools/smoke.json')
-    def updatedConfigJson = configJson.replaceAll(/\$\{workspace\}/, env.WORKSPACE)
+    def normalizedWorkspace = env.WORKSPACE.replaceAll(/\\+/, '\\\\') // Преобразуем двойные слэши в одинарные
+    def updatedConfigJson = configJson.replaceAll(/\$\{workspace\}/, normalizedWorkspace)
     writeFile(file: 'tests/tools/smoke.json', text: updatedConfigJson)
 }
