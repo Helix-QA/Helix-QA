@@ -105,7 +105,7 @@ pipeline {
         // }
 		stage("Дымовые тесты"){
 			when {
-				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+				expression { return params.scenarios } // Выполняется, только если тумблер выключен
 			}
 			steps{
 				script{
