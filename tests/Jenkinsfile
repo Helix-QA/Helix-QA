@@ -109,15 +109,15 @@ pipeline {
 			}
 			steps {
 				script {
+					def replace = "tests/scripts/replaceSmoke.py"
+					def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke"
 					updateConfigFileSmoke()
 					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
+					bat "python -X utf8 \"${replace}\" \"${smokeTests}\""
 				}
 			}
+
 		}
-
-
-
-
 	}
 	// post {
 	// 	always {

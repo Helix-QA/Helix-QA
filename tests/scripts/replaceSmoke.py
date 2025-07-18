@@ -1,6 +1,8 @@
 import os
 import re
+import sys 
 
+smoke = sys.argv[1] 
 def replace_commands_in_features(directory, replacements, target_files):
     """
     Открывает указанные .feature-файлы в директории и заменяет указанные команды.
@@ -27,7 +29,7 @@ def replace_commands_in_features(directory, replacements, target_files):
 # Пример использования
 if __name__ == "__main__":
     # Укажите путь к директории с .feature-файлами
-    directory = 'D:\VA Automation\Scenarios\SmokeTest'  # Замените на актуальный путь
+    directory = rf'{smoke}'  # Замените на актуальный путь
 
     # Определите словарь замен
     replacements = {
