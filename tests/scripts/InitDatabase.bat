@@ -16,4 +16,4 @@ if "%1"=="update1C"     call vrunner run --command ЗавершитьРабот�
 if "%1"=="dump"         call vrunner dump "D:\\Vanessa-Automation\\DT\\%2.dt" --ibconnection /Slocalhost/%3 --db-user Админ --uccode tester
 if "%1"=="session_unlock" call vrunner session unlock --db %2 --db-user Админ
 if "%1"=="run"          call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "C:\\Program Files\\OneScript\\lib\\vanessa-runner\\epf\\УбратьОкноПеремещенияИБ.epf" --uccode tester
-if "%1"=="smoke"        call vrunner run --command "StartFeaturePlayer;DisableFeatureLoadOnOpenForm;QuietInstallVanessaExt;GenerateSmokeTest;VAParams=D:\\jENKINS\\workspace\\VAutoTestAll\\tests\\tools\\VAParams.json" --execute "%2" --ibconnection /Slocalhost/%3 --db-user Admin
+if "%1"=="smoke"        call vrunner run --command "VAParams=%2\\tools\\VAParams.json;StartFeaturePlayer;GenerateSmokeTest;QuietInstallVanessaExtAndClose" --execute "%3" --ibconnection /Slocalhost/%4 --db-user Admin
