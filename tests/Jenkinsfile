@@ -107,6 +107,7 @@ pipeline {
 			steps{
 				script{
 					try{
+						updateConfigFileSmoke() // Обновление конфига для дымовых тестов																																	
 						runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
@@ -176,4 +177,10 @@ def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+}
+
+def updateConfigFileSmoke() {
+    def configJson = readFile(file: 'tests/tools/smoke.json')
+    def updatedConfigJson = configJson.replaceAll(/\$\{workspace\}/, env.WORKSPACE)
+    writeFile(file: 'tests/tools/smoke.json', text: updatedConfigJson)
 }
