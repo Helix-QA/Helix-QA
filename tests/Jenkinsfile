@@ -181,7 +181,7 @@ def updateConfigFile() {
 
 def updateConfigFileSmoke() {
     def configJson = readFile(file: 'tests/tools/smoke.json')
-    def normalizedWorkspace = env.WORKSPACE.replaceAll(/:/, '\\\\') // Заменяем : на \\
-    def updatedConfigJson = configJson.replaceAll(/\$\{workspace\}/, normalizedWorkspace)
+    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
+    def updatedConfigJson = configJson.replace('${workspace}', escapedWorkspace)
     writeFile(file: 'tests/tools/smoke.json', text: updatedConfigJson)
 }
