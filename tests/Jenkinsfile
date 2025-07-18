@@ -103,16 +103,14 @@ pipeline {
         //         }
         //     }
         // }
-		stage("Дымовые тесты"){
+		stage("Дымовые тесты") {
 			when {
 				expression { return params.scenarios } // Выполняется, только если тумблер выключен
 			}
-			steps{
-				script{
-						updateConfigFileSmoke() // Обновление конфига для дымовых тестов																																	
-						runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
-						echo "Error occurred: ${Exc.message}"
-						currentBuild.result = 'UNSTABLE'
+			steps {
+				script {
+					updateConfigFileSmoke()
+					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
 				}
 			}
 		}
