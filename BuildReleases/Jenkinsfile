@@ -226,7 +226,7 @@ pipeline {
                     bat "python -X utf8 ${install} ${packageFull}"
                 }
             }
-        }
+        }//
         stage("Выгрзка файла .cfu") {
             steps {
                 script{
