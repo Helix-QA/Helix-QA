@@ -57,7 +57,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"refund\",*'                             |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -114,7 +114,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"refund\",*'                             |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -163,7 +163,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"refund\",*'                             |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -219,7 +219,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"refund\",*'                             |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -321,7 +321,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"payment\",*'                            |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |

@@ -67,7 +67,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"payment\",*'                            |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -116,7 +116,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"payment\",*'                            |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -173,7 +173,7 @@
 		| '}*'                                                 |
 		| ']*'                                                 |
 		| '},*'                                                |
-		| '\"mode\": \"email\",*'                              |
+		| '\"mode\": \"print_email\",*'                        |
 		| '\"type\": \"payment\",*'                            |
 		| '\"source\": \"1С_cloud\",*'                         |
 		| '\"customer_phone\": \"+*\",*'                       |
@@ -181,7 +181,7 @@
 		| '\"card_amount\": 0,*'                               |
 		| '\"prepayment_amount\": 0,*'                         |
 		| '\"credit_amount\": 0,*'                             |
-		| '\"other_amount\": 0,*'                             |
+		| '\"other_amount\": 0,*'                              |
 		| '\"cashier_name\": \"*\",*'                          |
 		| '\"supplier_name\": \"*\",*'                         |
 		| '\"supplier_inn\": \"*\",*'                          |
