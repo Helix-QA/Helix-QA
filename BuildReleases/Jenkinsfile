@@ -15,7 +15,7 @@ pipeline {
         FOLDERS_PACKAGE = "${env.FOLDERS_TEMP}\\Package"
         FOLDERS_BUILD = "${env.FOLDERS_TEMP}\\Build"
         sample = "C:\\automation\\sample\\${params.product}"
-        sampleEdf = "BuildReleases/edf/${params.product}"
+        sampleEdf = "${env.WORKSPACE}\\BuildReleases\\edf\\${params.product}"
         target_path = "${env.FOLDERS_TEMP}\\${params.product}"
         packageFull = "${env.FOLDERS_PACKAGE}\\full"
         packageUpdate = "${env.FOLDERS_PACKAGE}\\updates"
