@@ -111,7 +111,7 @@ pipeline {
 					def folderSmoke = "\\tests\\features\\smoke"
 					updateConfigFileSmoke()
 					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
-					bat "python -X utf8 \"${replace}\" \"${smokeTests}\"\"${params.product}\""
+					bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
 					try{
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
 					} catch (Exception Exc) {
