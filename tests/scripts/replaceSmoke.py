@@ -31,7 +31,7 @@ def replace_commands_in_features(directory, replacements, target_files):
 # Пример использования
 if __name__ == "__main__":
     # Укажите путь к директории с .feature-файлами
-    directory = rf'{prod}'  # Путь из аргумента командной строки
+    directory = rf'{smoke}'  # Путь из аргумента командной строки
 
     # Определение словаря замен и целевых файлов в зависимости от prod
     if prod == 'fitness':
