@@ -236,7 +236,7 @@ pipeline {
                 script{
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"localhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.FOLDERS_BUILD}\\Update\\1Cv8.cfu -f ${env.FOLDERS_OLDVERSION}\\${oldversion_1}.cf
+                    "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.FOLDERS_BUILD}\\Update\\1Cv8.cfu -f ${env.FOLDERS_OLDVERSION}\\${oldversion_1}.cf
                     """
                 }
             }
