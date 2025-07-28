@@ -49,10 +49,10 @@
 }
 }
 },
-{2,1184d879-f29c-4f19-a35c-630e9e1cb735,"Каталог сборки дистрибутивов (V8ProductFolder)",1,"D:\RELEASES\Fitness\Build",67771a18-f206-45fc-8d01-b0fb5d8ca372,"Каталог версий и обновлений конфигурации (CFUBuildFolder)",1,"D:\RELEASES\Fitness\Build"},
+{2,1184d879-f29c-4f19-a35c-630e9e1cb735,"Каталог сборки дистрибутивов (V8ProductFolder)",1,"D:\RELEASES\Fitness_CORP\Build",67771a18-f206-45fc-8d01-b0fb5d8ca372,"Каталог версий и обновлений конфигурации (CFUBuildFolder)",1,"D:\RELEASES\Fitness_CORP\Build"},
 {3,"Полный",0,
 {0},00000000-0000-0000-0000-000000000000,"",00000000-0000-0000-0000-000000000000,"","Основная поставка",1,"ru",62aaa898-4fa4-4fbf-8f69-164cb43f59c8,
-{5,d44be50d-e0d6-4cec-90dc-7086273728c5,ee845617-37a4-4d28-a750-b7cf6e0ff0d3,62aaa898-4fa4-4fbf-8f69-164cb43f59c8,601766e4-724e-4858-aaff-565d7f301822,91565dd1-b581-4d09-a817-af9b9e3dfcd4},1184d879-f29c-4f19-a35c-630e9e1cb735,"Основная поставка",1184d879-f29c-4f19-a35c-630e9e1cb735,"D:\RELEASES\Fitness\Package","Поставка обновления",1,"ru",62aaa898-4fa4-4fbf-8f69-164cb43f59c8,
-{2,62aaa898-4fa4-4fbf-8f69-164cb43f59c8,8fc4d764-ac69-4b22-afb3-696d8eeba3d3},67771a18-f206-45fc-8d01-b0fb5d8ca372,"D:\RELEASES\Fitness\Package",67771a18-f206-45fc-8d01-b0fb5d8ca372,"D:\RELEASES\Fitness\Package"},
+{5,d44be50d-e0d6-4cec-90dc-7086273728c5,ee845617-37a4-4d28-a750-b7cf6e0ff0d3,62aaa898-4fa4-4fbf-8f69-164cb43f59c8,601766e4-724e-4858-aaff-565d7f301822,91565dd1-b581-4d09-a817-af9b9e3dfcd4},1184d879-f29c-4f19-a35c-630e9e1cb735,"Основная поставка",1184d879-f29c-4f19-a35c-630e9e1cb735,"D:\RELEASES\Fitness_CORP\Package","Поставка обновления",1,"ru",62aaa898-4fa4-4fbf-8f69-164cb43f59c8,
+{2,62aaa898-4fa4-4fbf-8f69-164cb43f59c8,8fc4d764-ac69-4b22-afb3-696d8eeba3d3},67771a18-f206-45fc-8d01-b0fb5d8ca372,"D:\RELEASES\Fitness_CORP\Package",67771a18-f206-45fc-8d01-b0fb5d8ca372,"D:\RELEASES\Fitness_CORP\Package"},
 {0}
 }
