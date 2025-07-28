@@ -215,28 +215,28 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Основная поставка') {
-            steps {
-                script {
+        // stage('Основная поставка') {
+        //     steps {
+        //         script {
                    
-                    //@call vrunner session kill --db ${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributivePackage"${env.packageFull}" -File"${env.FOLDERS_SCRIPTS}\\${env.edfFull}" -PackageFileName setup.zip -Option"Основная поставка"
-                    """
-                    def unzipping = 'BuildReleases/config/unzipping.py'                    // Разархивирование
-                    bat "python -X utf8 ${unzipping} ${env.packageFull}"
-                    def install = 'BuildReleases/config/install.py'                        // Установка
-                    bat "python -X utf8 ${install} ${env.packageFull}"
-                }
-            }
-        }//
+        //             //@call vrunner session kill --db ${env.buildBase} --db-user "${env.buildUser}" --uccode BUILDER
+        //             bat """
+        //             chcp 65001
+        //             "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributivePackage"${env.packageFull}" -File"${env.FOLDERS_SCRIPTS}\\${env.edfFull}" -PackageFileName setup.zip -Option"Основная поставка"
+        //             """
+        //             def unzipping = 'BuildReleases/config/unzipping.py'                    // Разархивирование
+        //             bat "python -X utf8 ${unzipping} ${env.packageFull}"
+        //             def install = 'BuildReleases/config/install.py'                        // Установка
+        //             bat "python -X utf8 ${install} ${env.packageFull}"
+        //         }
+        //     }
+        // }//
         stage("Выгрзка файла .cfu") {
             steps {
                 script{
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${env.buildBase} /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.FOLDERS_BUILD}\\Update\\1Cv8.cfu -f ${env.FOLDERS_OLDVERSION}\\${oldversion_1}.cf
+                    "${env.platformPath}" DESIGNER /S"localhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.FOLDERS_BUILD}\\Update\\1Cv8.cfu -f ${env.FOLDERS_OLDVERSION}\\${oldversion_1}.cf
                     """
                 }
             }
