@@ -231,16 +231,16 @@ pipeline {
         //         }
         //     }
         // }//
-        stage("Выгрзка файла .cfu") {
-            steps {
-                script{
-                    bat """
-                    chcp 65001
-                    "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.FOLDERS_BUILD}\\Update\\1Cv8.cfu -f ${env.FOLDERS_OLDVERSION}\\${oldversion_1}.cf
-                    """
-                }
-            }
-        }
+        // stage("Выгрзка файла .cfu") {
+        //     steps {
+        //         script{
+        //             bat """
+        //             chcp 65001
+        //             "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributionFiles -cfufile ${env.FOLDERS_BUILD}\\Update\\1Cv8.cfu -f ${env.FOLDERS_OLDVERSION}\\${oldversion_1}.cf
+        //             """
+        //         }
+        //     }
+        // }
         stage('Поставка обновления') {
             steps {
                 script {
