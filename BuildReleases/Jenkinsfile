@@ -246,7 +246,7 @@ pipeline {
                 script {
                     bat """
                     chcp 65001
-                    "${env.platformPath}" DESIGNER /S"${env.buildBase}}" /N"${env.buildUser}" /CreateDistributivePackage"${env.packageUpdate}" -File"${env.FOLDERS_SCRIPTS}\\${env.edfUpdate}" -PackageFileName update.zip -Option"Поставка обновления"
+                    "${env.platformPath}" DESIGNER /Slocalhost/${env.buildBase} /N"${env.buildUser}" /CreateDistributivePackage"${env.packageUpdate}" -File"${env.FOLDERS_SCRIPTS}\\${env.edfUpdate}" -PackageFileName update.zip -Option"Поставка обновления"
                     """
                     def unzippingupdate = 'BuildReleases/config/unzippingupdate.py'           // Разархивирование
                     bat "python -X utf8 ${unzippingupdate} ${env.packageUpdate}"
