@@ -21,7 +21,8 @@ pipeline {
         packageUpdate = "${env.FOLDERS_PACKAGE}\\updates"
 
     }
-    stage('Инициализация параметров') {
+    stages {
+        stage('Инициализация параметров') {
             steps {
                 script {
                     if (params.product.equalsIgnoreCase('Fitness_CORP')) {
