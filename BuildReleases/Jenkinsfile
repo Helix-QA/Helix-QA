@@ -1,3 +1,9 @@
+properties([
+    [$class: 'JenkinsProjectProperty', displayName: 'Сборка на русском'],
+    // или для нового Jenkins:
+    displayName('Сборка на русском')
+])
+
 pipeline {
     agent { label "OneS" }
 
