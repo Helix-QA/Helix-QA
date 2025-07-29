@@ -100,7 +100,7 @@ pipeline {
 							url: "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/setDefaultVersion?applicationId=${env.applicationId}&versionId=${env.versionID}",
 							httpMode: 'POST',
 							contentType: 'APPLICATION_JSON',
-							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
+							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86Q28zamlrb20=']],
 							validResponseCodes: '200:299', // Ожидаем успешные коды ответа
 							ignoreSslErrors: true // Если нужно игнорировать ошибки SSL
 						)
