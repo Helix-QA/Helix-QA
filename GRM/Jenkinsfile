@@ -37,7 +37,7 @@ pipeline {
                             httpMode: 'GET',
                             contentType: 'APPLICATION_JSON',
                             requestBody: jsonBody,
-                            customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86Q28zamprb20=']],
+                            customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86Q28zamlrb20=']],
                             validResponseCodes: '200:299',
                             ignoreSslErrors: true
                         )
