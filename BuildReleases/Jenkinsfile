@@ -1,7 +1,3 @@
-properties([
-    displayName('🔧 Тестирование'),
-    description('Сборка React-приложения')
-])
 pipeline {
     agent { label "OneS" }
 
