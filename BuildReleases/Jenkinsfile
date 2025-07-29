@@ -59,7 +59,7 @@ pipeline {
         stage('Обновление документации') {
             steps {
                 script {
-                    sh "python -X utf8 BuildReleases/config/delete_folders_and_files.py \"${env.target_path}\" \"${env.FOLDERS_PACKAGE}\""
+                    sh "python -X utf8 BuildReleases/config/delete_folders_and_files.py \"${env.target_path}\" \"${env.FOLDERS_PACKAGE}\" \"${env.FOLDERS_BUILD}\""
                     sh "python -X utf8 BuildReleases/config/update_files_and_contents.py \"${env.sample}\" \"${env.target_path}\" \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${params.platformversion_1}\" \"${params.slkversion}\" \"${env.FOLDERS_BUILD}\""
                     sh "python -X utf8 BuildReleases/config/process_files.py \"${params.oldversion_1}\" \"${params.newversion_1}\" \"${env.sampleEdf}\" \"${env.FOLDERS_SCRIPTS}\""
                 }
