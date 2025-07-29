@@ -21,15 +21,7 @@ pipeline {
         packageUpdate = "${env.FOLDERS_PACKAGE}\\updates"
 
     }
-     stages {
-        stage('Set Display Name') {
-            steps {
-                script {
-                    currentBuild.displayName = "тестирование"
-                }
-            }
-        }
-        stage('Инициализация параметров') {
+    stage('Инициализация параметров') {
             steps {
                 script {
                     if (params.product.equalsIgnoreCase('Fitness_CORP')) {
