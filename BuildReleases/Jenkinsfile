@@ -135,7 +135,7 @@ pipeline {
             steps {
                 script{
                     bat """
-                    start ${env.FOLDERS_TEMP}\\Netlenka1C.exe --mode=prof --source ${env.FOLDERS_SCRIPTS}\\jurnal.cfe --createpdb
+                    start ${env.FOLDERS_TEMP}\\Netlenka1c\\Netlenka1C.exe --mode=prof --source ${env.FOLDERS_SCRIPTS}\\jurnal.cfe --createpdb
                     exit
                     """
                 }
