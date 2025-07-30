@@ -180,9 +180,9 @@ def updateConfigFile() {
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
 
-def updateConfigFileSmoke() {
-    def configJson = readFile(file: 'tests/tools/smoke.json')
-    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
-    def updatedConfigJson = configJson.replace('${workspace}', escapedWorkspace)
-    writeFile(file: 'tests/tools/smoke.json', text: updatedConfigJson)
-}
+// def updateConfigFileSmoke() {
+//     def configJson = readFile(file: 'tests/tools/smoke.json')
+//     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
+//     def updatedConfigJson = configJson.replace('${workspace}', escapedWorkspace)
+//     writeFile(file: 'tests/tools/smoke.json', text: updatedConfigJson)
+// }

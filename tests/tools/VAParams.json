@@ -300,9 +300,9 @@
     },
 	"ДымовыеТесты": {
 		"ДымовыеТестыЯзыкШагов": "ru",
-		"ДымовыеТестыКаталогВыходныхФайлов": "$workspaceRoot\\tests\\features\\smoke\\exceptions${product}",
+		"ДымовыеТестыКаталогВыходныхФайлов": "$workspaceRoot\\tests\\features\\smoke\\exceptions_${product}",
 		"ДымовыеТестыОчищатьКаталогВыходныхФайлов": true,
-		"ДымовыеТестыКаталогФайловИсключений": "$workspaceRoot\\tests\\features\\smoke\\exceptions${product}",
+		"ДымовыеТестыКаталогФайловИсключений": "$workspaceRoot\\tests\\features\\smoke\\exceptions_${product}",
 		"ДымовыеТестыТолькоВведенныеОбъекты": true,
 		"ДымовыеТестыТолькоИзмененныеОтностительноКонфигурацииПоставщика": false,
 		"ДымовыеТестыИмяКонфигурацииПоставщика": "Стоматология",
