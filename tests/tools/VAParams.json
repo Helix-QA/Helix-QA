@@ -300,12 +300,12 @@
     },
 	"ДымовыеТесты": {
 		"ДымовыеТестыЯзыкШагов": "ru",
-		"ДымовыеТестыКаталогВыходныхФайлов": "$workspaceRoot\\tests\\features\\smoke\\exceptions_${product}",
+		"ДымовыеТестыКаталогВыходныхФайлов": "${workspace}\\tests\\features\\smoke\\exceptions_${product}",
 		"ДымовыеТестыОчищатьКаталогВыходныхФайлов": true,
-		"ДымовыеТестыКаталогФайловИсключений": "$workspaceRoot\\tests\\features\\smoke\\exceptions_${product}",
+		"ДымовыеТестыКаталогФайловИсключений": "${workspace}\\tests\\features\\smoke\\exceptions_${product}",
 		"ДымовыеТестыТолькоВведенныеОбъекты": true,
 		"ДымовыеТестыТолькоИзмененныеОтностительноКонфигурацииПоставщика": false,
 		"ДымовыеТестыИмяКонфигурацииПоставщика": "${product}",
-		"ДымовыеТестыПутьКФайлуНастроекСценариев": "$workspaceRoot\\tests\\features\\smoke\\НастройкиСценариев.csv"
+		"ДымовыеТестыПутьКФайлуНастроекСценариев": "${workspace}\\tests\\features\\smoke\\НастройкиСценариев.csv"
 	}
 }

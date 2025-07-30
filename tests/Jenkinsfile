@@ -107,8 +107,8 @@ pipeline {
 			steps {
 				script {
 					def replace = "tests/scripts/replaceSmoke.py"
-					def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke"
-					def folderSmoke = "\\tests\\features\\smoke"
+					def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke\\exceptions_${params.product}"
+					def folderSmoke = "\\tests\\features\\smoke\\exceptions_${params.product}"
 					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
 					bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
 					try{
@@ -177,6 +177,7 @@ def runDbOperation(operation, params) {
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+							.replaceAll(/\$\{workspace\}/, env.WORKSPACE)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
 
