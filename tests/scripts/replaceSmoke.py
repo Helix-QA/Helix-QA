@@ -10,7 +10,8 @@ def replace_commands_in_features(directory, replacements, target_files):
     Открывает указанные .feature-файлы в директории и заменяет указанные команды.
 
     :param directory: Путь к директории с .feature-файлами.
-    :param replacements: Словарь, где ключи — старые команды, а значения — новые команды.
+    :param replacements: Словарь, где ключи — старые команды, а значения — новые команды,
+                        либо словарь, где ключи — имена файлов, а значения — словари замен.
     :param target_files: Список имен файлов, в которых нужно произвести замену.
     """
     for root, dirs, files in os.walk(directory):
@@ -19,9 +20,20 @@ def replace_commands_in_features(directory, replacements, target_files):
                 file_path = os.path.join(root, file)
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
-                for old_command, new_command in replacements.items():
-                    pattern = re.escape(old_command)  # Экранируем спецсимволы
-                    content = re.sub(pattern, new_command, content)
+                
+                # Проверяем, является ли replacements словарем замен или словарем по файлам
+                if isinstance(replacements, dict) and all(isinstance(v, dict) for v in replacements.values()):
+                    # Для salon: replacements содержит словари замен для каждого файла
+                    file_replacements = replacements.get(file, {})
+                    for old_command, new_command in file_replacements.items():
+                        pattern = re.escape(old_command)  # Экранируем спецсимволы
+                        content = re.sub(pattern, new_command, content)
+                else:
+                    # Для fitness: replacements — это простой словарь замен
+                    for old_command, new_command in replacements.items():
+                        pattern = re.escape(old_command)  # Экранируем спецсимволы
+                        content = re.sub(pattern, new_command, content)
+                
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(content)
                 print(f"Обработан файл: {file_path}")
