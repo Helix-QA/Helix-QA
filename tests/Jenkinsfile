@@ -29,77 +29,77 @@ pipeline {
 				}
 			}
 		}
-		// stage("Создание БД"){
-		// 	steps{
-		// 		script{
-		// 			def maxAttempts = 5
-		// 			def attempt = 1
-		// 			def serviceRestarted = false
-		// 			def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt"
-		// 			def drop_db = "tests/scripts/drop_db.py"
-		// 			while (attempt <= maxAttempts) {
-		// 				try {
-		// 					echo "Попытка ${attempt} из ${maxAttempts}"
-		// 					bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
-		// 					runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
-		// 					runDbOperation("session_kill", "\"${env.dbTests}\"")
-		// 					runDbOperation("restore", "\"${params.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
-		// 					runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
-		// 					runDbOperation("loadrepo", "\"${env.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
-		// 					runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
-		// 					if (fileExists(versionFile)) {
-		// 						env.version = readFile(versionFile).trim()
-		// 					} else {
-		// 						env.version = '1.0.0' // Начальная версия, если файла нет
-		// 					}
-		// 					echo "Текущая версия: ${env.version}"
-		// 					if (params.VERSION_NEW > version) {
-		// 						echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
-		// 						runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
-		// 						runDbOperation("run", "\"${env.dbTests}\"")	// Убрать окон перемещения
-		// 						runDbOperation("dump", "\"${params.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
-		// 						// Обновляем version
-		// 						env.version = params.VERSION_NEW
-		// 						// Сохраняем новую версию в файл
-		// 						writeFile file: "D:\\Vanessa-Automation\\version\\${params.product}.txt", text: env.version
-		// 						echo "Версия обновлена до ${env.version}"
-		// 					} else {
-		// 						echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
-		// 					}
-		// 				  	break // Выход из цикла при успехе
-		// 				} catch (Exception e) {
-		// 					echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
+		stage("Создание БД"){
+			steps{
+				script{
+					def maxAttempts = 5
+					def attempt = 1
+					def serviceRestarted = false
+					def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt"
+					def drop_db = "tests/scripts/drop_db.py"
+					while (attempt <= maxAttempts) {
+						try {
+							echo "Попытка ${attempt} из ${maxAttempts}"
+							bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
+							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
+							runDbOperation("session_kill", "\"${env.dbTests}\"")
+							runDbOperation("restore", "\"${params.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
+							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							runDbOperation("loadrepo", "\"${env.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
+							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							if (fileExists(versionFile)) {
+								env.version = readFile(versionFile).trim()
+							} else {
+								env.version = '1.0.0' // Начальная версия, если файла нет
+							}
+							echo "Текущая версия: ${env.version}"
+							if (params.VERSION_NEW > version) {
+								echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
+								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
+								runDbOperation("run", "\"${env.dbTests}\"")	// Убрать окон перемещения
+								runDbOperation("dump", "\"${params.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
+								// Обновляем version
+								env.version = params.VERSION_NEW
+								// Сохраняем новую версию в файл
+								writeFile file: "D:\\Vanessa-Automation\\version\\${params.product}.txt", text: env.version
+								echo "Версия обновлена до ${env.version}"
+							} else {
+								echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
+							}
+						  	break // Выход из цикла при успехе
+						} catch (Exception e) {
+							echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
 
-		// 					if (attempt == 2 && !serviceRestarted) {
-		// 						echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
-		// 						// Команда для перезагрузки службы 1С
-		// 						bat 'chcp 65001 && python -X utf8 tests/scripts/AgentRestart.py'
-		// 						serviceRestarted = true
-		// 					}
+							if (attempt == 2 && !serviceRestarted) {
+								echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
+								// Команда для перезагрузки службы 1С
+								bat 'chcp 65001 && python -X utf8 tests/scripts/AgentRestart.py'
+								serviceRestarted = true
+							}
 							
-		// 					if (attempt == maxAttempts) {
-		// 						error "Не удалось выполнить stage после ${maxAttempts} попыток"
-		// 					}
-		// 					attempt++
-		// 					echo "Stage успешно выполнен с попытки ${attempt}"
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-        // stage('Сценарное тестирвоание') {
-        //     steps {
-        //         script {
-		// 			try{
-		// 				runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
-		// 				runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
- 		// 			} catch (Exception Exc) {
-		// 				echo "Error occurred: ${Exc.message}"
-		// 				currentBuild.result = 'UNSTABLE'
-        //   			}
-        //         }
-        //     }
-        // }
+							if (attempt == maxAttempts) {
+								error "Не удалось выполнить stage после ${maxAttempts} попыток"
+							}
+							attempt++
+							echo "Stage успешно выполнен с попытки ${attempt}"
+						}
+					}
+				}
+			}
+		}
+        stage('Сценарное тестирвоание') {
+            steps {
+                script {
+					try{
+						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+ 					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+          			}
+                }
+            }
+        }
 		stage("Дымовые тесты") {
 			when {
 				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
@@ -181,10 +181,3 @@ def updateConfigFile() {
                               .replaceAll(/\$\{workspace\}/, escapedWorkspace)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
-
-// def updateConfigFileSmoke() {
-//     def configJson = readFile(file: 'tests/tools/smoke.json')
-//     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
-//     def updatedConfigJson = configJson.replace('${workspace}', escapedWorkspace)
-//     writeFile(file: 'tests/tools/smoke.json', text: updatedConfigJson)
-// }
