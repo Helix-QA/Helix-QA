@@ -65,19 +65,19 @@ pipeline {
                 }
             }
         }
-        // stage("Обновление конфигурации из релизного хранилища") {
-        //     steps{
-        //         script {
-        //             // СЕАНСЫ ЗАБЛОКИРОВАНЫ БАЗА - releaseBase
-		// 			bat """
-		// 			chcp 65001
-		// 			@call vrunner session kill --db ${env.releaseBase} --db-user Админ --uccode BUILDER
-		// 			@call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
-		// 			@call vrunner updatedb --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
-        //             """
-        //         } 
-        //     }
-        // }
+        // // stage("Обновление конфигурации из релизного хранилища") {
+        // //     steps{
+        // //         script {
+        // //             // СЕАНСЫ ЗАБЛОКИРОВАНЫ БАЗА - releaseBase
+		// // 			bat """
+		// // 			chcp 65001
+		// // 			@call vrunner session kill --db ${env.releaseBase} --db-user Админ --uccode BUILDER
+		// // 			@call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
+		// // 			@call vrunner updatedb --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
+        // //             """
+        // //         } 
+        // //     }
+        // // }
         stage("Обновление расширений") {
             steps{  
                 echo "Обновление мессенджера"
@@ -110,7 +110,7 @@ pipeline {
             //         chcp 65001
             //         @call vrunner unload ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
             //         """
-            //     }
+            //    }
                 echo "Выгрузка расширений"
                 script{
                     if (params.product == 'Stomatology') {
@@ -128,8 +128,7 @@ pipeline {
                     """
                     // СЕАНСЫ РАЗБЛОКИРОВАНЫ
                 }
-            }
-        }
+             }
         stage('Шифрование расширения') {
             when { expression {params.product.contains('Stomatology') } }
             steps {
@@ -141,7 +140,7 @@ pipeline {
                 }
             }
         }
-        stage('Загрузка .cf в базу для сборки релиза') {
+        stage('Загрузка .cf в базу для сборки релиза')
             steps {
                 script { 
                     // СЕАНСЫ ЗАБЛОКИРОВАНЫ БАЗА - buildBase
@@ -153,7 +152,7 @@ pipeline {
                     """
                 }   
             }
-        }
+        
         stage("Обновление базы в режиме 1С:Предприятие") {
             steps {
                 script{
@@ -264,5 +263,5 @@ pipeline {
                 }
             }
         }
-     }
+    }
 }
