@@ -105,12 +105,12 @@ pipeline {
         stage("Выгрузка из хранилища") {
             steps{
                 echo "Выгрузка конфигурации"
-                script {
-                    // bat """
-                    // chcp 65001
-                    // @call vrunner unload ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
-                    // """
-                }
+                // script {
+                //     // bat """
+                //     // chcp 65001
+                //     // @call vrunner unload ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
+                //     // """
+                // }
                 echo "Выгрузка расширений"
                 script{
                     if (params.product == 'Stomatology') {
