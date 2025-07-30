@@ -103,14 +103,14 @@ pipeline {
             }
         }
         stage("Выгрузка из хранилища") {
-            // steps{
-            //     echo "Выгрузка конфигурации"
-            //     script {
-            //         bat """
-            //         chcp 65001
-            //         @call vrunner unload ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
-            //         """
-            //    }
+            steps{
+                echo "Выгрузка конфигурации"
+                    script {
+                        // bat """
+                        // chcp 65001
+                        // @call vrunner unload ${env.FOLDERS_SCRIPTS}\\1Cv8.cf --ibconnection /Slocalhost/${env.releaseBase} --db-user Админ --uccode BUILDER
+                        // """
+                    }
                 echo "Выгрузка расширений"
                 script{
                     if (params.product == 'Stomatology') {
@@ -129,6 +129,7 @@ pipeline {
                     // СЕАНСЫ РАЗБЛОКИРОВАНЫ
                 }
              }
+        }
         stage('Шифрование расширения') {
             when { expression {params.product.contains('Stomatology') } }
             steps {
