@@ -178,7 +178,7 @@ def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
 	def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
-							.replaceAll(/\$\{workspace\}/, escapedWorkspace)
+							.replaceAll('${workspace}', escapedWorkspace)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
 
