@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'TRIGGER_TYPE', choices: ['None', 'Cron', 'Webhook', 'Manual'], description: 'Выберите тип триггера')
+        // Динамический параметр будет добавлен через Active Choices
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    // Получаем значение выбранного триггера
+                    echo "Выбранный триггер: ${params.TRIGGER_TYPE}"
+                    // Дополнительная логика в зависимости от параметра
+                }
+            }
+        }
+        stage('Run Job') {
+            steps {
+                echo "Запуск задачи с параметрами..."
+                // Здесь можно добавить шаги в зависимости от параметров
+            }
+        }
+    }
+}
