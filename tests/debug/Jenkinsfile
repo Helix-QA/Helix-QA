@@ -1,43 +1,36 @@
 properties([
     parameters([
+        // Первый параметр (одиночный выбор)
         [
             $class: 'ChoiceParameter',
             choiceType: 'PT_SINGLE_SELECT',
             name: 'ENVIRONMENT',
             description: 'Выберите окружение',
-            filterLength: 1,
-            filterable: false,
             script: [
                 $class: 'GroovyScript',
-                script: [
-                    classpath: [],
-                    sandbox: true,
-                    script: '''
-                        return ["dev", "prod", "stage"]
-                    '''
-                ]
+                script: '''
+                    return ["dev", "prod", "stage"]
+                '''
             ]
         ],
+        // Второй параметр (мультиселект)
         [
             $class: 'CascadeChoiceParameter',
-            name: 'SERVICE',
-            description: 'Выберите сервис',
+            name: 'SERVICES',  // Обратите внимание на множественное число
+            description: 'Выберите сервисы (можно несколько)',
+            choiceType: 'PT_CHECKBOX',  // Или PT_MULTI_SELECT
             referencedParameters: 'ENVIRONMENT',
             script: [
                 $class: 'GroovyScript',
-                script: [
-                    classpath: [],
-                    sandbox: true,
-                    script: '''
-                        if (ENVIRONMENT == "dev") {
-                            return ["frontend-dev", "backend-dev", "db-dev"]
-                        } else if (ENVIRONMENT == "prod") {
-                            return ["frontend-prod", "backend-prod", "db-prod"]
-                        } else {
-                            return ["frontend-stage", "backend-stage"]
-                        }
-                    '''
-                ]
+                script: '''
+                    if (ENVIRONMENT == "dev") {
+                        return ["frontend-dev", "backend-dev", "db-dev", "cache-dev"]
+                    } else if (ENVIRONMENT == "prod") {
+                        return ["frontend-prod", "backend-prod", "db-prod", "cache-prod"]
+                    } else {
+                        return ["frontend-stage", "backend-stage", "monitoring-stage"]
+                    }
+                '''
             ]
         ]
     ])
@@ -48,8 +41,16 @@ pipeline {
     stages {
         stage('Run') {
             steps {
-                echo "Выбрано окружение: ${params.ENVIRONMENT}"
-                echo "Выбран сервис: ${params.SERVICE}"
+                script {
+                    echo "Выбрано окружение: ${params.ENVIRONMENT}"
+                    echo "Выбранные сервисы: ${params.SERVICES}"  // Будет списком
+                    // Если нужно обработать каждый выбранный сервис:
+                    if (params.SERVICES) {
+                        params.SERVICES.each { service ->
+                            echo "Обрабатываем сервис: ${service}"
+                        }
+                    }
+                }
             }
         }
     }
