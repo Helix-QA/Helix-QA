@@ -1,20 +1,55 @@
+properties([
+    parameters([
+        [
+            $class: 'ChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            name: 'ENVIRONMENT',
+            description: 'Выберите окружение',
+            filterLength: 1,
+            filterable: false,
+            script: [
+                $class: 'GroovyScript',
+                script: [
+                    classpath: [],
+                    sandbox: true,
+                    script: '''
+                        return ["dev", "prod", "stage"]
+                    '''
+                ]
+            ]
+        ],
+        [
+            $class: 'CascadeChoiceParameter',
+            name: 'SERVICE',
+            description: 'Выберите сервис',
+            referencedParameters: 'ENVIRONMENT',
+            script: [
+                $class: 'GroovyScript',
+                script: [
+                    classpath: [],
+                    sandbox: true,
+                    script: '''
+                        if (ENVIRONMENT == "dev") {
+                            return ["frontend-dev", "backend-dev", "db-dev"]
+                        } else if (ENVIRONMENT == "prod") {
+                            return ["frontend-prod", "backend-prod", "db-prod"]
+                        } else {
+                            return ["frontend-stage", "backend-stage"]
+                        }
+                    '''
+                ]
+            ]
+        ]
+    ])
+])
+
 pipeline {
     agent any
-    parameters {
-        // Параметры будут определены через UI с Active Choices
-    }
     stages {
-        stage('Process Parameters') {
+        stage('Run') {
             steps {
-                script {
-                    echo "Выбранный триггер: ${params.TRIGGER_TYPE}"
-                    echo "Выбранные детали: ${params.PAPKE}"
-                    if (params.TRIGGER_TYPE == 'Cron') {
-                        echo "Настройка Cron: ${params.PAPKE}"
-                    } else if (params.TRIGGER_TYPE == 'Webhook') {
-                        echo "Настройка Webhook: ${params.PAPKE}"
-                    }
-                }
+                echo "Выбрано окружение: ${params.ENVIRONMENT}"
+                echo "Выбран сервис: ${params.SERVICE}"
             }
         }
     }
