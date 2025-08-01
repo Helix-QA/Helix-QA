@@ -8,29 +8,37 @@ properties([
             description: 'Выберите окружение',
             script: [
                 $class: 'GroovyScript',
-                script: '''
-                    return ["dev", "prod", "stage"]
-                '''
+                script: [
+                    $class: 'SecureGroovyScript',
+                    script: '''
+                        return ["dev", "prod", "stage"]
+                    ''',
+                    sandbox: true
+                ]
             ]
         ],
         // Второй параметр (мультиселект)
         [
             $class: 'CascadeChoiceParameter',
-            name: 'SERVICES',  // Обратите внимание на множественное число
+            name: 'SERVICES',
             description: 'Выберите сервисы (можно несколько)',
-            choiceType: 'PT_CHECKBOX',  // Или PT_MULTI_SELECT
+            choiceType: 'PT_CHECKBOX',
             referencedParameters: 'ENVIRONMENT',
             script: [
                 $class: 'GroovyScript',
-                script: '''
-                    if (ENVIRONMENT == "dev") {
-                        return ["frontend-dev", "backend-dev", "db-dev", "cache-dev"]
-                    } else if (ENVIRONMENT == "prod") {
-                        return ["frontend-prod", "backend-prod", "db-prod", "cache-prod"]
-                    } else {
-                        return ["frontend-stage", "backend-stage", "monitoring-stage"]
-                    }
-                '''
+                script: [
+                    $class: 'SecureGroovyScript',
+                    script: '''
+                        if (ENVIRONMENT == "dev") {
+                            return ["frontend-dev", "backend-dev", "db-dev", "cache-dev"]
+                        } else if (ENVIRONMENT == "prod") {
+                            return ["frontend-prod", "backend-prod", "db-prod", "cache-prod"]
+                        } else {
+                            return ["frontend-stage", "backend-stage", "monitoring-stage"]
+                        }
+                    ''',
+                    sandbox: true
+                ]
             ]
         ]
     ])
@@ -43,8 +51,7 @@ pipeline {
             steps {
                 script {
                     echo "Выбрано окружение: ${params.ENVIRONMENT}"
-                    echo "Выбранные сервисы: ${params.SERVICES}"  // Будет списком
-                    // Если нужно обработать каждый выбранный сервис:
+                    echo "Выбранные сервисы: ${params.SERVICES}"
                     if (params.SERVICES) {
                         params.SERVICES.each { service ->
                             echo "Обрабатываем сервис: ${service}"
