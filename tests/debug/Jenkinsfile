@@ -8,17 +8,22 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    def triggerType = binding.variables.get("TRIGGER_TYPE") ?: "None"
-                    switch (triggerType) {
-                        case "Cron":
-                            return ["Every Minute", "Every Hour", "Daily", "Weekly"]
-                        case "Webhook":
-                            return ["GitHub", "Bitbucket", "GitLab", "Custom"]
-                        case "Manual":
-                            return ["Run Now", "Schedule Later", "Run with Delay"]
-                        default:
-                            return ["Select a Trigger First"]
-}
+                def triggerType = binding.variables.get("TRIGGER_TYPE") ?: "None"
+                def options = []
+                switch (triggerType) {
+                    case "Cron":
+                        options = ["Every Minute", "Every Hour", "Daily"]
+                        break
+                    case "Webhook":
+                        options = ["GitHub", "Bitbucket", "Custom"]
+                        break
+                    case "Manual":
+                        options = ["Run Now", "Schedule Later"]
+                        break
+                    default:
+                        options = ["No Details Available"]
+                }
+                return options
                 }
             }
         }
