@@ -3,34 +3,28 @@ properties([
         [
             $class: 'CascadeChoiceParameter',
             name: 'SERVICES',
-            description: 'Выберите сервисы (можно несколько из разных блоков)',
-            choiceType: 'PT_CHECKBOX',  // Мультиселект
+            description: 'Выберите сервисы (группировка по окружениям)',
+            choiceType: 'PT_CHECKBOX',
             script: [
                 $class: 'GroovyScript',
                 script: [
                     $class: 'SecureGroovyScript',
                     script: '''
                         return [
-                            // Блок "DEV"
-                            "<optgroup label='DEV'>",
+                            "───────── 🔵 DEV ─────────",
                             "  frontend-dev",
                             "  backend-dev",
                             "  db-dev",
-                            "</optgroup>",
-                            
-                            // Блок "PROD"
-                            "<optgroup label='PROD'>",
+                            "",
+                            "───────── 🔴 PROD ────────",
                             "  frontend-prod",
                             "  backend-prod",
                             "  db-prod",
-                            "</optgroup>",
-                            
-                            // Блок "STAGE"
-                            "<optgroup label='STAGE'>",
+                            "",
+                            "───────── 🟢 STAGE ───────",
                             "  frontend-stage",
                             "  backend-stage",
-                            "  monitoring-stage",
-                            "</optgroup>"
+                            "  monitoring-stage"
                         ]
                     ''',
                     sandbox: true
@@ -48,8 +42,12 @@ pipeline {
                 script {
                     echo "Выбранные сервисы: ${params.SERVICES}"
                     if (params.SERVICES) {
-                        params.SERVICES.each { service ->
-                            echo "Обрабатываем: ${service.trim()}"  // trim() убирает лишние пробелы
+                        // Фильтруем только реальные сервисы (игнорируем разделители)
+                        def selectedServices = params.SERVICES.findAll { 
+                            it && !it.startsWith("─────────") && it.trim() 
+                        }
+                        selectedServices.each { service ->
+                            echo "Обрабатываем: ${service.trim()}"
                         }
                     }
                 }
