@@ -8,9 +8,17 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    // Получаем значение выбранного триггера
-                    echo "Выбранный триггер: ${params.TRIGGER_TYPE}"
-                    // Дополнительная логика в зависимости от параметра
+                    def triggerType = binding.variables.get("TRIGGER_TYPE") ?: "None"
+                    switch (triggerType) {
+                        case "Cron":
+                            return ["Every Minute", "Every Hour", "Daily", "Weekly"]
+                        case "Webhook":
+                            return ["GitHub", "Bitbucket", "GitLab", "Custom"]
+                        case "Manual":
+                            return ["Run Now", "Schedule Later", "Run with Delay"]
+                        default:
+                            return ["Select a Trigger First"]
+}
                 }
             }
         }
