@@ -52,11 +52,6 @@ pipeline {
                 script {
                     echo "Выбрано окружение: ${params.ENVIRONMENT}"
                     echo "Выбранные сервисы: ${params.SERVICES}"
-                    if (params.SERVICES) {
-                        params.SERVICES.each { service ->
-                            echo "Обрабатываем сервис: ${service}"
-                        }
-                    }
                 }
             }
         }
