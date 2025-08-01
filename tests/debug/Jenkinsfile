@@ -1,41 +1,37 @@
 properties([
     parameters([
-        // Первый параметр (одиночный выбор)
-        [
-            $class: 'ChoiceParameter',
-            choiceType: 'PT_SINGLE_SELECT',
-            name: 'ENVIRONMENT',
-            description: 'Выберите окружение',
-            script: [
-                $class: 'GroovyScript',
-                script: [
-                    $class: 'SecureGroovyScript',
-                    script: '''
-                        return ["dev", "prod", "stage"]
-                    ''',
-                    sandbox: true
-                ]
-            ]
-        ],
-        // Второй параметр (мультиселект)
         [
             $class: 'CascadeChoiceParameter',
             name: 'SERVICES',
-            description: 'Выберите сервисы (можно несколько)',
-            choiceType: 'PT_CHECKBOX',
-            referencedParameters: 'ENVIRONMENT',
+            description: 'Выберите сервисы (можно несколько из разных блоков)',
+            choiceType: 'PT_CHECKBOX',  // Мультиселект
             script: [
                 $class: 'GroovyScript',
                 script: [
                     $class: 'SecureGroovyScript',
                     script: '''
-                        if (ENVIRONMENT == "dev") {
-                            return ["frontend-dev", "backend-dev", "db-dev", "cache-dev"]
-                        } else if (ENVIRONMENT == "prod") {
-                            return ["frontend-prod", "backend-prod", "db-prod", "cache-prod"]
-                        } else {
-                            return ["frontend-stage", "backend-stage", "monitoring-stage"]
-                        }
+                        return [
+                            // Блок "DEV"
+                            "<optgroup label='DEV'>",
+                            "  frontend-dev",
+                            "  backend-dev",
+                            "  db-dev",
+                            "</optgroup>",
+                            
+                            // Блок "PROD"
+                            "<optgroup label='PROD'>",
+                            "  frontend-prod",
+                            "  backend-prod",
+                            "  db-prod",
+                            "</optgroup>",
+                            
+                            // Блок "STAGE"
+                            "<optgroup label='STAGE'>",
+                            "  frontend-stage",
+                            "  backend-stage",
+                            "  monitoring-stage",
+                            "</optgroup>"
+                        ]
                     ''',
                     sandbox: true
                 ]
@@ -50,8 +46,12 @@ pipeline {
         stage('Run') {
             steps {
                 script {
-                    echo "Выбрано окружение: ${params.ENVIRONMENT}"
                     echo "Выбранные сервисы: ${params.SERVICES}"
+                    if (params.SERVICES) {
+                        params.SERVICES.each { service ->
+                            echo "Обрабатываем: ${service.trim()}"  // trim() убирает лишние пробелы
+                        }
+                    }
                 }
             }
         }
