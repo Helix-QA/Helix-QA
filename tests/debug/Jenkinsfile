@@ -38,7 +38,6 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-					println result
                     try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
