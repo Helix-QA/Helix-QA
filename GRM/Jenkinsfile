@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "${params.jenkinsAgent}" }
+    agent { label "OneS" }
     stages {
         stage("Очистка данных перед отправкой"){
             steps{
