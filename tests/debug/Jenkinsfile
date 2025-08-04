@@ -38,8 +38,9 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-                    def result = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }.join(',')
-					try{
+                    env.result = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }.join(',')
+					println result
+                    try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
@@ -108,6 +109,6 @@ def updateConfigFile() {
     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.PRODUCT)
                               .replaceAll(/\$\{workspace\}/, escapedWorkspace)
-                              .replaceAll(/\$\{SERVICES\}/, params.SERVICES)
+                              .replaceAll(/\$\{SERVICES\}/, env.result)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
