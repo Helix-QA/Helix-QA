@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     echo "Выбранные сервисы: ${params.PRODUCT}, ${params.SERVICES}, ${params.ENVIRONMENT}  "
-                        def result = input.split(',').collect { "\"${it.trim()}\"" }.join(',')
+                        def result = params.SERVICES.split(',').collect { "\"${it.trim()}\"" }.join(',')
                         println result
                         }
                     }
