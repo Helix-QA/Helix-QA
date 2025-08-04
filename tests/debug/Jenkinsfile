@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
-		dbTests = "VAFitness"
+		
     }
     parameters {
         string(name: 'PRODUCT', defaultValue: '', description: 'Product name (e.g., fitness, salon, stoma)')
@@ -20,16 +20,19 @@ pipeline {
 							
 						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
+                        env.dbTests = "VAFitness"
 
 						} else if (params.PRODUCT == 'salon') {
 						
 						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
+                        env.dbTests = "VASPA"
 
 						} else {
 							
 						env.testPathPlaceholder = "\\tests\\features\\stoma"
 						env.repository = "${repositoryReleaseStom}"
+                        env.dbTests = "VAStoma"
 					}
 				}
 			}
