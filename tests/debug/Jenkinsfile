@@ -105,17 +105,17 @@ def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
     
-    // Разбиваем SERVICES и формируем массив строк (без лишних кавычек)
-    def servicesList = params.SERVICES.split('[;,]').collect { it.trim() }
+    // Разбиваем SERVICES и формируем массив строк
+    def servicesList = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }
     
-    // Преобразуем массив в JSON-массив (например: ["ТриггерКлДР", "ТриггерКлСрокМедКарты"])
-    def servicesJson = new groovy.json.JsonBuilder(servicesList).toString()
+    // Вручную формируем JSON-массив (без Unicode-экранирования)
+    def servicesJson = servicesList.join(",")
     
-    // Заменяем плейсхолдеры
+    // Заменяем "${SERVICES}" на массив (убираем кавычки вокруг плейсхолдера)
     def updatedConfigJson = configJson
         .replaceAll(/\$\{product\}/, params.PRODUCT)
         .replaceAll(/\$\{workspace\}/, escapedWorkspace)
-        .replaceAll(/"\$\{SERVICES\}"/, servicesJson)  // Заменяем "${SERVICES}" на JSON-массив
+        .replaceAll(/"\$\{SERVICES\}"/, "[$servicesJson]")  // Заменяем на ["элемент1","элемент2"]
     
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }

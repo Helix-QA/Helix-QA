@@ -11,6 +11,7 @@ pipeline {
 				steps {
 					script {
 						updateConfigFile()
+						
 						if (params.product == 'fitness') {
 							
 						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
