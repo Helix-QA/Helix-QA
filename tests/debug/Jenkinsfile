@@ -1,18 +1,121 @@
 pipeline {
-    agent any
+    agent {
+        label "OneS"
+    }
+    environment {
+        InitDatabase = "tests/scripts/InitDatabase.bat"
+		dbTests = "VAFitness"
+    }
     parameters {
         string(name: 'PRODUCT', defaultValue: '', description: 'Product name (e.g., fitness, salon, stoma)')
         string(name: 'SERVICES', defaultValue: '', description: 'List of services separated by semicolons (e.g., frontend-fitness-dev;backend-fitness-dev)')
         string(name: 'ENVIRONMENT', defaultValue: '', description: 'Environment name (e.g., dev, prod, stage)')
     }
     stages {
-        stage('Run') {
+        stage('Подготовка .cf') {
+				steps {
+					script {
+						updateConfigFile()
+						if (params.PRODUCT == 'fitness') {
+							
+						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
+						env.repository = "${repositoryReleaseFitness}"
+
+						} else if (params.PRODUCT == 'salon') {
+						
+						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
+						env.repository = "${repositoryReleaseSalon}"
+
+						} else {
+							
+						env.testPathPlaceholder = "\\tests\\features\\stoma"
+						env.repository = "${repositoryReleaseStom}"
+					}
+				}
+			}
+		}
+
+        stage('Сценарное тестирвоание') {
             steps {
                 script {
-                    echo "Выбранные сервисы: ${params.PRODUCT}, ${params.SERVICES}, ${params.ENVIRONMENT}  "
-                        
-                        }
-                    }
+                    try{
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+ 					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+          			}
                 }
             }
         }
+    }
+    post {
+		always {
+			script {
+				allure([
+					includeProperties: false,
+					jdk: '',
+					results: [['path': 'tests/build/results']]
+				])
+				// Отправка уведомлений только при SUCCESS или UNSTABLE
+				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
+					if ("${params.PRODUCT}" == "fitness") {
+						env.logo = "tests/notifications/logo.png"
+					}
+					else if ("${params.PRODUCT}" == "salon") {
+						env.logo = "tests/notifications/logo1.png"
+					}
+					else if ("${params.PRODUCT}" == "stoma") {
+						env.logo = "tests/notifications/logo2.png"
+					}
+
+					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+					def configJson = readFile(file: 'tests/notifications/config.json')
+					def updatedConfigJson = configJson
+						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+						.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+						.replace('"${logo}"', "\"${env.logo}\"")
+					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+
+					try {
+						bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
+					}
+					catch (Exception e) {
+						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+					}
+				}
+			}
+		}
+	 }
+}
+
+
+def runDbOperation(operation, params) {
+		try {
+			bat """
+				chcp 65001
+				@call ${env.InitDatabase} ${operation} ${params}
+			"""
+		} catch (Exception e) {
+			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+			throw e
+		}
+	}
+
+def updateConfigFile() {
+    def configJson = readFile(file: 'tests/tools/VAParams.json')
+    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
+    
+    // Разбиваем SERVICES и формируем массив строк (без лишних кавычек)
+    def servicesList = params.SERVICES.split('[;,]').collect { it.trim() }
+    
+    // Преобразуем массив в JSON-массив (например: ["ТриггерКлДР", "ТриггерКлСрокМедКарты"])
+    def servicesJson = new groovy.json.JsonBuilder(servicesList).toString()
+    
+    // Заменяем плейсхолдеры
+    def updatedConfigJson = configJson
+        .replaceAll(/\$\{product\}/, params.PRODUCT)
+        .replaceAll(/\$\{workspace\}/, escapedWorkspace)
+        .replaceAll(/"\$\{SERVICES\}"/, servicesJson)  // Заменяем "${SERVICES}" на JSON-массив
+    
+    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+}
