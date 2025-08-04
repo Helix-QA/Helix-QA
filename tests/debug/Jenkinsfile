@@ -1,11 +1,16 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'PRODUCT', defaultValue: '', description: 'Product name (e.g., fitness, salon, stoma)')
+        string(name: 'SERVICES', defaultValue: '', description: 'List of services separated by semicolons (e.g., frontend-fitness-dev;backend-fitness-dev)')
+        string(name: 'ENVIRONMENT', defaultValue: '', description: 'Environment name (e.g., dev, prod, stage)')
+    }
     stages {
         stage('Run') {
             steps {
                 script {
-                    echo "Выбранные сервисы: ${params.tag}"
-
+                    echo "Выбранные сервисы: ${params.PRODUCT}, ${params.SERVICES}, ${params.ENVIRONMENT}  "
+                        
                         }
                     }
                 }
