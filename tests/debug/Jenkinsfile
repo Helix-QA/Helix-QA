@@ -105,15 +105,18 @@ def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
     
-    // Разбиваем SERVICES и формируем строку вида "Триггер1","Триггер2"
-    def services = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }.join(',')
+    // Разбиваем SERVICES и формируем список элементов в кавычках
+    def servicesList = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }
     
-    // Заменяем ${SERVICES} (без кавычек!) на элементы через запятую
+    // Формируем строку для замены (без квадратных скобок)
+    def servicesReplacement = servicesList.join(",")
+    
+    // Заменяем плейсхолдеры
     def updatedConfigJson = configJson
         .replaceAll(/\$\{product\}/, params.PRODUCT)
         .replaceAll(/\$\{workspace\}/, escapedWorkspace)
         .replaceAll(/\$\{dbTests\}/, env.dbTests)
-        .replaceAll(/\$\{SERVICES\}/, services)  // Важно: заменяем ${SERVICES}, а не "${SERVICES}"
+        .replaceAll(/"\$\{SERVICES\}"/, servicesReplacement)  // Заменяем "${SERVICES}" на элементы через запятую
     
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
