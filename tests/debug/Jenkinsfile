@@ -18,17 +18,17 @@ pipeline {
 						updateConfigFile()
 						if (params.PRODUCT == 'fitness') {
 							
-						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
+						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
 
 						} else if (params.PRODUCT == 'salon') {
 						
-						env.testPathPlaceholder = "\\tests\\features\\salon${params.debug}" // test - тестовые запуски
+						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
 
 						} else {
 							
-						env.testPathPlaceholder = "\\tests\\features\\stoma${params.debug}"
+						env.testPathPlaceholder = "\\tests\\features\\stoma"
 						env.repository = "${repositoryReleaseStom}"
 					}
 				}
@@ -38,7 +38,6 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-                    env.result = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }.join(',')
 					println result
                     try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
@@ -107,8 +106,9 @@ def runDbOperation(operation, params) {
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
+    def services = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }.join(',')
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.PRODUCT)
                               .replaceAll(/\$\{workspace\}/, escapedWorkspace)
-                              .replaceAll(/\$\{SERVICES\}/, env.result)
+                              .replaceAll(/\$\{SERVICES\}/, services)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
