@@ -4,8 +4,8 @@ pipeline {
         stage('Run') {
             steps {
                 script {
-                    echo "Выбранные сервисы: ${params.tag}"
-
+                    echo "Выбранные сервисы: ${params.PRODUCT}, ${SERVICES}, ${ENVIRONMENT}  "
+                        
                         }
                     }
                 }
