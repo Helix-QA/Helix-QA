@@ -115,6 +115,7 @@ def updateConfigFile() {
     def updatedConfigJson = configJson
         .replaceAll(/\$\{product\}/, params.PRODUCT)
         .replaceAll(/\$\{workspace\}/, escapedWorkspace)
+        .replaceAll(/\$\{dbTests\}/, env.dbTests)
         .replaceAll(/"\$\{SERVICES\}"/, "[$servicesJson]")  // Заменяем на ["элемент1","элемент2"]
     
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
