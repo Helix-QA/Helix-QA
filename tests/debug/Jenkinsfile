@@ -103,20 +103,17 @@ def runDbOperation(operation, params) {
 
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
-    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
+    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
     
-    // Разбиваем SERVICES и формируем массив строк
-    def servicesList = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }
+    // Разбиваем SERVICES и формируем строку вида "Триггер1","Триггер2"
+    def services = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }.join(',')
     
-    // Вручную формируем JSON-массив (без Unicode-экранирования)
-    def servicesJson = servicesList.join(",")
-    
-    // Заменяем "${SERVICES}" на массив (убираем кавычки вокруг плейсхолдера)
+    // Заменяем ${SERVICES} (без кавычек!) на элементы через запятую
     def updatedConfigJson = configJson
         .replaceAll(/\$\{product\}/, params.PRODUCT)
         .replaceAll(/\$\{workspace\}/, escapedWorkspace)
         .replaceAll(/\$\{dbTests\}/, env.dbTests)
-        .replaceAll(/"\$\{SERVICES\}"/, "[$servicesJson]")  // Заменяем на ["элемент1","элемент2"]
+        .replaceAll(/\$\{SERVICES\}/, services)  // Важно: заменяем ${SERVICES}, а не "${SERVICES}"
     
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }
