@@ -103,7 +103,7 @@ def runDbOperation(operation, params) {
 
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
-    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\")
+    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
     
     // Разбиваем SERVICES и формируем список элементов в кавычках
     def servicesList = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }
