@@ -42,7 +42,10 @@ pipeline {
             steps {
                 script {
                     try{
-						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+                        bat"""
+                        chcp 65001
+                        CALL vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+                        """																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
@@ -90,19 +93,6 @@ pipeline {
 		}
 	 }
 }
-
-
-def runDbOperation(operation, params) {
-		try {
-			bat """
-				chcp 65001
-				@call ${env.InitDatabase} ${operation} ${params}
-			"""
-		} catch (Exception e) {
-			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
-			throw e
-		}
-	}
 
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
