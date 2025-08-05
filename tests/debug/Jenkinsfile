@@ -12,21 +12,24 @@ pipeline {
 					script {
                         println "Product: ${params.PRODUCT}"
                         println "Product: ${params.SERVICES}"
-                        updateConfigFile()
+                        
                         if (params.PRODUCT == 'fitness') {
 						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
                         env.dbTests = "VAFitness"
+                        updateConfigFile()
 
 						} else if (params.PRODUCT == 'salon') {
 						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
                         env.dbTests = "VASPA"
+                        updateConfigFile()
 
 						} else {
 						env.testPathPlaceholder = "\\tests\\features\\stoma"
 						env.repository = "${repositoryReleaseStom}"
                         env.dbTests = "VAStoma"
+                        updateConfigFile()
 					}
 				}
 			}
