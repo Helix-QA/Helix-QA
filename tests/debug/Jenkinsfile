@@ -2,34 +2,34 @@ pipeline {
     agent {
         label "OneS"
     }
-    environment {
-        InitDatabase = "tests/scripts/InitDatabase.bat"
-		dbTests = "VAFitness"
-    }
     parameters {
         string(name: 'PRODUCT', defaultValue: '', description: 'Product name (e.g., fitness, salon, stoma)')
         string(name: 'SERVICES', defaultValue: '', description: 'List of services separated by semicolons (e.g., frontend-fitness-dev;backend-fitness-dev)')
-        string(name: 'ENVIRONMENT', defaultValue: '', description: 'Environment name (e.g., dev, prod, stage)')
     }
     stages {
         stage('Подготовка .cf') {
 				steps {
 					script {
-						updateConfigFile()
-						if (params.PRODUCT == 'fitness') {
-							
+                        println "Product: ${params.PRODUCT}"
+                        println "Product: ${params.SERVICES}"
+                        
+                        if (params.PRODUCT == 'fitness') {
 						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
+                        env.dbTests = "VAFitness"
+                        updateConfigFile()
 
 						} else if (params.PRODUCT == 'salon') {
-						
 						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
+                        env.dbTests = "VASPA"
+                        updateConfigFile()
 
 						} else {
-							
 						env.testPathPlaceholder = "\\tests\\features\\stoma"
 						env.repository = "${repositoryReleaseStom}"
+                        env.dbTests = "VAStoma"
+                        updateConfigFile()
 					}
 				}
 			}
@@ -39,7 +39,11 @@ pipeline {
             steps {
                 script {
                     try{
-						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+                        bat"""
+                        chcp 65001
+                        del /s /q "${env.WORKSPACE}\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\tests\\build\\results"
+                        CALL vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+                        """																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
@@ -88,35 +92,22 @@ pipeline {
 	 }
 }
 
-
-def runDbOperation(operation, params) {
-		try {
-			bat """
-				chcp 65001
-				@call ${env.InitDatabase} ${operation} ${params}
-			"""
-		} catch (Exception e) {
-			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
-			throw e
-		}
-	}
-
 def updateConfigFile() {
-    def configJson = readFile(file: 'tests/tools/VAParams.json')
+    def configJson = readFile(file: 'tests/debug/VAParams.json')
     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
     
-    // Разбиваем SERVICES и формируем массив строк
+    // Разбиваем SERVICES и формируем список элементов в кавычках
     def servicesList = params.SERVICES.split('[;,]').collect { "\"${it.trim()}\"" }
     
-    // Вручную формируем JSON-массив (без Unicode-экранирования)
-    def servicesJson = servicesList.join(",")
+    // Формируем строку для замены (без квадратных скобок)
+    def servicesReplacement = servicesList.join(",")
     
-    // Заменяем "${SERVICES}" на массив (убираем кавычки вокруг плейсхолдера)
+    // Заменяем плейсхолдеры
     def updatedConfigJson = configJson
         .replaceAll(/\$\{product\}/, params.PRODUCT)
         .replaceAll(/\$\{workspace\}/, escapedWorkspace)
         .replaceAll(/\$\{dbTests\}/, env.dbTests)
-        .replaceAll(/"\$\{SERVICES\}"/, "[$servicesJson]")  // Заменяем на ["элемент1","элемент2"]
+        .replaceAll(/"\$\{SERVICES\}"/, servicesReplacement)  // Заменяем "${SERVICES}" на элементы через запятую
     
-    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+    writeFile(file: 'tests/debug/VAParams.json', text: updatedConfigJson)
 }

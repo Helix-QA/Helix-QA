@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "${params.jenkinsAgent}" }
+    agent { label "OneS" }
     stages {
         stage("Очистка данных перед отправкой"){
             steps{
@@ -22,7 +22,7 @@ pipeline {
 					env.applicationId = "ff8080817ccbb453017d0ee91ffe000d"
                     env.folderProduct = "salon30"
                     }
-                    env.foldercf = "D:\\release_build\\${folderProduct}\\Old_versions_cf"
+                    env.foldercf = "D:\\GRM\\${folderProduct}\\Old_versions_cf"
                     def params = [
                         "applicationId": "${env.applicationId}",
                         "name": "${params.version}",
