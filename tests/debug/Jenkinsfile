@@ -41,7 +41,7 @@ pipeline {
                     try{
                         bat"""
                         chcp 65001
-                        del /s /q "${env.WORKSPACE}debug\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\debug\\tests\\build\\results"
+                        del /s /q "${env.WORKSPACE}\\debug\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\debug\\tests\\build\\results"
                         CALL vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
                         """																																
  					} catch (Exception Exc) {
