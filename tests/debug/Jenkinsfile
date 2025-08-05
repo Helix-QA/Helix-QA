@@ -2,14 +2,9 @@ pipeline {
     agent {
         label "OneS"
     }
-    environment {
-        InitDatabase = "tests/scripts/InitDatabase.bat"
-		
-    }
     parameters {
         string(name: 'PRODUCT', defaultValue: '', description: 'Product name (e.g., fitness, salon, stoma)')
         string(name: 'SERVICES', defaultValue: '', description: 'List of services separated by semicolons (e.g., frontend-fitness-dev;backend-fitness-dev)')
-        string(name: 'ENVIRONMENT', defaultValue: '', description: 'Environment name (e.g., dev, prod, stage)')
     }
     stages {
         stage('Подготовка .cf') {
@@ -95,7 +90,7 @@ pipeline {
 }
 
 def updateConfigFile() {
-    def configJson = readFile(file: 'tests/tools/VAParams.json')
+    def configJson = readFile(file: 'tests/debug/VAParams.json')
     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
     
     // Разбиваем SERVICES и формируем список элементов в кавычках
@@ -111,5 +106,5 @@ def updateConfigFile() {
         .replaceAll(/\$\{dbTests\}/, env.dbTests)
         .replaceAll(/"\$\{SERVICES\}"/, servicesReplacement)  // Заменяем "${SERVICES}" на элементы через запятую
     
-    writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+    writeFile(file: 'tests/debug/VAParams.json', text: updatedConfigJson)
 }
