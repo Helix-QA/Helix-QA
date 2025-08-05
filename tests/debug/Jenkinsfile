@@ -10,6 +10,7 @@ pipeline {
         stage('Подготовка .cf') {
 				steps {
 					script {
+                        updateConfigFile()
                         if (params.PRODUCT == 'fitness') {
 						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
