@@ -10,21 +10,17 @@ pipeline {
         stage('Подготовка .cf') {
 				steps {
 					script {
-						updateConfigFile()
-						if (params.PRODUCT == 'fitness') {
-							
+                        if (params.PRODUCT == 'fitness') {
 						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
                         env.dbTests = "VAFitness"
 
 						} else if (params.PRODUCT == 'salon') {
-						
 						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
 						env.repository = "${repositoryReleaseSalon}"
                         env.dbTests = "VASPA"
 
 						} else {
-							
 						env.testPathPlaceholder = "\\tests\\features\\stoma"
 						env.repository = "${repositoryReleaseStom}"
                         env.dbTests = "VAStoma"
