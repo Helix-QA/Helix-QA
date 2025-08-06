@@ -883,7 +883,7 @@
                 return;
             }
 
-            const jenkinsUrl = 'http://192.168.2.71:8080/job/debug/buildWithParameters';
+            const jenkinsUrl = 'https://db9de47608be.ngrok-free.app/job/debug/buildWithParameters';
             const crumb = await getCrumb(authToken);
             if (!crumb) {
                 notifyUser('Не удалось получить CSRF-токен', 'error');
