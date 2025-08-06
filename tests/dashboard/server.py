@@ -13,7 +13,7 @@ CORS(app, resources={
         "allow_headers": ["Content-Type", "Authorization"]
     }
 })
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+#cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 # Настройка пула соединений с PostgreSQL
 db_pool = ConnectionPool(
@@ -22,7 +22,7 @@ db_pool = ConnectionPool(
     max_size=20
 )
 
-@cache.cached(timeout=300)  # Кэширование на 5 минут
+#@cache.cached(timeout=300)  # Кэширование на 5 минут
 @app.route('/api/products', methods=['GET'])
 def get_products():
     try:
@@ -41,7 +41,7 @@ def get_products():
     except Exception as e:
         app.logger.error(f"Error in get_products: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
-@cache.cached(timeout=300, query_string=True)  # Кэширование с учетом параметра product
+#@cache.cached(timeout=300, query_string=True)  # Кэширование с учетом параметра product
 @app.route('/api/services/<product>', methods=['GET'])
 def get_services(product):
     try:
@@ -111,7 +111,7 @@ def add_service(product):
                     (product_id[0], name, description, block_id)
                 )
                 conn.commit()
-        cache.delete('view/%s' % request.path)  # Очистка кэша при добавлении
+        #cache.delete('view/%s' % request.path)  # Очистка кэша при добавлении
         return jsonify({"message": "Service added successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -133,7 +133,7 @@ def delete_service(product, service):
                 if cursor.rowcount == 0:
                     return jsonify({"error": "Service not found"}), 404
                 conn.commit()
-        cache.delete('view/%s' % request.path.replace('/<service>', ''))  # Очистка кэша при удалении
+        #cache.delete('view/%s' % request.path.replace('/<service>', ''))  # Очистка кэша при удалении
         return jsonify({"message": "Service deleted successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -186,7 +186,7 @@ def add_block(product):
                 )
                 block_id = cursor.fetchone()[0]
                 conn.commit()
-        cache.delete('view/%s' % request.path)  # Очистка кэша при добавлении
+        #cache.delete('view/%s' % request.path)  # Очистка кэша при добавлении
         return jsonify({"message": "Block added successfully", "block_id": block_id})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -219,7 +219,7 @@ def update_block(product, block_id):
                     (name, block_id, product_id[0])
                 )
                 conn.commit()
-        cache.delete('view/%s' % request.path.replace('/<block_id>', ''))  # Очистка кэша
+        #cache.delete('view/%s' % request.path.replace('/<block_id>', ''))  # Очистка кэша
         return jsonify({"message": "Block updated successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -252,7 +252,7 @@ def delete_block(product, block_id):
                     (block_id, product_id[0])
                 )
                 conn.commit()
-        cache.delete('view/%s' % request.path.replace('/<block_id>', ''))  # Очистка кэша
+        #cache.delete('view/%s' % request.path.replace('/<block_id>', ''))  # Очистка кэша
         return jsonify({"message": "Block deleted successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
