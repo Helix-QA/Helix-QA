@@ -8,7 +8,7 @@ import requests
 app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["https://melodious-snickerdoodle-4c15c0.netlify.app", "http://localhost:*"],
+        "origins": ["https://melodious-snickerdoodle-4c15c0.netlify.app", "https://07e139f54a45.ngrok-free.app"],
         "methods": ["GET", "POST", "PUT", "DELETE"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
