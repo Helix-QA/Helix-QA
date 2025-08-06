@@ -6,13 +6,8 @@ from psycopg_pool import ConnectionPool
 import requests
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/api/*": {
-        "origins": ["https://melodious-snickerdoodle-4c15c0.netlify.app", "https://07e139f54a45.ngrok-free.app"],
-        "methods": ["GET", "POST", "PUT", "DELETE"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+CORS(app)  # Разрешаем все CORS-запросы
+
 #cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 # Настройка пула соединений с PostgreSQL
@@ -21,6 +16,14 @@ db_pool = ConnectionPool(
     min_size=1,
     max_size=20
 )
+@app.route('/api/test')
+def test():
+    return jsonify({
+        "status": "working",
+        "client_ip": request.remote_addr,
+        "server": "192.168.9.152:5000"
+    }), 200, {'Content-Type': 'application/json'}
+
 
 #@cache.cached(timeout=300)  # Кэширование на 5 минут
 @app.route('/api/products', methods=['GET'])
