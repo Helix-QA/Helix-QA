@@ -844,7 +844,7 @@
         // Get CSRF crumb dynamically
         async function getCrumb(authToken) {
             try {
-                const response = await fetch('http://192.168.2.71:8080/crumbIssuer/api/json', {
+                const response = await fetch('https://db9de47608be.ngrok-free.app/crumbIssuer/api/json', {
                     headers: { 'Authorization': `Basic ${authToken}` }
                 });
                 if (!response.ok) throw new Error(`Failed to get crumb: ${response.status}`);
@@ -961,7 +961,7 @@
 
             while (attempts < maxQueueAttempts) {
                 try {
-                    const response = await fetch(`http://192.168.2.71:8080/queue/item/${queueId}/api/json`, {
+                    const response = await fetch(`https://db9de47608be.ngrok-free.app/queue/item/${queueId}/api/json`, {
                         headers: {
                             'Authorization': `Basic ${authToken}`
                         }
@@ -996,7 +996,7 @@
                 await new Promise(resolve => setTimeout(resolve, 5000));
 
                 // Get job history
-                const response = await fetch(`http://192.168.2.71:8080/job/debug/api/json?tree=builds[number,timestamp,building,actions[parameters[name,value]]]{0,10}`, {
+                const response = await fetch(`https://db9de47608be.ngrok-free.app/job/debug/api/json?tree=builds[number,timestamp,building,actions[parameters[name,value]]]{0,10}`, {
                     headers: {
                         'Authorization': `Basic ${authToken}`
                     }
@@ -1047,7 +1047,7 @@
 
             while (attempts < maxAttempts) {
                 try {
-                    const response = await fetch(`http://192.168.2.71:8080/job/debug/${buildNumber}/api/json`, {
+                    const response = await fetch(`https://db9de47608be.ngrok-free.app/job/debug/${buildNumber}/api/json`, {
                         headers: {
                             'Authorization': `Basic ${authToken}`
                         }
