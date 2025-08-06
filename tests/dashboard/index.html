@@ -519,20 +519,28 @@
         // Load products
         async function loadProducts() {
         try {
-            const response = await fetch(`${API_BASE_URL}/products`);
+            const apiUrl = `${API_BASE_URL}/products`;
+            console.log('Fetching from:', apiUrl); // Логируем URL
             
-            // Проверяем Content-Type перед парсингом
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
+            const response = await fetch(apiUrl);
+            
+            console.log('Response status:', response.status); // Логируем статус
+            console.log('Response headers:', [...response.headers.entries()]); // Логируем заголовки
+            
             const text = await response.text();
-            throw new Error(`Ожидался JSON, получен: ${text.substring(0, 100)}...`);
+            console.log('Raw response:', text.substring(0, 200)); // Логируем начало ответа
+            
+            if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${text}`);
             }
             
-            const products = await response.json();
-            // ... остальной код
+            const products = JSON.parse(text); // Парсим вручную после проверки
+            return products;
+            
         } catch (err) {
-            console.error('Ошибка загрузки:', err);
-            notifyUser(`Ошибка: ${err.message}`, 'error');
+            console.error('Full error:', err);
+            notifyUser(`Ошибка загрузки: ${err.message}`, 'error');
+            return []; // Возвращаем пустой массив как fallback
             }
         }
 
