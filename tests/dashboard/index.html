@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд запуска сценариев</title>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        :root {
+            --hover-color: #F5F5F5;
+            --primary-gradient: linear-gradient(135deg, #7C3AED 0%, #2DD4BF 100%);
+            --text-primary: #2D3748;
+            --text-secondary: #64748B;
+            --background: #F3F4F6;
+            --card-background: #FFFFFF;
+            --disabled-background: #D1D5DB;
+            --disabled-text: #6B7280;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            margin: 0;
+            padding: 24px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-background);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 32px;
+            text-align: center;
+            display: block;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .product-selector {
+            padding: 16px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .product-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #D1D5DB;
+            background: #F9FAFB;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .product-btn.active {
+            background: #7C3AED;
+            color: white;
+            border-color: #7C3AED;
+        }
+
+        .product-btn:hover {
+            background: #EDE9FE;
+            border-color: #7C3AED;
+        }
+
+        .service-block {
+            padding: 24px;
+            position: relative;
+        }
+
+        .service-block-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .service-block h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .block-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            margin-left: 30px;
+        }
+
+        .select-all input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #7C3AED;
+        }
+
+        .select-all label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .service-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            border-radius: 8px;
+            background: #F9FAFB;
+            transition: all 0.3s ease;
+        }
+
+        .service-item:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .service-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .service-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #7C3AED;
+        }
+
+        .service-item label {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .service-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: 30px;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .service-actions {
+            margin-left: auto;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit, .btn-delete {
+            background: #EDE9FE;
+            color: #7C3AED;
+        }
+
+        .btn-edit:hover, .btn-delete:hover {
+            background: #DDD6FE;
+            transform: translateY(-1px);
+        }
+
+        .btn-remove {
+            background: #FEE2E2;
+            color: #B91C1C;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .service-item:hover .btn-remove {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-remove:hover {
+            background: #FECACA;
+            transform: translateY(-1px);
+        }
+
+        .btn-add {
+            background: #D1FAE5;
+            color: #065F46;
+            width: 100%;
+        }
+
+        .btn-add:hover {
+            background: #A7F3D0;
+            transform: translateY(-1px);
+        }
+
+        .btn-add-block {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 32px auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-block:hover {
+            background: #A7F3D0;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 32px auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .submit-btn:disabled {
+            background: var(--disabled-background);
+            color: var(--disabled-text);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .scroll-to-bottom-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #7C3AED;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-to-bottom-btn:hover {
+            background: #6D28D9;
+            transform: scale(1.1);
+        }
+
+        .new-service-input,
+        .new-description-input,
+        .new-block-input {
+            padding: 10px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            width: 100%;
+            transition: border-color 0.2s ease;
+        }
+
+        .new-service-input:focus,
+        .new-description-input:focus,
+        .new-block-input:focus {
+            outline: none;
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .popup-form-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .popup-form-container.active {
+            display: block;
+        }
+
+        .popup-form h3 {
+            margin: 0 0 16px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .popup-form .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .popup-form .btn-cancel {
+            background: #E5E7EB;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .popup-form .btn-cancel:hover {
+            background: #D1D5DB;
+            transform: translateY(-1px);
+        }
+
+        .popup-form .btn-submit {
+            background: #D1FAE5;
+            color: #065F46;
+            flex: 1;
+        }
+
+        .popup-form .btn-submit:hover {
+            background: #A7F3D0;
+            transform: translateY(-1px);
+        }
+
+        .popup-form .btn-delete {
+            background: #FEE2E2;
+            color: #B91C1C;
+            flex: 1;
+        }
+
+        .popup-form .btn-delete:hover {
+            background: #FECACA;
+            transform: translateY(-1px);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                margin: 0 16px;
+            }
+
+            .service-list {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .service-item label {
+                max-width: 150px;
+            }
+
+            .product-selector {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .popup-form-container {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Автотестирование</h1>
+            <p>Автоматическое тестирование выбранных сценариев</p>
+        </div>
+
+        <!-- Product Selector -->
+        <div class="product-selector" id="product-selector">
+            <!-- Products will be loaded dynamically -->
+        </div>
+
+        <!-- Service Blocks Container -->
+        <div id="service-blocks-container">
+            <!-- Service blocks will be loaded dynamically -->
+        </div>
+
+        <!-- Submit Button -->
+        <button class="submit-btn" id="submit-btn" onclick="submitToJenkins()">Запустить тестирование</button>
+
+        <!-- Add New Block Button -->
+        <button class="btn-add-block" onclick="showAddBlockForm()">+ Добавить группу тестов</button>
+
+        <!-- Popup Forms -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Add New Block Form -->
+        <div class="popup-form-container" id="new-block-form">
+            <div class="popup-form">
+                <h3>Добавить новую группу тестов</h3>
+                <input type="text" class="new-block-input" id="new-block-name" placeholder="Название группы">
+                <div class="form-actions">
+                    <button class="btn btn-cancel" onclick="hidePopupForm('new-block-form')">Отмена</button>
+                    <button class="btn btn-submit" onclick="submitNewBlock()">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Block Form -->
+        <div class="popup-form-container" id="edit-block-form">
+            <div class="popup-form">
+                <h3>Редактировать название группы</h3>
+                <input type="text" class="new-block-input" id="edit-block-name" placeholder="Новое название">
+                <div class="form-actions">
+                    <button class="btn btn-cancel" onclick="hidePopupForm('edit-block-form')">Отмена</button>
+                    <button class="btn btn-submit" onclick="submitEditBlock()">Подтвердить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirm Delete Form -->
+        <div class="popup-form-container" id="confirm-delete-form">
+            <div class="popup-form">
+                <h3 id="confirm-delete-title">Подтвердить удаление</h3>
+                <p id="confirm-delete-message"></p>
+                <div class="form-actions">
+                    <button class="btn btn-cancel" onclick="hidePopupForm('confirm-delete-form')">Отмена</button>
+                    <button class="btn btn-delete" onclick="submitDelete()">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Scroll to Bottom Button 123-->
+    <button class="scroll-to-bottom-btn" onclick="scrollToBottom()">↓</button>
+
+    <script>
+        let currentProduct = localStorage.getItem('currentProduct') || 'fitness';
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let currentBlockId = null;
+        let currentServiceName = null;
+        let deleteType = null;
+
+        // Load products
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/products`);
+                if (!response.ok) throw new Error('Failed to load products');
+                const products = await response.json();
+                const productSelector = document.getElementById('product-selector');
+                productSelector.innerHTML = products.map(product => `
+                    <button class="product-btn ${product === currentProduct ? 'active' : ''}" 
+                            data-product="${product}" 
+                            onclick="selectProduct('${product}')">${product.charAt(0).toUpperCase() + product.slice(1)}</button>
+                `).join('');
+                await renderServiceBlocks();
+            } catch (err) {
+                notifyUser('Не удалось загрузить продукты: ' + err.message, 'error');
+            }
+        }
+
+        // Select product
+        async function selectProduct(product) {
+            currentProduct = product;
+            localStorage.setItem('currentProduct', currentProduct);
+            document.querySelectorAll('.product-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.product === product);
+            });
+            await renderServiceBlocks();
+        }
+
+        // Render all service blocks
+        async function renderServiceBlocks() {
+            const blocksContainer = document.getElementById('service-blocks-container');
+            blocksContainer.innerHTML = '';
+
+            try {
+                const [blocksResponse, servicesResponse] = await Promise.all([
+                    fetch(`${API_BASE_URL}/blocks/${currentProduct}`),
+                    fetch(`${API_BASE_URL}/services/${currentProduct}`)
+                ]);
+
+                if (!blocksResponse.ok || !servicesResponse.ok) {
+                    throw new Error('Failed to load blocks or services');
+                }
+
+                const blocks = await blocksResponse.json();
+                const services = await servicesResponse.json();
+
+                // Sort blocks by ID (assuming higher IDs are newer)
+                blocks.sort((a, b) => a.id - b.id);
+
+                // Render blocks with their services
+                blocks.forEach(block => {
+                    const blockServices = services.filter(s => s.block_id === block.id);
+                    renderServiceBlock(block.id, block.name, blockServices);
+                });
+
+                // Render services without a block (if any)
+                const defaultServices = services.filter(s => !s.block_id);
+                if (defaultServices.length > 0) {
+                    renderServiceBlock('default', 'Триггерные события', defaultServices);
+                }
+
+            } catch (err) {
+                notifyUser('Не удалось загрузить сервисы: ' + err.message, 'error');
+            }
+        }
+
+        // Render single service block
+        function renderServiceBlock(blockId, blockName, services) {
+            const blocksContainer = document.getElementById('service-blocks-container');
+            const blockDiv = document.createElement('div');
+            blockDiv.className = 'service-block';
+            blockDiv.setAttribute('data-block-id', blockId);
+            blockDiv.innerHTML = `
+                <div class="service-block-header">
+                    <h2><span class="block-name">${blockName}</span></h2>
+                    <div class="block-actions">
+                        <button class="btn btn-edit" onclick="showEditBlockForm('${blockId}')">Изменить</button>
+                        <button class="btn btn-delete" onclick="showConfirmDeleteForm('block', '${blockId}')">Удалить</button>
+                    </div>
+                </div>
+                <div class="select-all">
+                    <input type="checkbox" id="select-all-${blockId}" onclick="toggleSelectAll('${blockId}')">
+                    <label for="select-all-${blockId}">Выделить всё</label>
+                </div>
+                <div class="service-list" id="services-${blockId}"></div>
+                <div class="service-item">
+                    <input type="text" class="new-description-input" placeholder="Описание тега" id="new-service-description-${blockId}">
+                    <input type="text" class="new-service-input" placeholder="Тег" id="new-service-name-${blockId}">
+                    <button class="btn btn-add" onclick="addService('${blockId}')">+ Добавить сценарий</button>
+                </div>
+            `;
+            blocksContainer.appendChild(blockDiv);
+
+            const serviceContainer = document.getElementById(`services-${blockId}`);
+            services.forEach(service => {
+                const serviceItem = document.createElement('div');
+                serviceItem.className = 'service-item';
+                serviceItem.innerHTML = `
+                    <div class="service-header">
+                        <input type="checkbox" id="${blockId}-${service.name}" name="services-${blockId}" value="${service.name}" onchange="updateSelectAll('${blockId}')">
+                        <label for="${blockId}-${service.name}" title="${service.description}">${service.description}</label>
+                        <div class="service-actions">
+                            <button class="btn btn-remove" onclick="showConfirmDeleteForm('service', '${blockId}', '${service.name}')">× Удалить</button>
+                        </div>
+                    </div>
+                    <div class="service-description">${service.name}</div>
+                `;
+                serviceContainer.appendChild(serviceItem);
+            });
+
+            updateSelectAll(blockId);
+        }
+
+        // Show add block form
+        function showAddBlockForm() {
+            document.getElementById('new-block-form').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('new-block-name').focus();
+        }
+
+        // Show edit block form
+        function showEditBlockForm(blockId) {
+            if (blockId === 'default') {
+                notifyUser('Нельзя редактировать предопределенный элемент', 'error');
+                return;
+            }
+            currentBlockId = blockId;
+            const block = document.querySelector(`[data-block-id="${blockId}"]`);
+            const blockName = block.querySelector('.block-name').textContent;
+            document.getElementById('edit-block-name').value = blockName;
+            document.getElementById('edit-block-form').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('edit-block-name').focus();
+        }
+
+        // Show confirm delete form
+        function showConfirmDeleteForm(type, blockId, serviceName = null) {
+            if (blockId === 'default' && type === 'block') {
+                notifyUser('Нельзя удалить предопределенный блок', 'error');
+                return;
+            }
+            deleteType = type;
+            currentBlockId = blockId;
+            currentServiceName = serviceName;
+            const titleElement = document.getElementById('confirm-delete-title');
+            const messageElement = document.getElementById('confirm-delete-message');
+            if (type === 'block') {
+                const blockName = document.querySelector(`[data-block-id="${blockId}"] .block-name`).textContent;
+                titleElement.textContent = 'Подтвердить удаление группы';
+                messageElement.textContent = `Вы уверены, что хотите удалить группу "${blockName}"?`;
+            } else {
+                titleElement.textContent = 'Подтвердить удаление сценария';
+                messageElement.textContent = `Вы уверены, что хотите удалить сценарий "${serviceName}"?`;
+            }
+            document.getElementById('confirm-delete-form').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        // Hide popup form
+        function hidePopupForm(formId) {
+            document.getElementById(formId).classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            if (formId === 'edit-block-form') {
+                document.getElementById('edit-block-name').value = '';
+                currentBlockId = null;
+            } else if (formId === 'new-block-form') {
+                document.getElementById('new-block-name').value = '';
+            } else if (formId === 'confirm-delete-form') {
+                deleteType = null;
+                currentBlockId = null;
+                currentServiceName = null;
+            }
+        }
+
+        // Submit new block
+        async function submitNewBlock() {
+            const blockNameInput = document.getElementById('new-block-name');
+            const blockName = blockNameInput.value.trim();
+            if (!blockName) {
+                notifyUser('Имя группы обязательно!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/blocks/${currentProduct}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: blockName })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to add block');
+                }
+
+                const { block_id } = await response.json();
+                renderServiceBlock(block_id, blockName, []);
+                hidePopupForm('new-block-form');
+                notifyUser('Новый сценарий успешно добавлен!', 'success');
+            } catch (err) {
+                notifyUser('Не удалось добавить группу: ' + err.message, 'error');
+            }
+        }
+
+        // Submit edit block
+        async function submitEditBlock() {
+            const newName = document.getElementById('edit-block-name').value.trim();
+            if (!newName) {
+                notifyUser('Имя группы обязательно!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/blocks/${currentProduct}/${currentBlockId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to update block');
+                }
+
+                const block = document.querySelector(`[data-block-id="${currentBlockId}"]`);
+                block.querySelector('.block-name').textContent = newName;
+                hidePopupForm('edit-block-form');
+                notifyUser('Название сценария успешно изменено!', 'success');
+            } catch (err) {
+                notifyUser('Failed to update block name: ' + err.message, 'error');
+            }
+        }
+
+        // Submit delete
+        async function submitDelete() {
+            if (deleteType === 'block') {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/blocks/${currentProduct}/${currentBlockId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Failed to delete block');
+                    }
+
+                    const block = document.querySelector(`[data-block-id="${currentBlockId}"]`);
+                    block.remove();
+                    hidePopupForm('confirm-delete-form');
+                    notifyUser('Группа тестов удалена!', 'success');
+                } catch (err) {
+                    notifyUser('Failed to delete service block: ' + err.message, 'error');
+                }
+            } else if (deleteType === 'service') {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/services/${currentProduct}/${currentServiceName}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        await renderServiceBlocks();
+                        hidePopupForm('confirm-delete-form');
+                        notifyUser('Сценарий успешно удален!', 'success');
+                    } else {
+                        const error = await response.json();
+                        notifyUser(error.error || 'Failed to remove service', 'error');
+                    }
+                } catch (err) {
+                    notifyUser('Failed to remove service: ' + err.message, 'error');
+                }
+            }
+        }
+
+        // Add service
+        async function addService(blockId) {
+            const descInput = document.getElementById(`new-service-description-${blockId}`);
+            const nameInput = document.getElementById(`new-service-name-${blockId}`);
+            const description = descInput.value.trim();
+            const name = nameInput.value.trim();
+
+            if (name && description) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/services/${currentProduct}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            name, 
+                            description, 
+                            block_id: blockId !== 'default' ? blockId : null 
+                        })
+                    });
+                    if (response.ok) {
+                        descInput.value = '';
+                        nameInput.value = '';
+                        await renderServiceBlocks();
+                        notifyUser('Новый сценарий успешно добавлен!', 'success');
+                    } else {
+                        const error = await response.json();
+                        notifyUser(error.error || 'Failed to add service', 'error');
+                    }
+                } catch (err) {
+                    notifyUser('Failed to add service: ' + err.message, 'error');
+                }
+            } else {
+                notifyUser('Пожалуйста, укажите название или тег!', 'error');
+            }
+        }
+
+        // Toggle select all for a specific block
+        function toggleSelectAll(blockId) {
+            const selectAllCheckbox = document.getElementById(`select-all-${blockId}`);
+            const checkboxes = document.querySelectorAll(`#services-${blockId} input[type="checkbox"]`);
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        }
+
+        // Update select all checkbox state
+        function updateSelectAll(blockId) {
+            const selectAllCheckbox = document.getElementById(`select-all-${blockId}`);
+            const checkboxes = document.querySelectorAll(`#services-${blockId} input[type="checkbox"]`);
+            if (selectAllCheckbox && checkboxes.length > 0) {
+                selectAllCheckbox.checked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            }
+        }
+
+        // Get CSRF crumb dynamically
+        async function getCrumb(authToken) {
+            try {
+                const response = await fetch('https://db9de47608be.ngrok-free.app/crumbIssuer/api/json', {
+                    headers: { 'Authorization': `Basic ${authToken}` }
+                });
+                if (!response.ok) throw new Error(`Failed to get crumb: ${response.status}`);
+                const data = await response.json();
+                console.log('CSRF crumb:', data.crumb);
+                return data.crumb;
+            } catch (err) {
+                console.error('Failed to get crumb:', err);
+                return null;
+            }
+        }
+
+        // Submit to Jenkins
+        async function submitToJenkins() {
+            const selectedServices = Array.from(document.querySelectorAll(`input[name^="services-"]:checked`)).map(cb => cb.value);
+
+            if (selectedServices.length === 0) {
+                notifyUser('Пожалуйста, выберите хотя бы один сценарий для запуска', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Тестирование выполняется...';
+
+            const authToken = 'cm9vdDoxMTAzNGM0NzM2YjA5MDhiMzFkNWMzMDk2ZDU1MzdiY2Qy';
+            await triggerJenkinsBuild(currentProduct, selectedServices, authToken);
+        }
+
+        // Trigger Jenkins build and poll status
+        async function triggerJenkinsBuild(product, services, authToken) {
+            if (!product || !services || !Array.isArray(services) || services.length === 0) {
+                console.error('Invalid input: product and services are required');
+                notifyUser('Ошибка: продукт или сервисы не указаны', 'error');
+                enableSubmitButton();
+                return;
+            }
+
+            const jenkinsUrl = 'https://db9de47608be.ngrok-free.app/job/debug/buildWithParameters';
+            const crumb = await getCrumb(authToken);
+            if (!crumb) {
+                notifyUser('Не удалось получить CSRF-токен', 'error');
+                enableSubmitButton();
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append('PRODUCT', product);
+            params.append('SERVICES', services.join(';'));
+            console.log('Build parameters:', params.toString());
+
+            try {
+                const response = await fetch(jenkinsUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Basic ${authToken}`,
+                        'Jenkins-Crumb': crumb
+                    },
+                    body: params
+                });
+
+                console.log('Jenkins response status:', response.status);
+                console.log('Jenkins response headers:', [...response.headers.entries()]);
+
+                if (response.ok) {
+                    notifyUser(`Запущено тестирование ${product}! Ожидание завершения...`, 'success');
+                    let buildNumber = null;
+
+                    // Try to get queue ID from Location header
+                    const location = response.headers.get('Location');
+                    if (location) {
+                        const queueId = location.split('/').pop();
+                        console.log('Queue ID from Location:', queueId);
+                        buildNumber = await getBuildNumberFromQueue(queueId, authToken);
+                    } else {
+                        console.warn('No Location header, searching for new build');
+                        buildNumber = await findNewBuildNumber(authToken, product, services);
+                    }
+
+                    if (buildNumber) {
+                        console.log('Build number:', buildNumber);
+                        await pollBuildStatus(buildNumber, authToken, product);
+                    } else {
+                        throw new Error('Не удалось определить номер сборки');
+                    }
+                } else {
+                    const errorText = await response.text();
+                    let errorMessage = `Ошибка для ${product}: ${response.status} - ${errorText}`;
+                    if (response.status === 400) {
+                        errorMessage += ' (Проверьте формат параметров)';
+                    } else if (response.status === 403) {
+                        errorMessage += ' (Недействительный CSRF-токен или аутентификация)';
+                    }
+                    console.error('Jenkins error response:', errorText);
+                    notifyUser(errorMessage, 'error');
+                    enableSubmitButton();
+                }
+            } catch (error) {
+                let errorMessage = `Ошибка запроса для ${product}: ${error.message}`;
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage += ' (Проблема CORS. Настройте Jenkins для разрешения запросов с http://localhost:8000 или используйте прокси)';
+                }
+                console.error('Request error:', error);
+                notifyUser(errorMessage, 'error');
+                enableSubmitButton();
+            }
+        }
+
+        // Get build number from queue
+        async function getBuildNumberFromQueue(queueId, authToken) {
+            const maxQueueAttempts = 60; // 5 minutes at 5s intervals
+            let attempts = 0;
+
+            while (attempts < maxQueueAttempts) {
+                try {
+                    const response = await fetch(`https://db9de47608be.ngrok-free.app/queue/item/${queueId}/api/json`, {
+                        headers: {
+                            'Authorization': `Basic ${authToken}`
+                        }
+                    });
+                    if (!response.ok) {
+                        console.error(`Queue check failed: ${response.status}`);
+                        return null;
+                    }
+                    const queueData = await response.json();
+                    console.log('Queue data:', queueData);
+                    if (queueData.executable && queueData.executable.number) {
+                        return queueData.executable.number;
+                    }
+                    if (queueData.cancelled) {
+                        console.error('Queue item cancelled');
+                        return null;
+                    }
+                } catch (err) {
+                    console.error('Queue check error:', err);
+                }
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                attempts++;
+            }
+            console.warn('Timed out waiting for queue item to become executable');
+            return null;
+        }
+
+        // Find new build number by checking recent builds
+        async function findNewBuildNumber(authToken, product, services) {
+            try {
+                // Wait to ensure the new build is registered
+                await new Promise(resolve => setTimeout(resolve, 5000));
+
+                // Get job history
+                const response = await fetch(`https://db9de47608be.ngrok-free.app/job/debug/api/json?tree=builds[number,timestamp,building,actions[parameters[name,value]]]{0,10}`, {
+                    headers: {
+                        'Authorization': `Basic ${authToken}`
+                    }
+                });
+                if (!response.ok) {
+                    console.error(`Failed to get job history: ${response.status}`);
+                    return null;
+                }
+                const jobData = await response.json();
+                console.log('Job history:', jobData.builds);
+
+                // Find the most recent build that matches our parameters
+                const expectedServices = services.join(';');
+                const now = Date.now();
+                const maxAge = 30 * 1000; // Consider builds from last 30 seconds
+
+                for (const build of jobData.builds) {
+                    if (!build.building && now - build.timestamp > maxAge) {
+                        continue; // Skip old or completed builds
+                    }
+
+                    // Check build parameters
+                    const parameters = build.actions.find(action => action.parameters)?.parameters || [];
+                    const productParam = parameters.find(p => p.name === 'PRODUCT')?.value;
+                    const servicesParam = parameters.find(p => p.name === 'SERVICES')?.value;
+
+                    console.log(`Build ${build.number} parameters: PRODUCT=${productParam}, SERVICES=${servicesParam}`);
+
+                    if (productParam === product && servicesParam === expectedServices) {
+                        return build.number;
+                    }
+                }
+
+                console.warn('No matching build found, retrying after delay');
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                return await findNewBuildNumber(authToken, product, services); // Retry
+            } catch (err) {
+                console.error('Job history check error:', err);
+                return null;
+            }
+        }
+
+        // Poll Jenkins build status
+        async function pollBuildStatus(buildNumber, authToken, product) {
+            const pollInterval = 5000; // Poll every 5 seconds
+            const maxAttempts = 120; // Max 10 minutes
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(`https://db9de47608be.ngrok-free.app/job/debug/${buildNumber}/api/json`, {
+                        headers: {
+                            'Authorization': `Basic ${authToken}`
+                        }
+                    });
+                    if (!response.ok) {
+                        console.error(`Build check failed: ${response.status}`);
+                        continue;
+                    }
+                    const buildData = await response.json();
+                    console.log('Build status:', buildData.result, 'Building:', buildData.building);
+                    if (buildData.building) {
+                        notifyUser(`Тестирование ${product} выполняется...`, 'info');
+                    }
+                    if (buildData.result && ['SUCCESS', 'FAILURE', 'ABORTED'].includes(buildData.result)) {
+                        notifyUser(`Тестирование ${product} завершено с результатом: ${buildData.result}`, buildData.result === 'SUCCESS' ? 'success' : 'error');
+                        enableSubmitButton();
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Build check error:', err);
+                }
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+                attempts++;
+            }
+
+            notifyUser(`Таймаут ожидания завершения тестирования ${product}`, 'error');
+            enableSubmitButton();
+        }
+
+        // Enable submit button
+        function enableSubmitButton() {
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Запустить тестирование';
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const product = `${product}`; // Замените на актуальное имя продукта
+            const runButton = document.querySelector('#run-testing');
+
+            // Функция для проверки статуса сборки
+            async function checkBuildStatus() {
+                try {
+                    const response = await fetch(`/api/build-status/${product}`, {
+                        headers: {
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+                    if (!response.ok) {
+                        console.error('Failed to fetch build status:', response.status);
+                        return;
+                    }
+                    const data = await response.json();
+                    runButton.disabled = data.isBuilding; // Блокируем или разблокируем кнопку
+                } catch (error) {
+                    console.error('Error checking build status:', error);
+                }
+            }
+
+            // Периодическая проверка статуса сборки
+            function pollBuildStatus() {
+                checkBuildStatus(); // Проверяем сразу при загрузке
+                const interval = setInterval(async () => {
+                    await checkBuildStatus();
+                    if (!runButton.disabled) {
+                        clearInterval(interval); // Останавливаем опрос, если сборка завершена
+                    }
+                }, 5000); // Проверяем каждые 5 секунд
+            }
+
+            // Запускаем опрос при загрузке страницы
+            pollBuildStatus();
+        }); 
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const product = 'your_product_name'; // Замените на актуальное имя продукта
+            const runButton = document.querySelector('#run-testing');
+
+            // Функция для проверки статуса сборки
+            async function checkBuildStatus() {
+                try {
+                    const response = await fetch(`/api/build-status/${product}`, {
+                        headers: {
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+                    if (!response.ok) {
+                        console.error('Failed to fetch build status:', response.status);
+                        return;
+                    }
+                    const data = await response.json();
+                    runButton.disabled = data.isBuilding; // Блокируем или разблокируем кнопку
+                } catch (error) {
+                    console.error('Error checking build status:', error);
+                }
+            }
+
+            // Периодическая проверка статуса сборки
+            function pollBuildStatus() {
+                checkBuildStatus(); // Проверяем сразу при загрузке
+                const interval = setInterval(async () => {
+                    await checkBuildStatus();
+                    if (!runButton.disabled) {
+                        clearInterval(interval); // Останавливаем опрос, если сборка завершена
+                    }
+                }, 5000); // Проверяем каждые 5 секунд
+            }
+
+            // Запускаем опрос при загрузке страницы
+            pollBuildStatus();
+        });
+        // Notify user
+        function notifyUser(message, type) {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            if (typeof Toastify !== 'undefined') {
+                Toastify({
+                    text: message,
+                    duration: type === 'info' ? 3000 : 5000,
+                    className: type === 'success' ? 'success' : type === 'error' ? 'error' : 'info',
+                    style: {
+                        background: type === 'success' ? '#A7F3D0' : type === 'error' ? '#FEE2E2' : '#EDE9FE'
+                    }
+                }).showToast();
+            } else {
+                alert(message);
+            }
+        }
+
+        // Scroll to bottom
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        // Initialization
+        loadProducts();
+    </script>
+</body>
+</html>
