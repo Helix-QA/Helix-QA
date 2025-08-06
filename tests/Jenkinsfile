@@ -1,31 +1,52 @@
 pipeline {
     agent {
-        label "${params.jenkinsAgent}"
+        label "OneS"
     }
 	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "avtotestqa"
     }
     stages {
+		stage('Подготовка .cf') {
+				steps {
+					script {
+						updateConfigFile()
+						
+						if (params.product == 'fitness') {
+							
+						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
+						env.repository = "${repositoryReleaseFitness}"
+
+						} else if (params.product == 'salon') {
+						
+						env.testPathPlaceholder = "\\tests\\features\\salon${params.debug}" // test - тестовые запуски
+						env.repository = "${repositoryReleaseSalon}"
+
+						} else {
+							
+						env.testPathPlaceholder = "\\tests\\features\\stoma${params.debug}"
+						env.repository = "${repositoryReleaseStom}"
+					}
+				}
+			}
+		}
 		stage("Создание БД"){
 			steps{
 				script{
 					def maxAttempts = 5
 					def attempt = 1
 					def serviceRestarted = false
-					def versionFile = "D:\\Vanessa-Automation\\version\\${env.product}.txt"
+					def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt"
 					def drop_db = "tests/scripts/drop_db.py"
 					while (attempt <= maxAttempts) {
 						try {
 							echo "Попытка ${attempt} из ${maxAttempts}"
-							updateConfigFile()
-
 							bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
 							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
 							runDbOperation("session_kill", "\"${env.dbTests}\"")
-							runDbOperation("restore", "\"${env.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
+							runDbOperation("restore", "\"${params.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
 							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
-							runDbOperation("loadrepo", "\"${params.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
+							runDbOperation("loadrepo", "\"${env.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
 							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
 							if (fileExists(versionFile)) {
 								env.version = readFile(versionFile).trim()
@@ -36,11 +57,12 @@ pipeline {
 							if (params.VERSION_NEW > version) {
 								echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
 								runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
-								runDbOperation("dump", "\"${env.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
+								runDbOperation("run", "\"${env.dbTests}\"")	// Убрать окон перемещения
+								runDbOperation("dump", "\"${params.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
 								// Обновляем version
 								env.version = params.VERSION_NEW
 								// Сохраняем новую версию в файл
-								writeFile file: "D:\\Vanessa-Automation\\version\\${env.product}.txt", text: env.version
+								writeFile file: "D:\\Vanessa-Automation\\version\\${params.product}.txt", text: env.version
 								echo "Версия обновлена до ${env.version}"
 							} else {
 								echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
@@ -70,8 +92,8 @@ pipeline {
             steps {
                 script {
 					try{
-						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных	
-						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${params.TestPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
@@ -79,6 +101,27 @@ pipeline {
                 }
             }
         }
+		stage("Дымовые тесты") {
+			when {
+				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+			}
+			steps {
+				script {
+					def replace = "tests/scripts/replaceSmoke.py"
+					def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke\\exceptions_${params.product}"
+					def folderSmoke = "\\tests\\features\\smoke\\exceptions_${params.product}"
+					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
+					bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
+					try{
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
+					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+					}
+
+				}
+			}
+		}
 	}
 	post {
 		always {
@@ -134,6 +177,8 @@ def runDbOperation(operation, params) {
 
 def updateConfigFile() {
     def configJson = readFile(file: 'tests/tools/VAParams.json')
+    def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+                              .replaceAll(/\$\{workspace\}/, escapedWorkspace)
     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
 }

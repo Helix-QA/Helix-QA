@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "${params.jenkinsAgent}" }
+    agent { label "OneS" }
     stages {
         stage("Очистка данных перед отправкой"){
             steps{
@@ -22,7 +22,7 @@ pipeline {
 					env.applicationId = "ff8080817ccbb453017d0ee91ffe000d"
                     env.folderProduct = "salon30"
                     }
-                    env.foldercf = "D:\\release_build\\${folderProduct}\\Old_versions_cf"
+                    env.foldercf = "D:\\GRM\\${folderProduct}\\Old_versions_cf"
                     def params = [
                         "applicationId": "${env.applicationId}",
                         "name": "${params.version}",
@@ -37,7 +37,7 @@ pipeline {
                             httpMode: 'GET',
                             contentType: 'APPLICATION_JSON',
                             requestBody: jsonBody,
-                            customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
+                            customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86Q28zamlrb20=']],
                             validResponseCodes: '200:299',
                             ignoreSslErrors: true
                         )
@@ -100,7 +100,7 @@ pipeline {
 							url: "https://1capp.link.1c.ru/1capp-ecw-admin/hs/ECWConfPublication/v1/setDefaultVersion?applicationId=${env.applicationId}&versionId=${env.versionID}",
 							httpMode: 'POST',
 							contentType: 'APPLICATION_JSON',
-							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86ZEU5c2V6eWc=']],
+							customHeaders: [[name: 'Authorization', value: 'Basic bGFicG86Q28zamlrb20=']],
 							validResponseCodes: '200:299', // Ожидаем успешные коды ответа
 							ignoreSslErrors: true // Если нужно игнорировать ошибки SSL
 						)
