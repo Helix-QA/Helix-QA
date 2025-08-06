@@ -6,7 +6,13 @@ from psycopg_pool import ConnectionPool
 import requests
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["https://melodious-snickerdoodle-4c15c0.netlify.app", "http://localhost:*"],
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 # Настройка пула соединений с PostgreSQL
@@ -24,10 +30,17 @@ def get_products():
             with conn.cursor() as cursor:
                 cursor.execute("SELECT name FROM products")
                 products = [row[0] for row in cursor.fetchall()]
-        return jsonify(products)
+                
+                if not products:  # Если нет продуктов
+                    return jsonify({"error": "No products found"}), 404
+                    
+                response = jsonify(products)
+                response.headers['Content-Type'] = 'application/json'
+                return response
+                
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
+        app.logger.error(f"Error in get_products: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 @cache.cached(timeout=300, query_string=True)  # Кэширование с учетом параметра product
 @app.route('/api/services/<product>', methods=['GET'])
 def get_services(product):
