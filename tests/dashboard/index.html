@@ -518,19 +518,21 @@
 
         // Load products
         async function loadProducts() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/products`);
-                if (!response.ok) throw new Error('Failed to load products');
-                const products = await response.json();
-                const productSelector = document.getElementById('product-selector');
-                productSelector.innerHTML = products.map(product => `
-                    <button class="product-btn ${product === currentProduct ? 'active' : ''}" 
-                            data-product="${product}" 
-                            onclick="selectProduct('${product}')">${product.charAt(0).toUpperCase() + product.slice(1)}</button>
-                `).join('');
-                await renderServiceBlocks();
-            } catch (err) {
-                notifyUser('Не удалось загрузить продукты: ' + err.message, 'error');
+        try {
+            const response = await fetch(`${API_BASE_URL}/products`);
+            
+            // Проверяем Content-Type перед парсингом
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error(`Ожидался JSON, получен: ${text.substring(0, 100)}...`);
+            }
+            
+            const products = await response.json();
+            // ... остальной код
+        } catch (err) {
+            console.error('Ошибка загрузки:', err);
+            notifyUser(`Ошибка: ${err.message}`, 'error');
             }
         }
 
