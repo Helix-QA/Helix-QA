@@ -10,9 +10,6 @@ pipeline {
         stage('Подготовка .cf') {
 				steps {
 					script {
-                        println "Product: ${params.PRODUCT}"
-                        println "Product: ${params.SERVICES}"
-                        
                         if (params.PRODUCT == 'fitness') {
 						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
