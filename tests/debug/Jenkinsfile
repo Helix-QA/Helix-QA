@@ -39,8 +39,9 @@ pipeline {
 				script{
 					bat"""
 					chcp 65001 
-					call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-					call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+					@call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
+					call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+					call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
 					"""
 				}
 			}
