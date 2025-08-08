@@ -34,7 +34,17 @@ pipeline {
 				}
 			}
 		}
-
+		stage('Обновление из релизного хранилища'){
+			steps{
+				script{
+					bat"""
+					chcp 65001 
+					call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+					call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+					"""
+				}
+			}
+		}
         stage('Сценарное тестирвоание') {
             steps {
                 script {
@@ -42,7 +52,7 @@ pipeline {
                         bat"""
                         chcp 65001
                         del /s /q "${env.WORKSPACE}\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\tests\\build\\results"
-                        CALL vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+                        call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
                         """																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
