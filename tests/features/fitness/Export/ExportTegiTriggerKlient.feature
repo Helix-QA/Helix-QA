@@ -1,6 +1,7 @@
 ﻿#language: ru
 
 @tree
+@IgnoreOnCIMainBuild
 @ExportScenarios
 
 Функционал: Экспортный сценарий проверки журнала регистрации триггерных событий
