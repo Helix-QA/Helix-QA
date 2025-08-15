@@ -72,9 +72,8 @@
 Сценарий: Я проверяю XML маркированного чека.
 Если переменная "Маркировка" имеет значение "0104640033503572215Y!OkcBHelix93iTAJ" Тогда
 	И Я запоминаю значение выражения 'MarkingCode=\"MDEwNDY0MDAzMzUwMzU3MjIxNVkhT2tjQh05M2lUQUo=\"' в переменную "MarkingCode"
-	И Я запоминаю значение выражения 'Time=11231456789\"' в переменную "Time"
 	И Я запоминаю значение выражения '0104640033503572215Y!OkcB93iTAJ' в переменную "Штрихкод"
-	И Я запоминаю значение выражения 'AttributeValue=\"UUID=test-cd41xs5a1w15d1&amp;' в переменную "AttributeValue"
+	И Я запоминаю значение выражения 'AttributeValue=\"UUID=test-638f669e-7e8e-85a9-3453-2c429d001150&amp;Time=1731658318006&amp;Inst=4c182ce0-a325-42a9-ab9e-b5e562cc8721&amp;Ver=52cadcfe-a28f-4877-8b2f-da0481ddf1fa\"' в переменную "AttributeValue"
 Если переменная "Маркировка" имеет значение "0104640033503572220Y!OkcBHelix93iTAJ" Тогда
 	И Я запоминаю значение выражения 'MarkingCode=\"MDEwNDY0MDAzMzUwMzU3MjIyMFkhT2tjQh05M2lUQUo=\"' в переменную "MarkingCode"
 	И Я запоминаю значение выражения 'Time=11231456789\"' в переменную "Time"
@@ -83,7 +82,7 @@
 И элемент формы с именем 'XML' стал равен по шаблону:
 	| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                      |
 	| '<CheckPackage>'                                                                                                                                                                                                                                                  |
-	| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                              |
+	| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                              |
 	| '		<AgentData/>'                                                                                                                                                                                                                                                  |
 	| '		<VendorData/>'                                                                                                                                                                                                                                                 |
 	| '		<CustomerDetail/>'                                                                                                                                                                                                                                             |
@@ -92,7 +91,7 @@
 	| '	</Parameters>'                                                                                                                                                                                                                                                  |
 	| '	<Positions>'                                                                                                                                                                                                                                                    |
 	| '		<FiscalString Name=\" $$МаркированныйТовар$$\" Quantity=\"1\" PriceWithDiscount=\"500\" AmountWithDiscount=\"500\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"33\" $MarkingCode$ MeasureOfQuantity=\"0\">' |
-	| '			<IndustryAttribute IdentifierFOIV=\"030\" DocumentDate=\"21.11.2023\" DocumentNumber=\"1944\" $AttributeValue$$Time$/>'                                                                                             |
+	| '			<IndustryAttribute IdentifierFOIV=\"030\" DocumentDate=\"21.11.2023\" DocumentNumber=\"1944\" $AttributeValue$/>'                                                                                             |
 	| '			<AgentData/>'                                                                                                                                                                                                                                                 |
 	| '			<VendorData/>'                                                                                                                                                                                                                                                |
 	| '		</FiscalString>'                                                                                                                                                                                                                                               |
@@ -138,7 +137,7 @@
 	| '      <IndustryAttribute IdentifierFOIV=\"030\"'    |
 	| '          DocumentDate=\"21.11.2023\"'              |
 	| '          DocumentNumber=\"1944\"'                  |
-	| '          $AttributeValue$$Time$"/>'                |
+	| '          $AttributeValue$"/>'                      |
 	| '      <AgentData/>'                                 |
 	| '      <VendorData/>'                                |
 	| '    </FiscalString>'                                |
