@@ -5,7 +5,7 @@ import sys
 smoke = sys.argv[1]
 prod = sys.argv[2] 
 
-def replace_commands_in_features(directory, replacements, target_files):
+def replace_commands_in_features(directory, file_replacements):
     """
     Открывает указанные .feature-файлы в директории и заменяет команды в соответствии с индивидуальными наборами замен для каждого файла.
 
