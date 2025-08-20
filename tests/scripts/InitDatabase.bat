@@ -17,3 +17,4 @@ if "%1"=="dump"         call vrunner dump "D:\\Vanessa-Automation\\DT\\%2.dt" --
 if "%1"=="session_unlock" call vrunner session unlock --db %2 --db-user Админ
 if "%1"=="run"          call vrunner run --ibconnection /Slocalhost/%2 --db-user Админ --execute "C:\\Program Files\\OneScript\\lib\\vanessa-runner\\epf\\УбратьОкноПеремещенияИБ.epf" --uccode tester
 if "%1"=="smoke"        call vrunner run --command "VAParams=%2\\tests\\tools\\VAParams.json;StartFeaturePlayer;GenerateSmokeTest;QuietInstallVanessaExtAndClose" --execute "%3" --ibconnection /Slocalhost/%4 --db-user Админ
+if "%1"=="extension"    call vrunner loadrepo --storage-name %2 --storage-user МихаилБ --extension %3 --ibconnection /Slocalhost/%4 --db-user Админ --uccode tester
