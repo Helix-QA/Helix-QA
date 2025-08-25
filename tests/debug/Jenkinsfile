@@ -64,11 +64,8 @@ pipeline {
     post {
 		always {
 			script {
-				allure([
-					includeProperties: false,
-					jdk: '',
-					results: [['path': 'tests/build/results']]
-				])
+				allure includeProperties: false, jdk: '', results: [[path: 'tests/build/results']]
+				junit allowEmptyResults: true, testResults: 'tests/build/junit/*.xml'
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
 					if ("${params.PRODUCT}" == "fitness") {
