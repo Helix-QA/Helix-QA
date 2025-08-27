@@ -53,7 +53,7 @@ pipeline {
 							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
 							runDbOperation("loadrepo", "\"${env.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
 							//runDbOperation("extension", "\"${env.extmess}\" \"${env.extNameMess}\" \"${env.dbTests}\"") // Загрузка данных расширения мессенджер из хранилища
-							//runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+							runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
 							if (fileExists(versionFile)) {
 								env.version = readFile(versionFile).trim()
 							} else {
