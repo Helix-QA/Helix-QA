@@ -44,20 +44,20 @@ pipeline {
                 }
             }
         }
-		stage('Выгрузка из релизного') {
-			steps {
-				bat """
-				chcp 65001
-				@call vrunner decompile --out D:\\CF_XML --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-				"""
-			}
-		}
+		// stage('Выгрузка из релизного') {
+		// 	steps {
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner decompile --out D:\\CF_XML --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+		// 		"""
+		// 	}
+		// }
 		stage(' Запуск Coverage41C') {
 			steps {
 				script {
 				bat """
 				chcp 65001
-				Coverage41C start -i VAFitness -s D:\\CF_XML
+				C:\\Coverage41C\\bin\\Coverage41C.bat start -i VAFitness -s D:\\CF_XML
 				"""
 				}
 
@@ -82,7 +82,7 @@ pipeline {
 		stage('Stop Coverage & Export') {
             steps {
 				script {
-					bat "Coverage41C stop -i VAFitness --out D:\\coverage41c.xml"
+					bat "C:\\Coverage41C\\bin\\Coverage41C.bat stop -i VAFitness --out D:\\coverage41c.xml"
 				}
             }
         }
