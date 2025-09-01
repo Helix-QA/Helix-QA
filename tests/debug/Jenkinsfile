@@ -31,27 +31,35 @@ pipeline {
                 }
             }
         }
-        // stage('Обновление из релизного хранилища'){
-        //     steps{
-        //         script{
-        //             bat"""
-        //             chcp 65001 
-        //             @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
-        //             call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-        //             call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-        //             @call vrunner session unlock --db ${env.dbTests} --db-user Админ
-        //             """
-        //         }
-        //     }
-        // }
-		// stage('Выгрузка из релизного') {
-		// 	steps {
-		// 		bat """
-		// 		chcp 65001
-		// 		@call vrunner decompile --out D:\\CF_XML --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-		// 		"""
-		// 	}
-		// }
+        stage('Обновление из релизного хранилища'){
+            steps{
+                script{
+                    bat"""
+                    chcp 65001 
+                    @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
+                    call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+                    call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+                    @call vrunner session unlock --db ${env.dbTests} --db-user Админ
+                    """
+                }
+            }
+        }
+		stage('Выгрузка из релизного') {
+			steps {
+				bat """
+				chcp 65001
+				@call vrunner decompile --out D:\\CF_XML --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+				"""
+			}
+		}
+		stage(' Запуск Coverage41C') {
+			steps {
+				bat """
+				chcp 65001
+				Coverage41C start -i VAFitness -s D:\\CF_XML
+				"""
+			}
+		}
         stage('Сценарное тестирвоание') {
             steps {
                 script {
@@ -68,6 +76,12 @@ pipeline {
                 }
             }
         }
+		stage('Stop Coverage & Export') {
+            steps {
+                bat "Coverage41C stop -i VAFitness --out D:\\coverage41c.xml"
+            }
+        }
+
     	stage('SonarScanner') {
 			steps {
 				script {
