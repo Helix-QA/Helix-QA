@@ -137,14 +137,4 @@ def updateConfigFile() {
     
     writeFile(file: 'tests/debug/VAParams.json', text: updatedConfigJson)
 }   // Формируем строку для замены (без квадратных скобок)
-    def servicesReplacement = servicesList.join(",")
-    
-    // Заменяем плейсхолдеры
-    def updatedConfigJson = configJson
-        .replaceAll(/\$\{product\}/, params.PRODUCT)
-        .replaceAll(/\$\{workspace\}/, escapedWorkspace)
-        .replaceAll(/\$\{dbTests\}/, env.dbTests)
-        .replaceAll(/"\$\{SERVICES\}"/, servicesReplacement)  // Заменяем "${SERVICES}" на элементы через запятую
-    
-    writeFile(file: 'tests/debug/VAParams.json', text: updatedConfigJson)
-}
+  
