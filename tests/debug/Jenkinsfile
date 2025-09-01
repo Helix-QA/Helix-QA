@@ -52,17 +52,7 @@ pipeline {
 		// 		"""
 		// 	}
 		// }
-		stage(' Запуск Coverage41C') {
-			steps {
-				script {
-				bat """
-				chcp 65001
-				C:\\Coverage41C\\bin\\Coverage41C.bat start -i VAFitness -s D:\\CF_XML
-				"""
-				}
 
-			}
-		}
         stage('Сценарное тестирвоание') {
             steps {
                 script {
@@ -79,13 +69,7 @@ pipeline {
                 }
             }
         }
-		stage('Stop Coverage & Export') {
-            steps {
-				script {
-					bat "C:\\Coverage41C\\bin\\Coverage41C.bat stop -i VAFitness --out D:\\coverage41c.xml"
-				}
-            }
-        }
+
 
     	stage('SonarScanner') {
 			steps {
