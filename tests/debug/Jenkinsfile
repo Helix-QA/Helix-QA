@@ -54,10 +54,13 @@ pipeline {
 		}
 		stage(' Запуск Coverage41C') {
 			steps {
+				script {
 				bat """
 				chcp 65001
 				Coverage41C start -i VAFitness -s D:\\CF_XML
 				"""
+				}
+
 			}
 		}
         stage('Сценарное тестирвоание') {
@@ -78,7 +81,9 @@ pipeline {
         }
 		stage('Stop Coverage & Export') {
             steps {
-                bat "Coverage41C stop -i VAFitness --out D:\\coverage41c.xml"
+				script {
+					bat "Coverage41C stop -i VAFitness --out D:\\coverage41c.xml"
+				}
             }
         }
 
