@@ -31,19 +31,19 @@ pipeline {
                 }
             }
         }
-        stage('Обновление из релизного хранилища'){
-            steps{
-                script{
-                    bat"""
-                    chcp 65001 
-                    @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
-                    call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-                    call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-                    @call vrunner session unlock --db ${env.dbTests} --db-user Админ
-                    """
-                }
-            }
-        }
+        // stage('Обновление из релизного хранилища'){
+        //     steps{
+        //         script{
+        //             bat"""
+        //             chcp 65001 
+        //             @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
+        //             call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+        //             call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+        //             @call vrunner session unlock --db ${env.dbTests} --db-user Админ
+        //             """
+        //         }
+        //     }
+        // }
 		// stage('Выгрузка из релизного') {
 		// 	steps {
 		// 		bat """
