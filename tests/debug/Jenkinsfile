@@ -69,20 +69,18 @@ pipeline {
                 }
             }
         }
-
-
-    	stage('SonarScanner') {
-			steps {
-				script {
-					withSonarQubeEnv('SonarScanner') {
-					bat """
-					chcp 65001
-					D:\\SonarQube\\bin\\sonar-scanner.bat -Dproject.settings=D:\\jENKINS\\workspace\\debug\\tests\\debug\\sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602 -D sonar.projectVersion=${BUILD_ID}
-					"""
-					}
-				}
-			}
-		}
+    	// stage('SonarScanner') {
+		// 	steps {
+		// 		script {
+		// 			withSonarQubeEnv('SonarScanner') {
+		// 			bat """
+		// 			chcp 65001
+		// 			D:\\SonarQube\\bin\\sonar-scanner.bat -D project.settings=D:\\jENKINS\\workspace\\debug\\tests\\debug\\sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602
+		// 			"""
+		// 			}
+		// 		}
+		// 	}
+		// }
     }
     post {
         always {
