@@ -8,42 +8,51 @@ pipeline {
     }
     stages {
         stage('Подготовка .cf') {
-				steps {
-					script {
+                steps {
+                    script {
                         if (params.PRODUCT == 'fitness') {
-						env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
-						env.repository = "${repositoryReleaseFitness}"
+                        env.testPathPlaceholder = "\\tests\\features\\fitness" // debug - тестовые запуски
+                        env.repository = "${repositoryReleaseFitness}"
                         env.dbTests = "VAFitness"
                         updateConfigFile()
 
-						} else if (params.PRODUCT == 'salon') {
-						env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
-						env.repository = "${repositoryReleaseSalon}"
+                        } else if (params.PRODUCT == 'salon') {
+                        env.testPathPlaceholder = "\\tests\\features\\salon" // test - тестовые запуски
+                        env.repository = "${repositoryReleaseSalon}"
                         env.dbTests = "VASPA"
                         updateConfigFile()
 
-						} else {
-						env.testPathPlaceholder = "\\tests\\features\\stoma"
-						env.repository = "${repositoryReleaseStom}"
+                        } else {
+                        env.testPathPlaceholder = "\\tests\\features\\stoma"
+                        env.repository = "${repositoryReleaseStom}"
                         env.dbTests = "VAStoma"
                         updateConfigFile()
-					}
-				}
-			}
-		}
-		stage('Обновление из релизного хранилища'){
-			steps{
-				script{
-					bat"""
-					chcp 65001 
-					@call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
-					call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-					call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-					@call vrunner session unlock --db ${env.dbTests} --db-user Админ
-					"""
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
+        stage('Обновление из релизного хранилища'){
+            steps{
+                script{
+                    bat"""
+                    chcp 65001 
+                    @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
+                    call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+                    call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+                    @call vrunner session unlock --db ${env.dbTests} --db-user Админ
+                    """
+                }
+            }
+        }
+		// stage('Выгрузка из релизного') {
+		// 	steps {
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner decompile --out D:\\CF_XML --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+		// 		"""
+		// 	}
+		// }
+
         stage('Сценарное тестирвоание') {
             steps {
                 script {
@@ -52,50 +61,64 @@ pipeline {
                         chcp 65001
                         del /s /q "${env.WORKSPACE}\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\tests\\build\\results"
                         call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-                        """																																
- 					} catch (Exception Exc) {
-						echo "Error occurred: ${Exc.message}"
-						currentBuild.result = 'UNSTABLE'
-          			}
+                        """                                                                                                                                
+                     } catch (Exception Exc) {
+                        echo "Error occurred: ${Exc.message}"
+                        currentBuild.result = 'UNSTABLE'
+                      }
                 }
             }
         }
-    }
-    post {
-		always {
-			script {
-				allure includeProperties: false, jdk: '', results: [[path: 'tests/build/results']]
-				junit allowEmptyResults: true, testResults: 'tests/build/out/jUnint/*.xml'
-				// Отправка уведомлений только при SUCCESS или UNSTABLE
-				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-					if ("${params.PRODUCT}" == "fitness") {
-						env.logo = "tests/notifications/logo.png"
-					}
-					else if ("${params.PRODUCT}" == "salon") {
-						env.logo = "tests/notifications/logo1.png"
-					}
-					else if ("${params.PRODUCT}" == "stoma") {
-						env.logo = "tests/notifications/logo2.png"
-					}
 
-					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-					def configJson = readFile(file: 'tests/notifications/config.json')
-					def updatedConfigJson = configJson
-						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
-						.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
-						.replace('"${logo}"', "\"${env.logo}\"")
-					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
-					try {
-						bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
-					}
-					catch (Exception e) {
-						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+    	stage('SonarScanner') {
+			steps {
+				script {
+					withSonarQubeEnv('SonarScanner') {
+					bat """
+					chcp 65001
+					D:\\SonarQube\\bin\\sonar-scanner.bat -Dproject.settings=D:\\jENKINS\\workspace\\debug\\tests\\debug\\sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602 -D sonar.projectVersion=${BUILD_ID}
+					"""
 					}
 				}
 			}
 		}
-	 }
+    }
+    post {
+        always {
+            script {
+                allure includeProperties: false, jdk: '', results: [[path: 'tests/build/results']]
+                junit allowEmptyResults: true, testResults: 'tests/build/out/jUnint/*.xml'
+                // Отправка уведомлений только при SUCCESS или UNSTABLE
+                if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
+                    if ("${params.PRODUCT}" == "fitness") {
+                        env.logo = "tests/notifications/logo.png"
+                    }
+                    else if ("${params.PRODUCT}" == "salon") {
+                        env.logo = "tests/notifications/logo1.png"
+                    }
+                    else if ("${params.PRODUCT}" == "stoma") {
+                        env.logo = "tests/notifications/logo2.png"
+                    }
+
+                    def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+                    def configJson = readFile(file: 'tests/notifications/config.json')
+                    def updatedConfigJson = configJson
+                        .replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+                        .replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+                        .replace('"${logo}"', "\"${env.logo}\"")
+                    writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+
+                    try {
+                        bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
+                    }
+                    catch (Exception e) {
+                        echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+                    }
+                }
+            }
+        }
+     }
 }
 
 def updateConfigFile() {
@@ -116,4 +139,5 @@ def updateConfigFile() {
         .replaceAll(/"\$\{SERVICES\}"/, servicesReplacement)  // Заменяем "${SERVICES}" на элементы через запятую
     
     writeFile(file: 'tests/debug/VAParams.json', text: updatedConfigJson)
-}
+}   // Формируем строку для замены (без квадратных скобок)
+  
