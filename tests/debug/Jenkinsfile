@@ -70,8 +70,10 @@ pipeline {
         //     }
         // }
     	stage('SonarScanner') {
-			withSonarQubeEnv('SonarScanner') {
-			bat "D:\\SonarQube\\bin\\sonar-scanner.bat -D project.settings= tests/Sonar/sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
+			steps{
+				withSonarQubeEnv('SonarScanner') {
+					bat "D:\\SonarQube\\bin\\sonar-scanner.bat -D project.settings= tests/Sonar/sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
+				}
 			}
 		}
     }
