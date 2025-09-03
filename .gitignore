@@ -9,7 +9,9 @@
 #.env
 
 # Игнорировать папку build и всё внутри
-tests/Sonar/src/cf/
+tests/Sonar/fitness/src/cf/
+tests/Sonar/salon/src/cf/
+tests/Sonar/stoma/src/cf/
 tests/build/
 tests/scripts/version.txt
 
