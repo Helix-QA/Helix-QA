@@ -74,7 +74,7 @@ pipeline {
 				withSonarQubeEnv('Sonar') {
 					bat """
 					chcp 65001
-					tests/Sonar/bin/sonar-scanner.bat -D sonar.login=squ_407c5709f77dc3b5429392316b2d2da7386bd792
+					tests/Sonar/bin/sonar-scanner.bat -D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792
 					"""
 				}
 			}
