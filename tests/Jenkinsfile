@@ -98,7 +98,7 @@ pipeline {
 			steps {
 				bat """
 				chcp 65001
-				@call vrunner decompile --out tests/Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+				@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
 				"""
 			}
 		}
@@ -143,7 +143,7 @@ pipeline {
 				withSonarQubeEnv('Sonar') {
 					bat """
 					chcp 65001
-					tests/Sonar/bin/sonar-scanner.bat -D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 -D sonar.projectVersion=${BUILD_ID} -D sonar.projectName=${params.product}
+					tests/Sonar/bin/sonar-scanner.bat -D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 -D sonar.projectVersion=${BUILD_ID} D sonar.projectKey=${params.product} -D sonar.projectName=${params.product}
 					"""
 				}
 			}
