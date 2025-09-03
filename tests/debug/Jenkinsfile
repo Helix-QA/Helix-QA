@@ -76,7 +76,7 @@ pipeline {
 					echo "${scannerHome}"
 				}
 				withSonarQubeEnv('SonarScanner') {
-				bat "${scannerHome}/bin/sonar-scanner -D project.settings=/tests/Sonar/sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
+				bat "D:\\SonarQube\\bin\\sonar-scanner.bat -D project.settings=/tests/Sonar/sonar-project.properties -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
 				}
 			}
 		}
