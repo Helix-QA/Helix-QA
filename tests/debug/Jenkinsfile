@@ -44,15 +44,6 @@ pipeline {
                 }
             }
         }
-		// stage('Выгрузка из релизного') {
-		// 	steps {
-		// 		bat """
-		// 		chcp 65001
-		// 		@call vrunner decompile --out Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-		// 		"""
-		// 	}
-		// }
-
         stage('Сценарное тестирвоание') {
             steps {
                 script {
@@ -69,15 +60,6 @@ pipeline {
                 }
             }
         }
-    	// stage('SonarScanner') {
-		// 	steps{
-		// 		withSonarQubeEnv('SonarScanner') {
-		// 			bat "D:\\SonarQube\\bin\\sonar-scanner.bat -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
-		// 		}
-		// 	}
-		// }
-    }
-
     post {
         always {
             script {
