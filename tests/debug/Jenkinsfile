@@ -48,7 +48,7 @@ pipeline {
 		// 	steps {
 		// 		bat """
 		// 		chcp 65001
-		// 		@call vrunner decompile --out Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+		// 		@call vrunner decompile --out tests/Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
 		// 		"""
 		// 	}
 		// }
@@ -69,13 +69,13 @@ pipeline {
                 }
             }
         }
-    	// stage('SonarScanner') {
-		// 	steps{
-		// 		withSonarQubeEnv('SonarScanner') {
-		// 			bat "D:\\SonarQube\\bin\\sonar-scanner.bat -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
-		// 		}
-		// 	}
-		// }
+    	stage('Sonar') {
+			steps{
+				withSonarQubeEnv('Sonar') {
+					bat "D:\\SonarQube\\bin\\sonar-scanner.bat -D sonar.login=squ_c8227525d4b620d70d060064c066637325052602"
+				}
+			}
+		}
     }
 
     post {
