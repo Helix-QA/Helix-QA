@@ -98,7 +98,7 @@ pipeline {
 			steps {
 				bat """
 				chcp 65001
-				@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+				@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode tester
 				"""
 			}
 		}
