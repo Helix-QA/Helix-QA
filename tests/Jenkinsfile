@@ -148,7 +148,8 @@ pipeline {
 					-D sonar.projectVersion=${BUILD_ID} ^
 					-D sonar.projectKey=${params.product} ^
 					-D sonar.projectName=${params.product} ^
-					-D sonar.sources=tests/Sonar/${params.product}/src/cf
+					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
+					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl
 					"""
 				}
 			}
