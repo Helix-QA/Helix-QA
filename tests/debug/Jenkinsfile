@@ -31,44 +31,44 @@ pipeline {
                 }
             }
         }
-        // stage('Обновление из релизного хранилища'){
-        //     steps{
-        //         script{
-        //             bat"""
-        //             chcp 65001 
-        //             @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
-        //             call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-        //             call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
-        //             @call vrunner session unlock --db ${env.dbTests} --db-user Админ
-        //             """
-        //         }
-        //     }
-        // }
-		// stage('Выгрузка из релизного') {
-		// 	steps {
-		// 		bat """
-		// 		chcp 65001
-		// 		@call vrunner decompile --out tests/Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-		// 		"""
-		// 	}
-		// }
+        stage('Обновление из релизного хранилища'){
+            steps{
+                script{
+                    bat"""
+                    chcp 65001 
+                    @call vrunner session kill --db ${env.dbTests} --db-user Админ --uccode BUILDER
+                    call vrunner loadrepo --storage-name ${env.repository} --storage-user ${env.VATest2} --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+                    call vrunner updatedb --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode BUILDER
+                    @call vrunner session unlock --db ${env.dbTests} --db-user Админ
+                    """
+                }
+            }
+        }
+		stage('Выгрузка из релизного') {
+			steps {
+				bat """
+				chcp 65001
+				@call vrunner decompile --out tests/Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+				"""
+			}
+		}
 
-        // stage('Сценарное тестирвоание') {
-        //     steps {
-        //         script {
-        //             try{
-        //                 bat"""
-        //                 chcp 65001
-        //                 del /s /q "${env.WORKSPACE}\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\tests\\build\\results"
-        //                 call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-        //                 """                                                                                                                                
-        //              } catch (Exception Exc) {
-        //                 echo "Error occurred: ${Exc.message}"
-        //                 currentBuild.result = 'UNSTABLE'
-        //               }
-        //         }
-        //     }
-        // }
+        stage('Сценарное тестирвоание') {
+            steps {
+                script {
+                    try{
+                        bat"""
+                        chcp 65001
+                        del /s /q "${env.WORKSPACE}\\tests\\build\\results" & rmdir /s /q "${env.WORKSPACE}\\tests\\build\\results"
+                        call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "debug/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+                        """                                                                                                                                
+                     } catch (Exception Exc) {
+                        echo "Error occurred: ${Exc.message}"
+                        currentBuild.result = 'UNSTABLE'
+                      }
+                }
+            }
+        }
     	stage('Sonar') {
 			steps{
 				withSonarQubeEnv('Sonar') {
