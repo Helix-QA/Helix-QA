@@ -44,14 +44,14 @@ pipeline {
                 }
             }
         }
-		stage('Выгрузка из релизного') {
-			steps {
-				bat """
-				chcp 65001
-				@call vrunner decompile --out ../Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
-				"""
-			}
-		}
+		// stage('Выгрузка из релизного') {
+		// 	steps {
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner decompile --out ../Sonar/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ
+		// 		"""
+		// 	}
+		// }
 
         stage('Сценарное тестирвоание') {
             steps {
