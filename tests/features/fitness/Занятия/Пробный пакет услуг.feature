@@ -1,7 +1,7 @@
 ﻿#language: ru
 
 @tree
-
+@IgnoreOnCIMainBuild
 Функционал: Проверка вводного пакета услуг
 
 Контекст:
