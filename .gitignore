@@ -14,7 +14,7 @@ tests/Sonar/salon/src/cf/
 tests/Sonar/stoma/src/cf/
 tests/build/
 tests/scripts/version.txt
-
+tests/Sonar/jre
 
 # Игнорировать файлы macOS
 #.DS_Store

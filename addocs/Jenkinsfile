@@ -84,29 +84,10 @@ pipeline {
                 }
             }
         }
-    //     stage('Получение .htm файла'){
-    //         steps{ 
-    //             script{
-    //                 updateConfigFile()
-    //                 bat"""
-    //                 chcp 65001
-    //                 @call vrunner vanessa --path features --vanessasettings "VAParams.json" --workspace SBORKA/addocs --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/VAStoma --db-user Админ
-    //                 """
-    //             }
-    //         }
-    //     }
-    //     stage('Отправка файла в Telegram'){
-    //         steps{
-    //             script{
-    //                 def filesend = "SBORKA/addocs/filesend.py"  
-    //                 sh "python -X utf8 \"${filesend}\" \"${env.workDir}\" \"${env.nameFile}\"" 
-    //             }
-    //         }
-    //     }
      }
 }
 def updateConfigFile() {
-    def configJson = readFile(file: 'SBORKA/addocs/VAParams.json')
+    def configJson = readFile(file: 'addocs/VAParams.json')
     def updatedConfigJson = configJson.replaceAll(/\$\{nameFile\}/, env.nameFile)
-    writeFile(file: 'SBORKA/addocs/VAParams.json', text: updatedConfigJson)
+    writeFile(file: 'addocs/VAParams.json', text: updatedConfigJson)
 }
