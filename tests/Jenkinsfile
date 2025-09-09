@@ -106,7 +106,7 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-					bat "coverage41c -start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
+					bat "coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
 					try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
