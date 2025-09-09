@@ -106,7 +106,7 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-					bat "coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
+				//	bat "coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
 					try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
@@ -114,7 +114,7 @@ pipeline {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
           			}
-					bat "Coverage41C stop -i ${env.dbTests}"
+				//	bat "Coverage41C stop -i ${env.dbTests}"
                 }
             }
         }
@@ -142,6 +142,7 @@ pipeline {
 		stage('Sonar') {
 			steps{
 				withSonarQubeEnv('Sonar') {
+				//					-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
 					bat """
 					chcp 65001
 					tests/Sonar/bin/sonar-scanner.bat ^
@@ -150,8 +151,8 @@ pipeline {
 					-D sonar.projectKey=${params.product} ^
 					-D sonar.projectName=${params.product} ^
 					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
-					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
-					-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
+					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl
+
 					"""
 				}
 			}
