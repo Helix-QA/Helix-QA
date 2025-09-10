@@ -38,7 +38,7 @@ pipeline {
 		stage('Create & Start Coverage Service') {
             steps {
 
-                 bat 'start "" C:\\Coverage41C\\bin\\Coverage41C.bat start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
+                 bat 'start ""chcp 65001 \n C:\\Coverage41C\\bin\\Coverage41C.bat start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
 
             }
         }
@@ -50,7 +50,7 @@ pipeline {
 
 		stage('Stop Coverage') {
 			steps {
-				bat 'taskkill /IM Coverage41C.bat /F'
+				bat 'chcp 65001 \n taskkill /IM Coverage41C.bat /F'
 			}
 		}
 		// stage("Создание БД"){
