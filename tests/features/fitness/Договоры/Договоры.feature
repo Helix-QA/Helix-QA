@@ -69,9 +69,6 @@
 		И я нажимаю кнопку выбора у поля с именем 'ПредставлениеКИ_2'
 		И в поле с именем 'НаселенныйПункт' я ввожу текст "123"
 		И в поле с именем 'Улица' я ввожу текст "123"
-		И в поле с именем 'Дом' я ввожу текст "123"
-		И в поле с именем 'Строение' я ввожу текст "213"
-		И в поле с именем 'Помещение' я ввожу текст "123"
 		И в поле с именем 'Индекс' я ввожу текст "123"
 		И я нажимаю на кнопку с именем 'ФормаКомандаОК'
 		И из выпадающего списка с именем 'ПредставлениеКИ_3' я выбираю точное значение "123, 123, 123, дом 123, корпус 213, квартира 123"
@@ -88,9 +85,6 @@
 		И я нажимаю кнопку выбора у поля с именем 'ПредставлениеКИ_2'
 		И в поле с именем 'НаселенныйПункт' я ввожу текст "123"
 		И в поле с именем 'Улица' я ввожу текст "123"
-		И в поле с именем 'Дом' я ввожу текст "123"
-		И в поле с именем 'Строение' я ввожу текст "123"
-		И в поле с именем 'Помещение' я ввожу текст "123"
 		И в поле с именем 'Индекс' я ввожу текст "123"
 		И я нажимаю на кнопку с именем 'ФормаКомандаОК'
 		И из выпадающего списка с именем 'ПредставлениеКИ_3' я выбираю точное значение "123, 123, 123, дом 123, корпус 123, квартира 123"
@@ -150,7 +144,81 @@
 		И я перехожу к следующему реквизиту
 		И в таблице 'Список' я выбираю текущую строку	
 	*Дополнительно: Структурная единица, основной договор, авто, представление
-		И я нажимаю на кнопку с именем 'КнопкаДополнительно'			
+		И я нажимаю на кнопку с именем 'КнопкаДополнительно'
+	*Проверка отображаемого текста договора
+		И элемент формы с именем 'ДоговорHTMLДокумент' стал равен 
+			|'<html><head><base href=\"e1c://filev/D/база 1с/Проверка работы Договора/\"><style>'|
+			|'		::-webkit-scrollbar {'|
+			|'			width: 11px;'|
+			|'			height: 11px;'|
+			|'			border-radius: 20px;'|
+			|'			background: #f0f0f0;'|
+			|'		}'|
+			|'		'|
+			|'		::-webkit-scrollbar-track {'|
+			|'			border: 2px solid white;'|
+			|'		}'|
+			|'		'|
+			|'		::-webkit-scrollbar-thumb {'|
+			|'			background: #9a9a9a;'|
+			|'			border-radius: 20px;'|
+			|'			border: 2px solid;'|
+			|'			border-color: #f0f0f0 #fff;'|
+			|'		}'|
+			|'		'|
+			|'		::-webkit-scrollbar-thumb:hover {'|
+			|'			background: grey;'|
+			|'		}'|
+			|'		'|
+			|'		body{margin:5mm 10mm;overflow:auto;}'|
+			|'		'|
+			|'		table { '|
+			|'			width: 100%;'|
+			|'			border: 1px black;'|
+			|'			border-collapse: collapse; '|
+			|'		}'|
+			|'		th {'|
+			|'			font-weight: 100;'|
+			|'			text-align: center;'|
+			|'			background: #ccc;'|
+			|'			padding: 5px;'|
+			|'			border: 1px solid black;'|
+			|'		}'|
+			|'		td {'|
+			|'			background: #FFFFFF;'|
+			|'			text-align: center;'|
+			|'			padding: 5px; '|
+			|'			border: 1px solid black;'|
+			|'		}'|
+			|'		'|
+			|'		@media print {'|
+			|'			body {'|
+			|'				-webkit-print-color-adjust: exact;'|
+			|'				print-color-adjust: exact;'|
+			|'			}'|
+			|'		}'|
+			|'	</style><script>'|
+			|'		function replaceSelectedText(replacementText) {'|
+			|'			var sel, range;'|
+			|'			if (window.getSelection) {'|
+			|'				sel = window.getSelection();'|
+			|'				if (sel.rangeCount) {'|
+			|'					range = sel.getRangeAt(0);'|
+			|'					range.deleteContents();'|
+			|'					range.insertNode(document.createTextNode(replacementText));'|
+			|'				}'|
+			|'			} else if (document.selection && document.selection.createRange) {'|
+			|'			range = document.selection.createRange();'|
+			|'			range.text = replacementText;'|
+			|'			}'|
+			|'		}'|
+			|'	</script></head><body>'|
+			|''|
+			|'	<div id=\"main_container\">'|
+			|'		<style id=\"embedded_style\"></style><div id=\"embedded_content\" contenteditable=\"true\"></div>'|
+			|'	</div>'|
+			|''|
+			|'</body></html>'|
 	*Печать, отправка о почте и подписание договора.
 		И я нажимаю на кнопку с именем 'ФормаОтправить'
 		И Я закрываю окно "Исходящее электронное письмо (создание)"
