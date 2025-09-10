@@ -146,24 +146,24 @@ pipeline {
 		// 		}
 		// 	}
 		// }
-		// stage('Sonar') {
-		// 	steps{
-		// 		withSonarQubeEnv('Sonar') {
-		// 		//					-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
-		// 			bat """
-		// 			chcp 65001
-		// 			tests/Sonar/bin/sonar-scanner.bat ^
-		// 			-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
-		// 			-D sonar.projectVersion=${BUILD_ID} ^
-		// 			-D sonar.projectKey=${params.product} ^
-		// 			-D sonar.projectName=${params.product} ^
-		// 			-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
-		// 			-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
-		// 			-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
-		// 			"""
-		// 		}
-		// 	}
-		// }
+		stage('Sonar') {
+			steps{
+				withSonarQubeEnv('Sonar') {
+				//					-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
+					bat """
+					chcp 65001
+					tests/Sonar/bin/sonar-scanner.bat ^
+					-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
+					-D sonar.projectVersion=${BUILD_ID} ^
+					-D sonar.projectKey=${params.product} ^
+					-D sonar.projectName=${params.product} ^
+					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
+					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
+					-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
+					"""
+				}
+			}
+		}
     }
 	post {
 		always {
