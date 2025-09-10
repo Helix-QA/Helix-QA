@@ -38,7 +38,7 @@ pipeline {
 		stage('Start Coverage') {
 					steps {
 						bat """
-							start "" /B coverage41c start -i ${env.dbTests} -s tests\\Sonar\\${params.product}\\src\\cf -o D:\\Coverage41C\\coverage_${params.product}.xml
+							bat 'start "" coverage41c start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
 						"""
 						bat 'tasklist | find "coverage41c.exe"'
 					}
