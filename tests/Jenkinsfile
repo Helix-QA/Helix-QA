@@ -40,7 +40,6 @@ pipeline {
 						bat """
 							bat 'start "" coverage41c start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
 						"""
-						bat 'tasklist | find "coverage41c.exe"'
 					}
 				}
 
@@ -50,11 +49,11 @@ pipeline {
             }
         }
 
-        stage('Stop Coverage') {
-            steps {
-                bat 'taskkill /IM coverage41c.exe /F'
-            }
-        }
+        // stage('Stop Coverage') {
+        //     steps {
+        //         bat 'taskkill /IM coverage41c.exe /F'
+        //     }
+        // }
     
 		// stage("Создание БД"){
 		// 	steps{
