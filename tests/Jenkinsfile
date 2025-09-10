@@ -119,6 +119,7 @@ pipeline {
           			}
                 }
             }
+		}
 		stage('Остановка Coverage41C') {
 			steps {
 				bat "Coverage41C stop -i ${env.dbTests}"
