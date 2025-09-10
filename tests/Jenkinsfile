@@ -37,13 +37,9 @@ pipeline {
 		}
 		stage('Create & Start Coverage Service') {
             steps {
-                bat """
-                    sc create Coverage41C binPath= "D:\\Tools\\coverage41c.exe start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml" start= demand
-                    sc start Coverage41C
-                    rem Ждём пару секунд чтобы служба успела подняться
-                    ping 127.0.0.1 -n 5 > nul
-                    sc query Coverage41C | find "RUNNING"
-               	"""
+
+                 bat 'start "" C:\\Coverage41C\\bin\\Coverage41C.bat start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
+
             }
         }
 
