@@ -37,7 +37,10 @@ pipeline {
 		}
 		stage('Start Coverage') {
 					steps {
-							bat 'start "" coverage41c start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
+							bat """
+							chcp 65001
+							start "" coverage41c start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml
+							"""
 					}
 				}
 
