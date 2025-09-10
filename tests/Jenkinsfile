@@ -124,7 +124,6 @@ pipeline {
 				bat "Coverage41C stop -i ${env.dbTests}"
 			}
 		}
-    }
 		// stage("Дымовые тесты") {
 		// 	when {
 		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
