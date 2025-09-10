@@ -12,6 +12,7 @@
 tests/Sonar/fitness/src/cf/
 tests/Sonar/salon/src/cf/
 tests/Sonar/stoma/src/cf/
+tests/Sonar/Coverage41C/
 tests/build/
 tests/scripts/version.txt
 tests/Sonar/jre
