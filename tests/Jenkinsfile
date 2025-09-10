@@ -37,9 +37,7 @@ pipeline {
 		}
 		stage('Start Coverage') {
 					steps {
-						bat """
 							bat 'start "" coverage41c start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
-						"""
 					}
 				}
 
