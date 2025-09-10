@@ -104,7 +104,7 @@ pipeline {
 		// }
 		stage('Запуск Coverage41C') {
 			steps {
-				bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
+				bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o D:\\Coverage41C\\coverage_${params.product}.xml"
 			}
 		}
         stage('Сценарное тестирвоание') {
