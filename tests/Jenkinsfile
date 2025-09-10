@@ -42,7 +42,17 @@ pipeline {
 
             }
         }
+		stage('Run Tests') {
+			steps {
+				bat 'echo Тут запускаются тесты'
+			}
+		}
 
+		stage('Stop Coverage') {
+			steps {
+				bat 'taskkill /IM Coverage41C.bat /F'
+			}
+		}
 		// stage("Создание БД"){
 		// 	steps{
 		// 		script{
