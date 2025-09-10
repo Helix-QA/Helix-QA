@@ -39,7 +39,7 @@ pipeline {
 					steps {
 							bat """
 							chcp 65001
-							start "" coverage41c start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml
+							start "" coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml
 							"""
 					}
 				}
