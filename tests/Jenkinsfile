@@ -105,10 +105,10 @@ pipeline {
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-					bat """
-						chcp 65001
-						start "" coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml
-						"""
+					// bat """
+					// 	chcp 65001
+					// 	start "" coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml
+					// 	"""
 					try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
@@ -116,31 +116,31 @@ pipeline {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
           			}
-					bat 'taskkill /IM coverage41c.exe /F'
+				//bat 'taskkill /IM coverage41c.exe /F'
                 }
             }
         }
-		// stage("Дымовые тесты") {
-		// 	when {
-		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
-		// 	}
-		// 	steps {
-		// 		script {
-		// 			def replace = "tests/scripts/replaceSmoke.py"
-		// 			def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke\\exceptions_${params.product}"
-		// 			def folderSmoke = "\\tests\\features\\smoke\\exceptions_${params.product}"
-		// 			runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
-		// 			bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
-		// 			try{
-		// 				runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
-		// 			} catch (Exception Exc) {
-		// 				echo "Error occurred: ${Exc.message}"
-		// 				currentBuild.result = 'UNSTABLE'
-		// 			}
+		stage("Дымовые тесты") {
+			when {
+				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+			}
+			steps {
+				script {
+					def replace = "tests/scripts/replaceSmoke.py"
+					def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke\\exceptions_${params.product}"
+					def folderSmoke = "\\tests\\features\\smoke\\exceptions_${params.product}"
+					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
+					bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
+					try{
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
+					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+					}
 
-		// 		}
-		// 	}
-		// }
+				}
+			}
+		}
 		stage('Sonar') {
 			steps{
 				withSonarQubeEnv('Sonar') {
@@ -153,8 +153,7 @@ pipeline {
 					-D sonar.projectKey=${params.product} ^
 					-D sonar.projectName=${params.product} ^
 					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
-					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
-					-D sonar.coverageReportPaths=D:\\Coverage41C\\coverage_${params.product}.xml
+					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl 
 					"""
 				}
 			}
