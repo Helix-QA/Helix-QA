@@ -56,7 +56,7 @@ pipeline {
                 bat 'taskkill /IM coverage41c.exe /F'
             }
         }
-    }
+    
 		// stage("Создание БД"){
 		// 	steps{
 		// 		script{
