@@ -102,10 +102,14 @@ pipeline {
 		// 		"""
 		// 	}
 		// }
+		stage('Запуск Coverage41C') {
+			steps {
+				bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
+			}
+		}
         stage('Сценарное тестирвоание') {
             steps {
                 script {
-					bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf  -o D:\\Coverage41C\\coverage_${params.product}.xml"
 					try{
 						runDbOperation("session_unlock", "\"${env.dbTests}\"") // Отключение пользователей от базы данных
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
@@ -113,10 +117,14 @@ pipeline {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
           			}
-					bat "Coverage41C stop -i ${env.dbTests}"
                 }
             }
-        }
+		stage('Остановка Coverage41C') {
+			steps {
+				bat "Coverage41C stop -i ${env.dbTests}"
+			}
+		}
+    }
 		// stage("Дымовые тесты") {
 		// 	when {
 		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
