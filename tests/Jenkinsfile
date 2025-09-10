@@ -35,24 +35,28 @@ pipeline {
 				}
 			}
 		}
-		stage('Create & Start Coverage Service') {
+		stage('Start Coverage') {
+					steps {
+						bat """
+							start "" /B coverage41c start -i ${env.dbTests} -s tests\\Sonar\\${params.product}\\src\\cf -o D:\\Coverage41C\\coverage_${params.product}.xml
+						"""
+						rem Проверим, что процесс реально запустился
+						bat 'tasklist | find "coverage41c.exe"'
+					}
+				}
+
+        stage('Run Tests') {
             steps {
-
-                 bat 'start ""C:\\Coverage41C\\bin\\Coverage41C.bat start -i VASPA -s D:\\tests\\Sonar\\salon\\src\\cf -o D:\\Coverage41C\\coverage.xml'
-
+                bat 'echo Тут твои автотесты'
             }
         }
-		stage('Run Tests') {
-			steps {
-				bat 'echo Тут запускаются тесты'
-			}
-		}
 
-		stage('Stop Coverage') {
-			steps {
-				bat 'taskkill /IM Coverage41C.bat /F'
-			}
-		}
+        stage('Stop Coverage') {
+            steps {
+                bat 'taskkill /IM coverage41c.exe /F'
+            }
+        }
+    }
 		// stage("Создание БД"){
 		// 	steps{
 		// 		script{
