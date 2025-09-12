@@ -149,6 +149,7 @@ pipeline {
 		stage('Sonar') {
 			steps{
 				withSonarQubeEnv('Sonar') {
+				//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
 					bat """
 					chcp 65001
 					tests/Sonar/bin/sonar-scanner.bat ^
@@ -158,7 +159,7 @@ pipeline {
 					-D sonar.projectName=${params.product} ^
 					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
 					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
-					-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
+					
 					"""
 				}
 			}
