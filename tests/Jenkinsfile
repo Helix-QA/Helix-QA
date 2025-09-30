@@ -102,11 +102,11 @@ pipeline {
 				"""
 			}
 		}
-		stage('Запуск Coverage41C') {
-			steps {
-				bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o tests/Sonar/Coverage41C/coverage_${params.product}.xml"
-			}
-		}
+		// stage('Запуск Coverage41C') {
+		// 	steps {
+		// 		bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o tests/Sonar/Coverage41C/coverage_${params.product}.xml"
+		// 	}
+		// }
         stage('Сценарное тестирвоание') {
             steps {
                 script {
@@ -120,11 +120,11 @@ pipeline {
                 }
             }
 		}
-		stage('Остановка Coverage41C') {
-			steps {
-				bat "Coverage41C stop -i ${env.dbTests}"
-			}
-		}
+		// stage('Остановка Coverage41C') {
+		// 	steps {
+		// 		bat "Coverage41C stop -i ${env.dbTests}"
+		// 	}
+		// }
 		stage("Дымовые тесты") {
 			when {
 				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
