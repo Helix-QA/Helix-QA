@@ -80,7 +80,7 @@ pipeline {
 					-D sonar.projectName=${params.product} ^
 					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
 					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
-					-D sonar.coverageReportPaths=D:\\coverage_${params.product}.xml
+					-D sonar.coverageReportPaths=D:\\jENKINS\\workspace\\test\\tests\\Sonar\\fitness\\src\\cf\\coverage_${params.product}.xml
 					"""
 				}
 			}
