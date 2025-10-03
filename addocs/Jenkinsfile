@@ -70,7 +70,7 @@ pipeline {
                     steps {
                         bat """
                             chcp 65001
-                            @call vrunner decompile --out ${env.workDir}\\xml_new --in "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                            @call vrunner decompile --out ${env.workDir}\\xml_new --in "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${env.base} --db-user Админ --ibcmd
                         """
                     }
                 }
@@ -78,7 +78,7 @@ pipeline {
                     steps {
                         bat """
                             chcp 65001
-                            @call vrunner decompile --out ${env.workDir}\\xml_old --in "${env.workDir}\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ --ibcmd
+                            @call vrunner decompile --out ${env.workDir}\\xml_old --in "${env.workDir}\\old\\${params.oldversion}.cf" --ibconnection /Slocalhost/${env.base} --db-user Админ --ibcmd
                         """
                     }
                 }
