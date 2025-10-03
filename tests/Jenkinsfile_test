@@ -43,48 +43,48 @@ pipeline {
 		// 		"""
 		// 	}
 		// }
-		stage('Запуск Coverage41C') {
-			steps {
-				bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o D:\\coverage_${params.product}.xml"
-			}
-		}
-        stage('Сценарное тестирвоание') {
-            steps {
-                script {
-					try{
-						bat"""
-						chcp 65001
-						call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ"""																													
- 					} catch (Exception Exc) {
-						echo "Error occurred: ${Exc.message}"
-						currentBuild.result = 'UNSTABLE'
-          			}
-                }
-            }
-		}
-		stage('Остановка Coverage41C') {
-			steps {
-				bat "Coverage41C stop -i ${env.dbTests}"
-			}
-		}
-		// stage('Sonar') {
-		// 	steps{
-		// 		withSonarQubeEnv('Sonar') {
-		// 		//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
-		// 			bat """
-		// 			chcp 65001
-		// 			tests/Sonar/bin/sonar-scanner.bat ^
-		// 			-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
-		// 			-D sonar.projectVersion=${BUILD_ID} ^
-		// 			-D sonar.projectKey=${params.product} ^
-		// 			-D sonar.projectName=${params.product} ^
-		// 			-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
-		// 			-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
-		// 			-D sonar.coverageReportPaths=D:\\coverage_${params.product}.xml
-		// 			"""
-		// 		}
+		// stage('Запуск Coverage41C') {
+		// 	steps {
+		// 		bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o D:\\coverage_${params.product}.xml"
 		// 	}
 		// }
+        // stage('Сценарное тестирвоание') {
+        //     steps {
+        //         script {
+		// 			try{
+		// 				bat"""
+		// 				chcp 65001
+		// 				call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ"""																													
+ 		// 			} catch (Exception Exc) {
+		// 				echo "Error occurred: ${Exc.message}"
+		// 				currentBuild.result = 'UNSTABLE'
+        //   			}
+        //         }
+        //     }
+		// }
+		// stage('Остановка Coverage41C') {
+		// 	steps {
+		// 		bat "Coverage41C stop -i ${env.dbTests}"
+		// 	}
+		// }
+		stage('Sonar') {
+			steps{
+				withSonarQubeEnv('Sonar') {
+				//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
+					bat """
+					chcp 65001
+					tests/Sonar/bin/sonar-scanner.bat ^
+					-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
+					-D sonar.projectVersion=${BUILD_ID} ^
+					-D sonar.projectKey=${params.product} ^
+					-D sonar.projectName=${params.product} ^
+					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
+					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
+					-D sonar.coverageReportPaths=D:\\coverage_${params.product}.xml
+					"""
+				}
+			}
+		}
     }
 	post {
 		always {
