@@ -35,14 +35,14 @@ pipeline {
 				}
 			}
 		}
-		stage('Выгрузка XML') {
-			steps {
-				bat """
-				chcp 65001
-				@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode tester
-				"""
-			}
-		}
+		// stage('Выгрузка XML') {
+		// 	steps {
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode tester
+		// 		"""
+		// 	}
+		// }
 		stage('Запуск Coverage41C') {
 			steps {
 				bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o tests/Sonar/Coverage41C/coverage_${params.product}.xml"
@@ -52,7 +52,9 @@ pipeline {
             steps {
                 script {
 					try{
-						bat"""call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ"""																													
+						bat"""
+						chcp 65001
+						call vrunner vanessa --path "${env.WORKSPACE}${env.testPathPlaceholder}" --vanessasettings "tools/VAParams.json" --workspace tests --pathvanessa ${env.pathvanessa} --additional "/DisplayAllFunctions /L ru" --ibconnection /Slocalhost/${env.dbTests} --db-user Админ"""																													
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
 						currentBuild.result = 'UNSTABLE'
