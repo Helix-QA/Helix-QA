@@ -75,7 +75,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
@@ -112,7 +112,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                         |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                     |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                                     |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                                     |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                     |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                    |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                |
@@ -156,7 +156,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону 
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                           |
 		| '<CheckPackage>'                                                                                                                                                                                                                                       |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                           |
 		| '		<AgentData/>'                                                                                                                                                                                                                                       |
 		| '		<VendorData/>'                                                                                                                                                                                                                                      |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                  |
@@ -189,7 +189,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                            |
 		| '<CheckPackage>'                                                                                                                                                                                                                                        |
-		| '	<Parameters CashierName=\"* \" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                       |
+		| '	<Parameters CashierName=\"* \" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                       |
 		| '		<AgentData/>'                                                                                                                                                                                                                                        |
 		| '		<VendorData/>'                                                                                                                                                                                                                                       |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                   |
