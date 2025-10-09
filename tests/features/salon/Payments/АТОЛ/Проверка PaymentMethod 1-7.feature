@@ -65,6 +65,9 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И в таблице 'ТаблицаУслуги' из выпадающего списка с именем 'ТаблицаУслугиНоменклатура' я выбираю по строке "$$Услуга$$"
 	И я нажимаю на кнопку с именем 'ФормаКнопкаПровестиИЗакрыть'
 	Дано Я открываю основную форму списка документа "Курс"
+	И в таблице "Список" я перехожу к строке по шаблону:
+		| "Клиент"     |
+		| "$$Клиент$$" |	
 	И я нажимаю на кнопку с именем 'СписокВнестиАванс'
 	И я нажимаю на кнопку с именем 'КнопкаВидыОплатаНаименованиеСтрока_0'
 	И я нажимаю на кнопку с именем 'КнопкаВидыОплатПрименитьеСуммуСтрока_0'
@@ -75,7 +78,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
@@ -112,7 +115,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                         |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                     |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                                     |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                                     |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                     |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                    |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                |
@@ -156,7 +159,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону 
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                           |
 		| '<CheckPackage>'                                                                                                                                                                                                                                       |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                           |
 		| '		<AgentData/>'                                                                                                                                                                                                                                       |
 		| '		<VendorData/>'                                                                                                                                                                                                                                      |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                  |
@@ -189,7 +192,7 @@ https://disk.yandex.com/i/nyIsRcmTJNL8bw
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                            |
 		| '<CheckPackage>'                                                                                                                                                                                                                                        |
-		| '	<Parameters CashierName=\"* \" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                                                                                                                       |
+		| '	<Parameters CashierName=\"* \" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                       |
 		| '		<AgentData/>'                                                                                                                                                                                                                                        |
 		| '		<VendorData/>'                                                                                                                                                                                                                                       |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                   |
