@@ -11,6 +11,7 @@ pipeline {
 			steps{
 				bat"""
 				chcp 65001
+				echo VERSION_PLATFORM=%VERSION_PLATFORM%
 				@call vrunner session .tools/env.json 
 				"""
 			}
