@@ -95,6 +95,9 @@ pipeline {
 			}
 		}
 		stage('Выгрузка XML') {
+			when {
+				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+			}
 			steps {
 				bat """
 				chcp 65001
@@ -147,6 +150,9 @@ pipeline {
 			}
 		}
 		stage('Sonar') {
+			when {
+				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+			}
 			steps{
 				withSonarQubeEnv('Sonar') {
 				//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml

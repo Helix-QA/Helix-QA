@@ -72,7 +72,7 @@
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                           |
 		| '<CheckPackage>'                                                                                                                                                                                                                       |
-		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'                                     |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                     |
 		| '		<AgentData/>'                                                                                                                                                                                                                       |
 		| '		<VendorData/>'                                                                                                                                                                                                                      |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                  |
@@ -128,24 +128,24 @@
 		
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Услуга$$\" Quantity=\"0.3\" PriceWithDiscount=\"250\" AmountWithDiscount=\"75\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">'|
-		|'			<IndustryAttribute/>'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"75\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                            |
+		| '<CheckPackage>'                                                                                                                                                                                                                        |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                    |
+		| '		<AgentData/>'                                                                                                                                                                                                                        |
+		| '		<VendorData/>'                                                                                                                                                                                                                       |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                   |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                             |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                |
+		| '	</Parameters>'                                                                                                                                                                                                                        |
+		| '	<Positions>'                                                                                                                                                                                                                          |
+		| '		<FiscalString Name=\"$$Услуга$$\" Quantity=\"0.3\" PriceWithDiscount=\"250\" AmountWithDiscount=\"75\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">' |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                               |
+		| '			<AgentData/>'                                                                                                                                                                                                                       |
+		| '			<VendorData/>'                                                                                                                                                                                                                      |
+		| '		</FiscalString>'                                                                                                                                                                                                                     |
+		| '	</Positions>'                                                                                                                                                                                                                         |
+		| '	<Payments Cash=\"75\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                      |
+		| '</CheckPackage>'                                                                                                                                                                                                                       |
 
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма' | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
@@ -173,7 +173,7 @@
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
@@ -227,7 +227,7 @@
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
@@ -277,7 +277,7 @@
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="SPA-Салон &quot;Меланж&quot;  " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
