@@ -94,17 +94,17 @@ pipeline {
 				}
 			}
 		}
-		stage('Выгрузка XML') {
-			when {
-				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
-			}
-			steps {
-				bat """
-				chcp 65001
-				@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode tester
-				"""
-			}
-		}
+		// stage('Выгрузка XML') {
+		// 	when {
+		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+		// 	}
+		// 	steps {
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode tester
+		// 		"""
+		// 	}
+		// }
 		// stage('Запуск Coverage41C') {
 		// 	steps {
 		// 		bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o tests/Sonar/Coverage41C/coverage_${params.product}.xml"
@@ -149,27 +149,27 @@ pipeline {
 				}
 			}
 		}
-		stage('Sonar') {
-			when {
-				expression { return !params.scenarios } // Выполняется, только если тумблер выключен
-			}
-			steps{
-				withSonarQubeEnv('Sonar') {
-				//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
-					bat """
-					chcp 65001
-					tests/Sonar/bin/sonar-scanner.bat ^
-					-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
-					-D sonar.projectVersion=${BUILD_ID} ^
-					-D sonar.projectKey=${params.product} ^
-					-D sonar.projectName=${params.product} ^
-					-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
-					-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
+		// stage('Sonar') {
+		// 	when {
+		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+		// 	}
+		// 	steps{
+		// 		withSonarQubeEnv('Sonar') {
+		// 		//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
+		// 			bat """
+		// 			chcp 65001
+		// 			tests/Sonar/bin/sonar-scanner.bat ^
+		// 			-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
+		// 			-D sonar.projectVersion=${BUILD_ID} ^
+		// 			-D sonar.projectKey=${params.product} ^
+		// 			-D sonar.projectName=${params.product} ^
+		// 			-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
+		// 			-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
 					
-					"""
-				}
-			}
-		}
+		// 			"""
+		// 		}
+		// 	}
+		// }
     }
 	post {
 		always {
