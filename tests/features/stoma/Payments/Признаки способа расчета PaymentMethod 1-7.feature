@@ -20,6 +20,7 @@
 
 Сценарий: 01. Первоначальная настройка
 	И я удаляю все переменные
+	И Я определяю СЕ стоматологии
 	И Я создаю пациента
 	И Я создаю Товар
 	И Я создаю услугу
@@ -37,7 +38,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                              |
 		| '<CheckPackage>'                                                                                                                                                                                                                                          |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                          |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                          |
 		| '		<AgentData/>'                                                                                                                                                                                                                                          |
 		| '		<VendorData/>'                                                                                                                                                                                                                                         |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                     |
@@ -84,7 +85,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                              |
 		| '<CheckPackage>'                                                                                                                                                                                                                                          |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                          |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                          |
 		| '		<AgentData/>'                                                                                                                                                                                                                                          |
 		| '		<VendorData/>'                                                                                                                                                                                                                                         |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                     |
@@ -123,7 +124,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                               |
 		| '<CheckPackage>'                                                                                                                                                                                                                                           |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                           |
 		| '		<AgentData/>'                                                                                                                                                                                                                                           |
 		| '		<VendorData/>'                                                                                                                                                                                                                                          |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                      |
@@ -168,7 +169,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                              |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                          |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                                          |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                                          |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                          |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                         |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                     |
