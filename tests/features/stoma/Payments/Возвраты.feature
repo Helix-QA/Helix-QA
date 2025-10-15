@@ -7,16 +7,16 @@
 Контекст:
 	Дано Я запускаю сценарий открытия TestClient или подключаю уже существующий
 	И я закрываю все окна клиентского приложения
-
-Сценарий: 01. Первоначальная настройка
 	
+Сценарий: 01. Первоначальная настройка
 	И я удаляю все переменные
+	И Я определяю СЕ стоматологии
 	И Я создаю пациента
 	И Я создаю Товар
 	И Я создаю услугу
 
 Сценарий: 02. Реализация OperationType-2 (полный возврат)
-
+	
 *Продажа
 	Дано Я открываю основную форму документа "Реализация"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -38,24 +38,24 @@
 	И я нажимаю на кнопку с именем 'Оплатить'
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Товар$$\" Quantity=\"1\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"279.8\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"279.8\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                              |
+		| '<CheckPackage>'                                                                                                                                                                                                                          |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                |
+		| '		<AgentData/>'                                                                                                                                                                                                                          |
+		| '		<VendorData/>'                                                                                                                                                                                                                         |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                     |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                               |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                  |
+		| '	</Parameters>'                                                                                                                                                                                                                          |
+		| '	<Positions>'                                                                                                                                                                                                                            |
+		| '		<FiscalString Name=\"$$Товар$$\" Quantity=\"1\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"279.8\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                         |
+		| '			<VendorData/>'                                                                                                                                                                                                                        |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                 |
+		| '		</FiscalString>'                                                                                                                                                                                                                       |
+		| '	</Positions>'                                                                                                                                                                                                                           |
+		| '	<Payments Cash=\"279.8\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                     |
+		| '</CheckPackage>'                                                                                                                                                                                                                         |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Товар$$'    | '1,00'       | ''             | '279,80' | '279,80'           | '279,80' | '1'            | 'Товар'                    | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -65,7 +65,7 @@
 		| 'Наличная оплата' | '279,80' |
 	
 Сценарий: 03. Реализация OperationType-2 (частичный возврат номенклатуры)
-
+	
 *Продажа
 	Дано Я открываю основную форму документа "Реализация"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -94,24 +94,24 @@
 
 *Проврека чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Товар$$\" Quantity=\"0.5\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"139.9\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"139.9\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                |
+		| '<CheckPackage>'                                                                                                                                                                                                                            |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                  |
+		| '		<AgentData/>'                                                                                                                                                                                                                            |
+		| '		<VendorData/>'                                                                                                                                                                                                                           |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                       |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                 |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                    |
+		| '	</Parameters>'                                                                                                                                                                                                                            |
+		| '	<Positions>'                                                                                                                                                                                                                              |
+		| '		<FiscalString Name=\"$$Товар$$\" Quantity=\"0.5\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"139.9\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                           |
+		| '			<VendorData/>'                                                                                                                                                                                                                          |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                   |
+		| '		</FiscalString>'                                                                                                                                                                                                                         |
+		| '	</Positions>'                                                                                                                                                                                                                             |
+		| '	<Payments Cash=\"139.9\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                       |
+		| '</CheckPackage>'                                                                                                                                                                                                                           |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Товар$$'    | '0,50'       | ''             | '279,80' | '279,80'           | '139,90' | '1'            | 'Товар'                    | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -121,7 +121,7 @@
 		| 'Наличная оплата' | '139,90' |
 	
 Сценарий: 04. Реализация OperationType-2 (последовательный возврат номенклатуры)
-
+	
 *Возврат
 	И я закрываю все окна клиентского приложения
 	Дано Я открываю основную форму списка документа "Реализация"
@@ -138,24 +138,24 @@
 
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону 
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Товар$$\" Quantity=\"0.5\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"139.9\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"139.9\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                |
+		| '<CheckPackage>'                                                                                                                                                                                                                            |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                  |
+		| '		<AgentData/>'                                                                                                                                                                                                                            |
+		| '		<VendorData/>'                                                                                                                                                                                                                           |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                       |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                 |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                    |
+		| '	</Parameters>'                                                                                                                                                                                                                            |
+		| '	<Positions>'                                                                                                                                                                                                                              |
+		| '		<FiscalString Name=\"$$Товар$$\" Quantity=\"0.5\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"139.9\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                           |
+		| '			<VendorData/>'                                                                                                                                                                                                                          |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                   |
+		| '		</FiscalString>'                                                                                                                                                                                                                         |
+		| '	</Positions>'                                                                                                                                                                                                                             |
+		| '	<Payments Cash=\"139.9\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                       |
+		| '</CheckPackage>'                                                                                                                                                                                                                           |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Товар$$'    | '0,50'       | ''             | '279,80' | '279,80'           | '139,90' | '1'            | 'Товар'                    | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -166,7 +166,7 @@
 	
 		
 Сценарий: 05. Реализация OperationType-2 (частичный возврат средств)
-
+	
 *Продажа
 	Дано Я открываю основную форму документа "Реализация"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -191,24 +191,24 @@
 	И я нажимаю на кнопку с именем 'Button0'
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Товар$$\" Quantity=\"1\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"279.8\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"5\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"153\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"126.8\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                              |
+		| '<CheckPackage>'                                                                                                                                                                                                                          |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                |
+		| '		<AgentData/>'                                                                                                                                                                                                                          |
+		| '		<VendorData/>'                                                                                                                                                                                                                         |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                     |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                               |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                  |
+		| '	</Parameters>'                                                                                                                                                                                                                          |
+		| '	<Positions>'                                                                                                                                                                                                                            |
+		| '		<FiscalString Name=\"$$Товар$$\" Quantity=\"1\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"279.8\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"5\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                         |
+		| '			<VendorData/>'                                                                                                                                                                                                                        |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                 |
+		| '		</FiscalString>'                                                                                                                                                                                                                       |
+		| '	</Positions>'                                                                                                                                                                                                                           |
+		| '	<Payments Cash=\"153\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"126.8\" Barter=\"0\"/>'                                                                                                                                   |
+		| '</CheckPackage>'                                                                                                                                                                                                                         |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'      |
 		| '$$Товар$$'    | '1,00'       | ''             | '279,80' | '279,80'           | '279,80' | '1'            | 'Товар'                    | ''           | ''          | ''         | 'Передача с частичной оплатой' |
@@ -219,7 +219,7 @@
 		| 'Постоплата (кредит)' | '126,80' |
 	
 Сценарий: 06. Реализация OperationType-2 (Отмена ошибочной оплаты, частичная оплата)
-
+	
 *Продажа
 	Дано Я открываю основную форму документа "Реализация"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -240,24 +240,24 @@
 
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону 
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Товар$$\" Quantity=\"1\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"279.8\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"279.8\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                              |
+		| '<CheckPackage>'                                                                                                                                                                                                                          |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                |
+		| '		<AgentData/>'                                                                                                                                                                                                                          |
+		| '		<VendorData/>'                                                                                                                                                                                                                         |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                     |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                               |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                  |
+		| '	</Parameters>'                                                                                                                                                                                                                          |
+		| '	<Positions>'                                                                                                                                                                                                                            |
+		| '		<FiscalString Name=\"$$Товар$$\" Quantity=\"1\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"279.8\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                         |
+		| '			<VendorData/>'                                                                                                                                                                                                                        |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                 |
+		| '		</FiscalString>'                                                                                                                                                                                                                       |
+		| '	</Positions>'                                                                                                                                                                                                                           |
+		| '	<Payments Cash=\"279.8\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                     |
+		| '</CheckPackage>'                                                                                                                                                                                                                         |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Товар$$'    | '1,00'       | ''             | '279,80' | '279,80'           | '279,80' | '1'            | 'Товар'                    | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -289,24 +289,24 @@
 	
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Услуга$$\" Quantity=\"1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"257.5\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"257.5\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                               |
+		| '<CheckPackage>'                                                                                                                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                 |
+		| '		<AgentData/>'                                                                                                                                                                                                                           |
+		| '		<VendorData/>'                                                                                                                                                                                                                          |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                      |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                   |
+		| '	</Parameters>'                                                                                                                                                                                                                           |
+		| '	<Positions>'                                                                                                                                                                                                                             |
+		| '		<FiscalString Name=\"$$Услуга$$\" Quantity=\"1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"257.5\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                          |
+		| '			<VendorData/>'                                                                                                                                                                                                                         |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                  |
+		| '		</FiscalString>'                                                                                                                                                                                                                        |
+		| '	</Positions>'                                                                                                                                                                                                                            |
+		| '	<Payments Cash=\"257.5\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                      |
+		| '</CheckPackage>'                                                                                                                                                                                                                          |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Услуга$$'   | '1,00'       | ''             | '257,50' | '257,50'           | '257,50' | '1'            | 'Услуга'                   | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -318,7 +318,7 @@
 		| 'Наличная оплата' | '257,50' |
 	
 Сценарий: 08. Прем OperationType-2 (частичный возврат номенклатуры)
-
+	
 *Продажа
 	Дано Я открываю основную форму документа "Прием"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -348,24 +348,24 @@
 
 *Проверка чека	
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Услуга$$\" Quantity=\"0.1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"25.75\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"25.75\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                 |
+		| '<CheckPackage>'                                                                                                                                                                                                                             |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                   |
+		| '		<AgentData/>'                                                                                                                                                                                                                             |
+		| '		<VendorData/>'                                                                                                                                                                                                                            |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                        |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                  |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                     |
+		| '	</Parameters>'                                                                                                                                                                                                                             |
+		| '	<Positions>'                                                                                                                                                                                                                               |
+		| '		<FiscalString Name=\"$$Услуга$$\" Quantity=\"0.1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"25.75\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                            |
+		| '			<VendorData/>'                                                                                                                                                                                                                           |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                    |
+		| '		</FiscalString>'                                                                                                                                                                                                                          |
+		| '	</Positions>'                                                                                                                                                                                                                              |
+		| '	<Payments Cash=\"25.75\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                        |
+		| '</CheckPackage>'                                                                                                                                                                                                                            |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма' | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Услуга$$'   | '0,10'       | ''             | '257,50' | '257,50'           | '25,75' | '1'            | 'Услуга'                   | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -375,7 +375,7 @@
 		| 'Наличная оплата' | '25,75' |
 	
 Сценарий: 09. Прием OperationType-2 (последовательный возврат номенклатуры)
-
+	
 *Возврат
 	И я закрываю все окна клиентского приложения
 	Дано Я открываю основную форму списка документа "Прием"
@@ -391,24 +391,24 @@
 
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Услуга$$\" Quantity=\"0.9\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"231.75\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"231.75\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                  |
+		| '<CheckPackage>'                                                                                                                                                                                                                              |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                    |
+		| '		<AgentData/>'                                                                                                                                                                                                                              |
+		| '		<VendorData/>'                                                                                                                                                                                                                             |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                         |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                   |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                      |
+		| '	</Parameters>'                                                                                                                                                                                                                              |
+		| '	<Positions>'                                                                                                                                                                                                                                |
+		| '		<FiscalString Name=\"$$Услуга$$\" Quantity=\"0.9\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"231.75\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                             |
+		| '			<VendorData/>'                                                                                                                                                                                                                            |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                     |
+		| '		</FiscalString>'                                                                                                                                                                                                                           |
+		| '	</Positions>'                                                                                                                                                                                                                               |
+		| '	<Payments Cash=\"231.75\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                        |
+		| '</CheckPackage>'                                                                                                                                                                                                                             |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Услуга$$'   | '0,90'       | ''             | '257,50' | '257,50'           | '231,75' | '1'            | 'Услуга'                   | ''           | ''          | ''         | 'Передача с полной оплатой' |
@@ -418,7 +418,7 @@
 		| 'Наличная оплата' | '231,75' |
 	
 Сценарий: 10. Прием OperationType-2 (частичный возврат средств)
-
+	
 *Прием
 	Дано Я открываю основную форму документа "Прием"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -444,24 +444,24 @@
 
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Услуга$$\" Quantity=\"1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"257.5\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"5\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"135\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"122.5\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                               |
+		| '<CheckPackage>'                                                                                                                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                 |
+		| '		<AgentData/>'                                                                                                                                                                                                                           |
+		| '		<VendorData/>'                                                                                                                                                                                                                          |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                      |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                   |
+		| '	</Parameters>'                                                                                                                                                                                                                           |
+		| '	<Positions>'                                                                                                                                                                                                                             |
+		| '		<FiscalString Name=\"$$Услуга$$\" Quantity=\"1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"257.5\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"5\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                          |
+		| '			<VendorData/>'                                                                                                                                                                                                                         |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                  |
+		| '		</FiscalString>'                                                                                                                                                                                                                        |
+		| '	</Positions>'                                                                                                                                                                                                                            |
+		| '	<Payments Cash=\"135\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"122.5\" Barter=\"0\"/>'                                                                                                                                    |
+		| '</CheckPackage>'                                                                                                                                                                                                                          |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'      |
 		| '$$Услуга$$'   | '1,00'       | ''             | '257,50' | '257,50'           | '257,50' | '1'            | 'Услуга'                   | ''           | ''          | ''         | 'Передача с частичной оплатой' |
@@ -473,7 +473,7 @@
 	
 		
 Сценарий: 11. Реализация OperationType-2 (Отмена ошибочной оплаты, частичная оплата)
-
+	
 *Прием
 	Дано Я открываю основную форму документа "Прием"
 	И из выпадающего списка с именем 'Контрагент' я выбираю "$$Пациент$$"
@@ -495,24 +495,24 @@
 
 *Проверка чека
 	Тогда элемент формы с именем 'XML' стал равен по шаблону
-		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
-		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'|
-		|'		<AgentData/>'|
-		|'		<VendorData/>'|
-		|'		<CustomerDetail/>'|
-		|'		<OperationalAttribute/>'|
-		|'		<IndustryAttribute/>'|
-		|'	</Parameters>'|
-		|'	<Positions>'|
-		|'		<FiscalString Name=\"$$Услуга$$\" Quantity=\"1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"257.5\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">'|
-		|'			<AgentData/>'|
-		|'			<VendorData/>'|
-		|'			<IndustryAttribute/>'|
-		|'		</FiscalString>'|
-		|'	</Positions>'|
-		|'	<Payments Cash=\"257.5\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'|
-		|'</CheckPackage>'|
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                               |
+		| '<CheckPackage>'                                                                                                                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$ТекущаяСЕ$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                 |
+		| '		<AgentData/>'                                                                                                                                                                                                                           |
+		| '		<VendorData/>'                                                                                                                                                                                                                          |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                      |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                   |
+		| '	</Parameters>'                                                                                                                                                                                                                           |
+		| '	<Positions>'                                                                                                                                                                                                                             |
+		| '		<FiscalString Name=\"$$Услуга$$\" Quantity=\"1\" PriceWithDiscount=\"257.5\" AmountWithDiscount=\"257.5\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"none\" PaymentMethod=\"4\" CalculationSubject=\"4\" MeasureOfQuantity=\"0\">' |
+		| '			<AgentData/>'                                                                                                                                                                                                                          |
+		| '			<VendorData/>'                                                                                                                                                                                                                         |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                  |
+		| '		</FiscalString>'                                                                                                                                                                                                                        |
+		| '	</Positions>'                                                                                                                                                                                                                            |
+		| '	<Payments Cash=\"257.5\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                      |
+		| '</CheckPackage>'                                                                                                                                                                                                                          |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС' | 'Сумма НДС' | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Услуга$$'   | '1,00'       | ''             | '257,50' | '257,50'           | '257,50' | '1'            | 'Услуга'                   | ''           | ''          | ''         | 'Передача с полной оплатой' |
