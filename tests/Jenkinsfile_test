@@ -1,0 +1,243 @@
+pipeline {
+    agent {
+        label "OneS"
+    }
+	environment {
+        InitDatabase = "tests/scripts/InitDatabase.bat"
+		dbTests = "avtotestqa"
+    }
+    stages {
+		stage("test"){
+			steps{
+				bat"""
+				chcp 65001
+				echo VERSION_PLATFORM=%VERSION_PLATFORM%
+				@call vrunner session .tools/env.json 
+				"""
+			}
+		}
+		
+		
+		// stage('Подготовка .cf') {
+		// 		steps {
+		// 			script {
+		// 				updateConfigFile()
+						
+		// 				if (params.product == 'fitness') {	
+		// 				env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
+		// 				env.repository = "${repositoryReleaseFitness}"
+		// 				env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release"
+		// 				env.extNameMess = "Мессенджер"
+		// 				} 
+						
+		// 				else if (params.product == 'salon') {
+		// 				env.testPathPlaceholder = "\\tests\\features\\salon${params.debug}" // test - тестовые запуски
+		// 				env.repository = "${repositoryReleaseSalon}"
+		// 				env.extmess== "http://192.168.2.16/hran1c/repository.1ccr/salon_messenger_release"
+		// 				extNameMess= "Мессенджер_СалонКрасоты"
+		// 				} 
+
+		// 				else {	
+		// 				env.testPathPlaceholder = "\\tests\\features\\stoma${params.debug}"
+		// 				env.repository = "${repositoryReleaseStom}"
+		// 				env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release"
+		// 				env.extNameMess = "Мессенджер_Стоматология"
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage("Создание БД"){
+		// 	steps{
+		// 		script{
+		// 			def maxAttempts = 5
+		// 			def attempt = 1
+		// 			def serviceRestarted = false
+		// 			def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt"
+		// 			def drop_db = "tests/scripts/drop_db.py"
+		// 			while (attempt <= maxAttempts) {
+		// 				try {
+		// 					echo "Попытка ${attempt} из ${maxAttempts}"
+		// 					bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
+		// 					runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
+		// 					runDbOperation("session_kill", "\"${env.dbTests}\"")
+		// 					runDbOperation("restore", "\"${params.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
+		// 					runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+		// 					runDbOperation("loadrepo", "\"${env.repository}\" \"${env.VATest}\" \"${env.dbTests}\"") // Загрузка данных из хранилища
+		// 					//runDbOperation("extension", "\"${env.extmess}\" \"${env.extNameMess}\" \"${env.dbTests}\"") // Загрузка данных расширения мессенджер из хранилища
+		// 					runDbOperation("updatedb", "\"${env.dbTests}\"") // Обновление конфигурации базы данных
+		// 					if (fileExists(versionFile)) {
+		// 						env.version = readFile(versionFile).trim()
+		// 					} else {
+		// 						env.version = '1.0.0' // Начальная версия, если файла нет
+		// 					}
+		// 					echo "Текущая версия: ${env.version}"
+		// 					if (params.VERSION_NEW > version) {
+		// 						echo "Новая версия ${params.VERSION_NEW} больше текущей версии ${version}"
+		// 						runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"") // Обновление в режиме предприятия
+		// 						runDbOperation("run", "\"${env.dbTests}\"")	// Убрать окон перемещения
+		// 						runDbOperation("dump", "\"${params.product}\" \"${env.dbTests}\"") // Выгружаем .dt нового релиза
+		// 						// Обновляем version
+		// 						env.version = params.VERSION_NEW
+		// 						// Сохраняем новую версию в файл
+		// 						writeFile file: "D:\\Vanessa-Automation\\version\\${params.product}.txt", text: env.version
+		// 						echo "Версия обновлена до ${env.version}"
+		// 					} else {
+		// 						echo "Версия ${params.VERSION_NEW} не больше ${version}, продолжаем..."
+		// 					}
+		// 				  	break // Выход из цикла при успехе
+		// 				} catch (Exception e) {
+		// 					echo "Ошибка на попытке ${attempt}: ${e.getMessage()}"
+
+		// 					if (attempt == 2 && !serviceRestarted) {
+		// 						echo "Перезагрузка службы агента сервера 1С после 2 неудачных попыток"
+		// 						// Команда для перезагрузки службы 1С
+		// 						bat 'chcp 65001 && python -X utf8 tests/scripts/AgentRestart.py'
+		// 						serviceRestarted = true
+		// 					}
+							
+		// 					if (attempt == maxAttempts) {
+		// 						error "Не удалось выполнить stage после ${maxAttempts} попыток"
+		// 					}
+		// 					attempt++
+		// 					echo "Stage успешно выполнен с попытки ${attempt}"
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// stage('Выгрузка XML') {
+		// 	when {
+		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+		// 	}
+		// 	steps {
+		// 		bat """
+		// 		chcp 65001
+		// 		@call vrunner decompile --out tests/Sonar/${params.product}/src/cf --current --ibconnection /Slocalhost/${env.dbTests} --db-user Админ --uccode tester
+		// 		"""
+		// 	}
+		// }
+		// // stage('Запуск Coverage41C') {
+		// // 	steps {
+		// // 		bat "start coverage41c start -i ${env.dbTests} -s tests/Sonar/${params.product}/src/cf -o tests/Sonar/Coverage41C/coverage_${params.product}.xml"
+		// // 	}
+		// // }
+        // stage('Сценарное тестирвоание') {
+        //     steps {
+        //         script {
+		// 			try{
+		// 				runDbOperation("session_unlock", "\"${env.dbTests}\"") // Разблокирование входа в базу
+		// 				runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
+ 		// 			} catch (Exception Exc) {
+		// 				echo "Error occurred: ${Exc.message}"
+		// 				currentBuild.result = 'UNSTABLE'
+        //   			}
+        //         }
+        //     }
+		// }
+		// // stage('Остановка Coverage41C') {
+		// // 	steps {
+		// // 		bat "Coverage41C stop -i ${env.dbTests}"
+		// // 	}
+		// // }
+		// stage("Дымовые тесты") {
+		// 	when {
+		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+		// 	}
+		// 	steps {
+		// 		script {
+		// 			def replace = "tests/scripts/replaceSmoke.py"
+		// 			def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke\\exceptions_${params.product}"
+		// 			def folderSmoke = "\\tests\\features\\smoke\\exceptions_${params.product}"
+		// 			runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
+		// 			bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
+		// 			try{
+		// 				runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
+		// 			} catch (Exception Exc) {
+		// 				echo "Error occurred: ${Exc.message}"
+		// 				currentBuild.result = 'UNSTABLE'
+		// 			}
+
+		// 		}
+		// 	}
+		// }
+		// stage('Sonar') {
+		// 	when {
+		// 		expression { return !params.scenarios } // Выполняется, только если тумблер выключен
+		// 	}
+		// 	steps{
+		// 		withSonarQubeEnv('Sonar') {
+		// 		//-D sonar.coverageReportPaths=tests/Sonar/Coverage41C/coverage_${params.product}.xml
+		// 			bat """
+		// 			chcp 65001
+		// 			tests/Sonar/bin/sonar-scanner.bat ^
+		// 			-D sonar.token=squ_407c5709f77dc3b5429392316b2d2da7386bd792 ^
+		// 			-D sonar.projectVersion=${BUILD_ID} ^
+		// 			-D sonar.projectKey=${params.product} ^
+		// 			-D sonar.projectName=${params.product} ^
+		// 			-D sonar.sources=tests/Sonar/${params.product}/src/cf ^
+		// 			-D sonar.inclusions=tests/Sonar/${params.product}/src/**/*.bsl ^
+					
+		// 			"""
+		// 		}
+		// 	}
+		// }
+    }
+	// post {
+	// 	always {
+	// 		script {
+	// 			allure([
+	// 				includeProperties: false,
+	// 				jdk: '',
+	// 				results: [['path': 'tests/build/results']]
+	// 			])
+	// 			// Отправка уведомлений только при SUCCESS или UNSTABLE
+	// 			if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
+	// 				if ("${params.product}" == "fitness") {
+	// 					env.logo = "tests/notifications/logo.png"
+	// 				}
+	// 				else if ("${params.product}" == "salon") {
+	// 					env.logo = "tests/notifications/logo1.png"
+	// 				}
+	// 				else if ("${params.product}" == "stoma") {
+	// 					env.logo = "tests/notifications/logo2.png"
+	// 				}
+
+	// 				def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+	// 				def configJson = readFile(file: 'tests/notifications/config.json')
+	// 				def updatedConfigJson = configJson
+	// 					.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
+	// 					.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+	// 					.replace('"${logo}"', "\"${env.logo}\"")
+	// 				writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
+
+	// 				try {
+	// 					bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
+	// 				}
+	// 				catch (Exception e) {
+	// 					echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	//  }
+}
+
+// def runDbOperation(operation, params) {
+// 		try {
+// 			bat """
+// 				chcp 65001
+// 				@call ${env.InitDatabase} ${operation} ${params}
+// 			"""
+// 		} catch (Exception e) {
+// 			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
+// 			throw e
+// 		}
+// 	}
+
+// def updateConfigFile() {
+//     def configJson = readFile(file: 'tests/tools/VAParams.json')
+//     def escapedWorkspace = env.WORKSPACE.replace("\\", "\\\\").replace("\\", "\\\\")
+//     def updatedConfigJson = configJson.replaceAll(/\$\{product\}/, params.product)
+//                               .replaceAll(/\$\{workspace\}/, escapedWorkspace)
+//     writeFile(file: 'tests/tools/VAParams.json', text: updatedConfigJson)
+// }

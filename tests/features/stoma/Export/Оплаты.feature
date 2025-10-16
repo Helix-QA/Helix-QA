@@ -34,24 +34,24 @@
 
 * Проверка xml
 	И элемент формы с именем 'XML' стал равен по шаблону:
-		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                   |
-		| '<CheckPackage>'                                                                                                                                                                                                                               |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                               |
-		| '		<AgentData/>'                                                                                                                                                                                                                               |
-		| '		<VendorData/>'                                                                                                                                                                                                                              |
-		| '		<CustomerDetail/>'                                                                                                                                                                                                                          |
-		| '		<OperationalAttribute/>'                                                                                                                                                                                                                    |
-		| '		<IndustryAttribute/>'                                                                                                                                                                                                                       |
-		| '	</Parameters>'                                                                                                                                                                                                                               |
-		| '	<Positions>'                                                                                                                                                                                                                                 |
+		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                 |
+		| '<CheckPackage>'                                                                                                                                                                                                                                             |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                   |
+		| '		<AgentData/>'                                                                                                                                                                                                                                             |
+		| '		<VendorData/>'                                                                                                                                                                                                                                            |
+		| '		<CustomerDetail/>'                                                                                                                                                                                                                                        |
+		| '		<OperationalAttribute/>'                                                                                                                                                                                                                                  |
+		| '		<IndustryAttribute/>'                                                                                                                                                                                                                                     |
+		| '	</Parameters>'                                                                                                                                                                                                                                             |
+		| '	<Positions>'                                                                                                                                                                                                                                               |
 		| '		<FiscalString Name=\"$$Товар$$\" Quantity=\"2\" PriceWithDiscount=\"279.8\" AmountWithDiscount=\"559.6\" DiscountAmount=\"0\" Department=\"1\" VATRate=\"$VATRate$\" $VATAmountXML$PaymentMethod=\"4\" CalculationSubject=\"1\" MeasureOfQuantity=\"0\">' |
-		| '			<AgentData/>'                                                                                                                                                                                                                              |
-		| '			<VendorData/>'                                                                                                                                                                                                                             |
-		| '			<IndustryAttribute/>'                                                                                                                                                                                                                      |
-		| '		</FiscalString>'                                                                                                                                                                                                                            |
-		| '	</Positions>'                                                                                                                                                                                                                                |
-		| '	<Payments Cash=\"559.6\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                          |
-		| '</CheckPackage>'                                                                                                                                                                                                                              |
+		| '			<AgentData/>'                                                                                                                                                                                                                                            |
+		| '			<VendorData/>'                                                                                                                                                                                                                                           |
+		| '			<IndustryAttribute/>'                                                                                                                                                                                                                                    |
+		| '		</FiscalString>'                                                                                                                                                                                                                                          |
+		| '	</Positions>'                                                                                                                                                                                                                                              |
+		| '	<Payments Cash=\"559.6\" ElectronicPayment=\"0\" PrePayment=\"0\" PostPayment=\"0\" Barter=\"0\"/>'                                                                                                                                                        |
+		| '</CheckPackage>'                                                                                                                                                                                                                                            |
 	И таблица 'ПозицииЧека' стала равной:
 		| 'Наименование' | 'Количество' | 'Сумма скидок' | 'Цена'   | 'Цена со скидками' | 'Сумма'  | 'Номер секции' | 'Признак предмета расчета' | 'Ставка НДС'  | 'Сумма НДС'  | 'Штрихкод' | 'Признак способа расчета'   |
 		| '$$Товар$$'    | '2,00'       | ''             | '279,80' | '279,80'           | '559,60' | '1'            | 'Товар'                    | '$СтавкаНДС$' | '$СуммаНДС$' | ''         | 'Передача с полной оплатой' |
@@ -76,7 +76,10 @@
 		И Я запоминаю значение выражения 'НДС $VATRate$%' в переменную "VAT"
 		И Я запоминаю значение выражения 'НДС $VATRate$%' в переменную "WithVAT"
 		И Я запоминаю значение выражения 'СтрЗаменить($СуммаНДС$, "," , ".")' в переменную "СуммаФискал"
-
+	Если '$VATRate$ = "22"' Тогда
+		И Я запоминаю строку 'БЕЗ НДС' в переменную "VAT"
+		И Я запоминаю строку 'БЕЗ НДС' в переменную "WithVAT"
+		И Я запоминаю значение выражения 'СтрЗаменить($СуммаИтог$, "," , ".")' в переменную "СуммаФискал"
 	И в таблице "Список" я перехожу к последней строке
 	И в таблице 'Список' я выбираю текущую строку
 	И я перехожу к закладке с именем 'Представление'
@@ -130,7 +133,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                             |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                         |
-		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                                         |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                                         |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                         |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                        |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                    |
@@ -169,7 +172,10 @@
 		И Я запоминаю значение выражения 'НДС $VATRate$%' в переменную "VAT"
 		И Я запоминаю значение выражения 'НДС $VATRate$%' в переменную "WithVAT"
 		И Я запоминаю значение выражения 'СтрЗаменить($СуммаНДС$, "," , ".")' в переменную "СуммаФискал"
-	
+	Если '$VATRate$ = "22"' Тогда
+		И Я запоминаю строку 'БЕЗ НДС' в переменную "VAT"
+		И Я запоминаю строку 'БЕЗ НДС' в переменную "WithVAT"
+		И Я запоминаю значение выражения 'СтрЗаменить($СуммаИтог$, "," , ".")' в переменную "СуммаФискал"
 	И в таблице "Список" я перехожу к последней строке
 	И в таблице 'Список' я выбираю текущую строку
 	И я перехожу к закладке с именем 'Представление'
@@ -223,7 +229,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                   |
 		| '<CheckPackage>'                                                                                                                                                                                                                                               |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                               |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                               |
 		| '		<AgentData/>'                                                                                                                                                                                                                                               |
 		| '		<VendorData/>'                                                                                                                                                                                                                                              |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                          |
@@ -258,7 +264,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону:
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                               |
 		| '<CheckPackage>'                                                                                                                                                                                                                                           |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"$$СистемыНалогообложения$$\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                  |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"$$СистемыНалогообложения$$\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                  |
 		| '		<AgentData/>'                                                                                                                                                                                                                                           |
 		| '		<VendorData/>'                                                                                                                                                                                                                                          |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                      |
@@ -292,7 +298,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону:
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                 |
 		| '<CheckPackage>'                                                                                                                                                                                                                                             |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"$$СистемыНалогообложения2$$\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                   |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"$$СистемыНалогообложения2$$\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                   |
 		| '		<AgentData/>'                                                                                                                                                                                                                                             |
 		| '		<VendorData/>'                                                                                                                                                                                                                                            |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                        |
@@ -328,7 +334,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону:
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                               |
 		| '<CheckPackage>'                                                                                                                                                                                                                                           |
-		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"$$СистемыНалогообложения$$\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                           |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"$$СистемыНалогообложения$$\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                           |
 		| '		<AgentData/>'                                                                                                                                                                                                                                           |
 		| '		<VendorData/>'                                                                                                                                                                                                                                          |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                      |
@@ -385,7 +391,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону:
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                                                  |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                                              |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                                                              |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                                                              |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                                              |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                                             |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                                         |
@@ -492,7 +498,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                             |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                         |
-		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                                         |
+		| '	<Parameters CashierName=\"*\" OperationType=\"2\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                                         |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                         |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                        |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                    |
@@ -597,7 +603,7 @@
 	И элемент формы с именем 'XML' стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                                                                                |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                                                                            |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" CustomerEmail=\"\" CustomerPhone=\"\">'                                                                                                                                                                                                            |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="$$ТекущаяСЕ$$ " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting="false" OperationOnline="false">'                                                                                                                                                                                                            |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                                                                            |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                                                                           |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                                                                       |
