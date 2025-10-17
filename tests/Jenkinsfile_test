@@ -5,7 +5,7 @@ pipeline {
 	environment {
         InitDatabase = "tests/scripts/InitDatabase.bat"
 		dbTests = "avtotestqa"
-    }22234
+    }2223433
     stages {
 		stage("test"){
 			steps{
