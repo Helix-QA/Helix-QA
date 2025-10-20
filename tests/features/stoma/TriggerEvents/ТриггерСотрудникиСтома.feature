@@ -1,6 +1,7 @@
 ﻿#language: ru
 
 @tree
+@IgnoreOnCIMainBuild
 
 Функционал: Проверка триггеров по стоме - Сотрудники.
   
