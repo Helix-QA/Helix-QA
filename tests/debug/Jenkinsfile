@@ -30,7 +30,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }//test
         stage('Обновление из релизного хранилища'){
             steps{
                 script{
