@@ -2,10 +2,6 @@ pipeline {
     agent {
         label "OneS"
     }
-	environment {
-        InitDatabase = "tests/scripts/InitDatabase.bat"
-		dbTests = "avtotestqa"
-    }
     stages {
 		stage('Подготовка .cf') {
 				steps {
@@ -17,6 +13,8 @@ pipeline {
 						env.repository = "${repositoryReleaseFitness}"
 						env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release"
 						env.extNameMess = "Мессенджер"
+						env.dbTests = "QA_fitness"
+						
 						} 
 						
 						else if (params.product == 'salon') {
@@ -24,6 +22,7 @@ pipeline {
 						env.repository = "${repositoryReleaseSalon}"
 						env.extmess== "http://192.168.2.16/hran1c/repository.1ccr/salon_messenger_release"
 						extNameMess= "Мессенджер_СалонКрасоты"
+						env.dbTests = "QA_salon"
 						} 
 
 						else {	
@@ -31,6 +30,7 @@ pipeline {
 						env.repository = "${repositoryReleaseStom}"
 						env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release"
 						env.extNameMess = "Мессенджер_Стоматология"
+						env.dbTests = "QA_stoma"
 					}
 				}
 			}
@@ -216,7 +216,7 @@ def runDbOperation(operation, params) {
 		try {
 			bat """
 				chcp 65001
-				@call ${env.InitDatabase} ${operation} ${params}
+				@call tests/scripts/InitDatabase.bat ${operation} ${params}
 			"""
 		} catch (Exception e) {
 			echo "Ошибка при выполнении операции ${operation}: ${e.message}"

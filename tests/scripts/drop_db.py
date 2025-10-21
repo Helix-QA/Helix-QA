@@ -3,9 +3,18 @@ import subprocess
 import sys
 import shutil
 import pythoncom
-import win32com.client
-from colorama import init, Fore, Style
 
+# ОТКЛЮЧАЕМ КЭШ COM ПОЛНОСТЬЮ
+import win32com.client
+win32com.client.gencache.is_readonly = False
+# Удаляем старый кэш при запуске
+try:
+    import shutil
+    shutil.rmtree(os.path.expanduser(r"~\AppData\Local\Temp\gen_py"), ignore_errors=True)
+except:
+    pass
+
+from colorama import init, Fore, Style
 init(autoreset=True)
 
 
@@ -60,16 +69,14 @@ def drop_1c_database():
     pg_user = "postgres"
     pg_password = "postgres"
 
-    com = None
-    agent = None
-    wp = None
+    com = agent = wp = None
 
     try:
         pythoncom.CoInitialize()
         print(f"{Fore.CYAN}1. Подключение к агенту 1С...{Style.RESET_ALL}")
 
-        # КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Dispatch вместо gencache
-        com = win32com.client.Dispatch("V83.COMConnector")
+        # Динамическое создание — без кэша
+        com = win32com.client.dynamic.Dispatch("V83.COMConnector")
         agent = com.ConnectAgent("localhost:1540")
 
         print(f"{Fore.CYAN}2. Получение кластеров...{Style.RESET_ALL}")
@@ -94,9 +101,9 @@ def drop_1c_database():
                 base_obj = next((b for b in bases if b.Name.lower() == infobase.lower()), None)
 
                 if base_obj:
-                    # === ОТКЛЮЧЕНИЕ СОЕДИНЕНИЙ ===
-                    print(f"{Fore.CYAN}6. Отключение активных соединений...{Style.RESET_ALL}")
+                    print(f"{Fore.CYAN}6. Отключение соединений...{Style.RESET_ALL}")
                     try:
+                        # ПРАВИЛЬНЫЙ ВЫЗОВ: base_obj.GetIDBConnections()
                         connections = base_obj.GetIDBConnections()
                         if connections:
                             print(f"{Fore.YELLOW}Найдено {len(connections)} соединений. Отключаем...{Style.RESET_ALL}")
@@ -112,7 +119,6 @@ def drop_1c_database():
                     except Exception as e:
                         print(f"{Fore.YELLOW}GetIDBConnections недоступен: {e}{Style.RESET_ALL}")
 
-                    # === УДАЛЕНИЕ БАЗЫ ===
                     print(f"{Fore.CYAN}7. Удаление базы (принудительно)...{Style.RESET_ALL}")
                     try:
                         wp.DropInfoBase(base_obj, 1)
@@ -165,7 +171,6 @@ def drop_1c_database():
         return False
 
     finally:
-        # === ОСВОБОЖДЕНИЕ ===
         for obj in [wp, agent, com]:
             if obj is not None:
                 try:
