@@ -171,12 +171,29 @@ def drop_1c_database():
         return False
 
     finally:
+        # ПРАВИЛЬНОЕ ОСВОБОЖДЕНИЕ COM-ОБЪЕКТОВ
+        try:
+            if wp is not None:
+                # Для рабочих процессов используем специальный метод если доступен
+                if hasattr(wp, 'Close'):
+                    wp.Close()
+        except:
+            pass
+        
+        # Освобождаем объекты в правильном порядке
         for obj in [wp, agent, com]:
-            if obj is not None:
-                try:
-                    del obj
-                except:
-                    pass
+            try:
+                if obj is not None:
+                    # Принудительно освобождаем COM-объект
+                    import win32com.client
+                    win32com.client.DisconnectObject(obj)
+            except:
+                pass
+        
+        # Даем время на освобождение ресурсов
+        import time
+        time.sleep(0.1)
+        
         try:
             pythoncom.CoUninitialize()
         except:
