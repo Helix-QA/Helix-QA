@@ -17,6 +17,7 @@ pipeline {
 						env.repository = "${repositoryReleaseFitness}"
 						env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release"
 						env.extNameMess = "Мессенджер"
+						env.logo = "tests/notifications/logo.png"
 						} 
 						
 						else if (params.product == 'salon') {
@@ -24,13 +25,15 @@ pipeline {
 						env.repository = "${repositoryReleaseSalon}"
 						env.extmess== "http://192.168.2.16/hran1c/repository.1ccr/salon_messenger_release"
 						extNameMess= "Мессенджер_СалонКрасоты"
+						env.logo = "tests/notifications/logo1.png"
 						} 
 
 						else {	
-						env.testPathPlaceholder = "\\tests\\features\\stoma${params.debug}"
+						env.testPathPlaceholder = "\\tests\\features\\stoma${params.debug}"	// test - тестовые запуски
 						env.repository = "${repositoryReleaseStom}"
 						env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release"
 						env.extNameMess = "Мессенджер_Стоматология"
+						env.logo = "tests/notifications/logo2.png"
 					}
 				}
 			}
@@ -182,21 +185,14 @@ pipeline {
 				])
 				// Отправка уведомлений только при SUCCESS или UNSTABLE
 				if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-					if ("${params.product}" == "fitness") {
-						env.logo = "tests/notifications/logo.png"
-					}
-					else if ("${params.product}" == "salon") {
-						env.logo = "tests/notifications/logo1.png"
-					}
-					else if ("${params.product}" == "stoma") {
-						env.logo = "tests/notifications/logo2.png"
-					}
-
+					
 					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
+
 					def configJson = readFile(file: 'tests/notifications/config.json')
 					def updatedConfigJson = configJson
 						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
 						.replace('"${JOB_NAME}"', "\"${env.JOB_NAME}\"")
+						.replace('"${env.BUILD_USER}"', "\"${env.BUILD_USER}\"")
 						.replace('"${logo}"', "\"${env.logo}\"")
 					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 
