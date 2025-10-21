@@ -97,7 +97,7 @@ def drop_1c_database():
                     # === ОТКЛЮЧЕНИЕ СОЕДИНЕНИЙ ===
                     print(f"{Fore.CYAN}6. Отключение активных соединений...{Style.RESET_ALL}")
                     try:
-                        connections = wp.GetIDBConnections(base_obj)
+                        connections = base_obj.GetIDBConnections()
                         if connections:
                             print(f"{Fore.YELLOW}Найдено {len(connections)} соединений. Отключаем...{Style.RESET_ALL}")
                             for conn in connections:
