@@ -1,32 +1,27 @@
 import os
-import subprocess
 import sys
 import shutil
+import subprocess
 import pythoncom
-
-# ОТКЛЮЧАЕМ КЭШ COM ПОЛНОСТЬЮ
 import win32com.client
+
+# === ОТКЛЮЧАЕМ КЭШ COM ===
 win32com.client.gencache.is_readonly = False
-# Удаляем старый кэш при запуске
 try:
-    import shutil
     shutil.rmtree(os.path.expanduser(r"~\AppData\Local\Temp\gen_py"), ignore_errors=True)
 except:
     pass
-
-from colorama import init, Fore, Style
-init(autoreset=True)
 
 
 def delete_folder(folder_path):
     if os.path.exists(folder_path):
         try:
             shutil.rmtree(folder_path, ignore_errors=True)
-            print(f"{Fore.GREEN}Папка {folder_path} успешно удалена{Style.RESET_ALL}")
+            print(f"Папка {folder_path} успешно удалена")
         except Exception as e:
-            print(f"{Fore.YELLOW}Не удалось удалить папку {folder_path}: {str(e)}{Style.RESET_ALL}")
+            print(f"Не удалось удалить папку {folder_path}: {str(e)}")
     else:
-        print(f"{Fore.YELLOW}Папка {folder_path} не существует{Style.RESET_ALL}")
+        print(f"Папка {folder_path} не существует")
 
 
 def clean_1c_cache():
@@ -51,14 +46,14 @@ def clean_1c_cache():
                     else:
                         os.remove(item_path)
                 except Exception as e:
-                    print(f"{Fore.YELLOW}Не удалось удалить {item_path}: {e}{Style.RESET_ALL}")
+                    print(f"Не удалось удалить {item_path}: {e}")
         except Exception as e:
-            print(f"{Fore.YELLOW}Не удалось прочитать кэш в {path}: {e}{Style.RESET_ALL}")
+            print(f"Не удалось прочитать кэш в {path}: {e}")
 
 
 def drop_1c_database():
     if len(sys.argv) < 2:
-        print(f"{Fore.RED}Ошибка: укажите имя базы. Использование: drop_db.py <ИмяБазы>{Style.RESET_ALL}")
+        print("Ошибка: укажите имя базы. Использование: drop_db.py <ИмяБазы>")
         return False
 
     infobase = sys.argv[1].strip()
@@ -73,127 +68,121 @@ def drop_1c_database():
 
     try:
         pythoncom.CoInitialize()
-        print(f"{Fore.CYAN}1. Подключение к агенту 1С...{Style.RESET_ALL}")
+        print("1. Подключение к агенту 1С...")
 
         # Динамическое создание — без кэша
         com = win32com.client.dynamic.Dispatch("V83.COMConnector")
         agent = com.ConnectAgent("localhost:1540")
 
-        print(f"{Fore.CYAN}2. Получение кластеров...{Style.RESET_ALL}")
+        print("2. Получение кластеров...")
         clusters = agent.GetClusters()
         if not clusters:
-            print(f"{Fore.YELLOW}Кластеры не найдены. Пропускаем 1С.{Style.RESET_ALL}")
+            print("Кластеры не найдены. Пропускаем 1С.")
         else:
             cluster = clusters[0]
-            print(f"{Fore.CYAN}3. Аутентификация в кластере...{Style.RESET_ALL}")
+            print("3. Аутентификация в кластере...")
             agent.Authenticate(cluster, "", "")
 
-            print(f"{Fore.CYAN}4. Получение рабочих процессов...{Style.RESET_ALL}")
+            print("4. Получение рабочих процессов...")
             processes = agent.GetWorkingProcesses(cluster)
             if not processes:
-                print(f"{Fore.YELLOW}Рабочие процессы не найдены.{Style.RESET_ALL}")
+                print("Рабочие процессы не найдены.")
             else:
                 wp = com.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
                 wp.AddAuthentication(db_username, db_password)
 
-                print(f"{Fore.CYAN}5. Поиск базы '{infobase}'...{Style.RESET_ALL}")
+                print(f"5. Поиск базы '{infobase}'...")
                 bases = wp.GetInfoBases()
                 base_obj = next((b for b in bases if b.Name.lower() == infobase.lower()), None)
 
                 if base_obj:
-                    print(f"{Fore.CYAN}6. Отключение соединений...{Style.RESET_ALL}")
+                    print("6. Отключение соединений...")
                     try:
-                        # ПРАВИЛЬНЫЙ ВЫЗОВ: base_obj.GetIDBConnections()
+                        # ПРАВИЛЬНЫЙ ВЫЗОВ: метод у объекта базы
                         connections = base_obj.GetIDBConnections()
                         if connections:
-                            print(f"{Fore.YELLOW}Найдено {len(connections)} соединений. Отключаем...{Style.RESET_ALL}")
+                            print(f"Найдено {len(connections)} соединений. Отключаем...")
                             for conn in connections:
                                 try:
                                     wp.TerminateConnection(conn)
                                     app = getattr(conn, 'Application', 'Unknown')
-                                    print(f"{Fore.GREEN}  → {app} (ID: {conn.ConnectionID}) отключено{Style.RESET_ALL}")
+                                    print(f"  → {app} (ID: {conn.ConnectionID}) отключено")
                                 except Exception as e:
-                                    print(f"{Fore.RED}  → Ошибка: {e}{Style.RESET_ALL}")
+                                    print(f"  → Ошибка при отключении: {e}")
                         else:
-                            print(f"{Fore.GREEN}Активных соединений нет.{Style.RESET_ALL}")
+                            print("Активных соединений нет.")
                     except Exception as e:
-                        print(f"{Fore.YELLOW}GetIDBConnections недоступен: {e}{Style.RESET_ALL}")
+                        print(f"GetIDBConnections недоступен (возможно, старая версия): {e}")
 
-                    print(f"{Fore.CYAN}7. Удаление базы (принудительно)...{Style.RESET_ALL}")
+                    print("7. Удаление базы (принудительно)...")
                     try:
                         wp.DropInfoBase(base_obj, 1)
-                        print(f"{Fore.GREEN}База удалена из кластера 1С{Style.RESET_ALL}")
+                        print("База удалена из кластера 1С")
                     except Exception as e:
-                        print(f"{Fore.RED}Ошибка удаления: {e}{Style.RESET_ALL}")
+                        print(f"Ошибка удаления базы из кластера: {e}")
                 else:
-                    print(f"{Fore.YELLOW}База '{infobase}' не найдена в кластере.{Style.RESET_ALL}")
+                    print(f"База '{infobase}' не найдена в кластере.")
 
         # === PostgreSQL ===
-        print(f"{Fore.CYAN}8. Удаление из PostgreSQL...{Style.RESET_ALL}")
+        print("8. Удаление из PostgreSQL...")
         db_name = infobase.lower()
         try:
             os.environ['PGPASSWORD'] = pg_password
+            # Завершаем все соединения
             subprocess.run([
                 'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
                 '-c', f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{db_name}' AND pid <> pg_backend_pid();"
             ], check=False, capture_output=True)
 
+            # Удаляем базу
             result = subprocess.run([
                 'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
                 '-c', f"DROP DATABASE IF EXISTS \"{db_name}\";"
             ], check=False, capture_output=True, text=True)
 
             if result.returncode == 0:
-                print(f"{Fore.GREEN}База '{db_name}' удалена из PostgreSQL{Style.RESET_ALL}")
+                print(f"База '{db_name}' удалена из PostgreSQL")
             else:
-                if "does not exist" in result.stderr:
-                    print(f"{Fore.YELLOW}База '{db_name}' не существует{Style.RESET_ALL}")
+                stderr = result.stderr.strip()
+                if "does not exist" in stderr:
+                    print(f"База '{db_name}' не существует в PostgreSQL")
                 else:
-                    print(f"{Fore.YELLOW}PostgreSQL: {result.stderr.strip()}{Style.RESET_ALL}")
+                    print(f"Ошибка PostgreSQL: {stderr}")
         except Exception as e:
-            print(f"{Fore.YELLOW}Ошибка PostgreSQL: {e}{Style.RESET_ALL}")
+            print(f"Ошибка при работе с PostgreSQL: {e}")
         finally:
             os.environ.pop('PGPASSWORD', None)
 
         # === Папка и кэш ===
-        print(f"{Fore.CYAN}9. Удаление папки...{Style.RESET_ALL}")
+        print("9. Удаление папки...")
         delete_folder("tests/build/results")
 
-        print(f"{Fore.CYAN}10. Очистка кэша 1С...{Style.RESET_ALL}")
+        print("10. Очистка кэша 1С...")
         clean_1c_cache()
-        print(f"{Fore.GREEN}Кэш 1С очищен{Style.RESET_ALL}")
+        print("Кэш 1С очищен")
 
-        print(f"{Fore.GREEN}Скрипт успешно завершён{Style.RESET_ALL}")
+        print("Скрипт успешно завершён")
         return True
 
     except Exception as e:
-        print(f"{Fore.RED}Критическая ошибка: {e}{Style.RESET_ALL}")
+        print(f"Критическая ошибка: {e}")
         return False
 
     finally:
-        # ПРАВИЛЬНОЕ ОСВОБОЖДЕНИЕ COM-ОБЪЕКТОВ
-        try:
-            if wp is not None:
-                # Для рабочих процессов используем специальный метод если доступен
-                if hasattr(wp, 'Close'):
-                    wp.Close()
-        except:
-            pass
-        
-        # Освобождаем объекты в правильном порядке
+        # === Безопасное освобождение COM-объектов ===
         for obj in [wp, agent, com]:
-            try:
-                if obj is not None:
-                    # Принудительно освобождаем COM-объект
+            if obj is not None:
+                try:
+                    # Явное освобождение через COM
                     import win32com.client
-                    win32com.client.DisconnectObject(obj)
-            except:
-                pass
-        
-        # Даем время на освобождение ресурсов
-        import time
-        time.sleep(0.1)
-        
+                    if hasattr(obj, '__del__'):
+                        obj.__del__()  # принудительный вызов деструктора
+                except:
+                    pass
+                try:
+                    del obj
+                except:
+                    pass
         try:
             pythoncom.CoUninitialize()
         except:
@@ -201,7 +190,7 @@ def drop_1c_database():
 
 
 if __name__ == "__main__":
-    print(f"{Fore.BLUE}=== УДАЛЕНИЕ БАЗЫ 1С (8.3.27) ==={Style.RESET_ALL}")
+    print("=== УДАЛЕНИЕ БАЗЫ 1С (8.3.27) ===")
     success = drop_1c_database()
-    print(f"{Fore.BLUE}=== {'УСПЕХ' if success else 'ОШИБКА'} ==={Style.RESET_ALL}")
+    print(f"=== {'УСПЕХ' if success else 'ОШИБКА'} ===")
     sys.exit(0 if success else 1)
