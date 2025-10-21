@@ -38,7 +38,7 @@ pipeline {
 		stage("45"){
 			steps{
 				script{
-					def drop_db
+					def drop_db = "tests/scripts/drop_db.py"
 					bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы	
 				}
 			}
