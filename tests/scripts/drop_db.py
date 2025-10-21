@@ -1,11 +1,11 @@
 import os
-import subprocess
 import sys
 import shutil
+import subprocess
 import pythoncom
 import win32com.client
 
-# Полностью отключаем кэш COM
+# === ОТКЛЮЧАЕМ КЭШ COM ===
 win32com.client.gencache.is_readonly = False
 try:
     shutil.rmtree(os.path.expanduser(r"~\AppData\Local\Temp\gen_py"), ignore_errors=True)
@@ -19,7 +19,7 @@ def delete_folder(folder_path):
             shutil.rmtree(folder_path, ignore_errors=True)
             print(f"Папка {folder_path} успешно удалена")
         except Exception as e:
-            print(f"Не удалось удалить папку {folder_path}: {e}")
+            print(f"Не удалось удалить папку {folder_path}: {str(e)}")
     else:
         print(f"Папка {folder_path} не существует")
 
@@ -70,6 +70,7 @@ def drop_1c_database():
         pythoncom.CoInitialize()
         print("1. Подключение к агенту 1С...")
 
+        # Динамическое создание — без кэша
         com = win32com.client.dynamic.Dispatch("V83.COMConnector")
         agent = com.ConnectAgent("localhost:1540")
 
@@ -95,28 +96,30 @@ def drop_1c_database():
                 base_obj = next((b for b in bases if b.Name.lower() == infobase.lower()), None)
 
                 if base_obj:
-                    print("6. Попытка отключить соединения...")
+                    print("6. Отключение соединений...")
                     try:
-                        connections = wp.GetInfoBaseConnections(base_obj)
+                        # ПРАВИЛЬНЫЙ ВЫЗОВ: метод у объекта базы
+                        connections = base_obj.GetIDBConnections()
                         if connections:
                             print(f"Найдено {len(connections)} соединений. Отключаем...")
                             for conn in connections:
                                 try:
                                     wp.TerminateConnection(conn)
-                                    print(f"  → соединение ID={conn.ConnectionID} отключено")
+                                    app = getattr(conn, 'Application', 'Unknown')
+                                    print(f"  → {app} (ID: {conn.ConnectionID}) отключено")
                                 except Exception as e:
-                                    print(f"  → Ошибка отключения: {e}")
+                                    print(f"  → Ошибка при отключении: {e}")
                         else:
                             print("Активных соединений нет.")
                     except Exception as e:
-                        print(f"Не удалось получить соединения: {e}")
+                        print(f"GetIDBConnections недоступен (возможно, старая версия): {e}")
 
-                    print("7. Удаление базы из кластера...")
+                    print("7. Удаление базы (принудительно)...")
                     try:
                         wp.DropInfoBase(base_obj, 1)
                         print("База удалена из кластера 1С")
                     except Exception as e:
-                        print(f"Ошибка удаления: {e}")
+                        print(f"Ошибка удаления базы из кластера: {e}")
                 else:
                     print(f"База '{infobase}' не найдена в кластере.")
 
@@ -125,11 +128,13 @@ def drop_1c_database():
         db_name = infobase.lower()
         try:
             os.environ['PGPASSWORD'] = pg_password
+            # Завершаем все соединения
             subprocess.run([
                 'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
                 '-c', f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{db_name}' AND pid <> pg_backend_pid();"
             ], check=False, capture_output=True)
 
+            # Удаляем базу
             result = subprocess.run([
                 'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
                 '-c', f"DROP DATABASE IF EXISTS \"{db_name}\";"
@@ -138,16 +143,18 @@ def drop_1c_database():
             if result.returncode == 0:
                 print(f"База '{db_name}' удалена из PostgreSQL")
             else:
-                if "does not exist" in result.stderr:
-                    print(f"База '{db_name}' не существует")
+                stderr = result.stderr.strip()
+                if "does not exist" in stderr:
+                    print(f"База '{db_name}' не существует в PostgreSQL")
                 else:
-                    print(f"PostgreSQL ошибка: {result.stderr.strip()}")
+                    print(f"Ошибка PostgreSQL: {stderr}")
         except Exception as e:
-            print(f"Ошибка PostgreSQL: {e}")
+            print(f"Ошибка при работе с PostgreSQL: {e}")
         finally:
             os.environ.pop('PGPASSWORD', None)
 
-        print("9. Удаление временной папки...")
+        # === Папка и кэш ===
+        print("9. Удаление папки...")
         delete_folder("tests/build/results")
 
         print("10. Очистка кэша 1С...")
@@ -162,9 +169,16 @@ def drop_1c_database():
         return False
 
     finally:
-        # Правильный порядок освобождения COM
+        # === Безопасное освобождение COM-объектов ===
         for obj in [wp, agent, com]:
             if obj is not None:
+                try:
+                    # Явное освобождение через COM
+                    import win32com.client
+                    if hasattr(obj, '__del__'):
+                        obj.__del__()  # принудительный вызов деструктора
+                except:
+                    pass
                 try:
                     del obj
                 except:
