@@ -6,7 +6,46 @@ pipeline {
 		stage('Подготовка .cf') {
 				steps {
 					script {
-						updateConfigFile()
+						// === 3. ПРОВЕРКА: СООТВЕТСТВУЕТ ЛИ ВЕРСИЯ ПРОДУКТУ? ===
+						def valid = false
+						def expected = ""
+
+						switch (params.product) {
+							case 'fitness':
+								valid = version ==~ /^4\.0\.\d+\.\d+$/
+								expected = "4.0.X.Y (например: 4.0.57.1)"
+								break
+							case 'salon':
+								valid = version ==~ /^(3|4)\.0\.\d+\.\d+$/
+								expected = "3.0.X.Y или 4.0.X.Y (например: 3.0.44.1, 4.0.55.1)"
+								break
+							case 'stoma':
+								valid = version ==~ /^2\.1\.\d+\.\d+$/
+								expected = "2.1.X.Y (например: 2.1.27.1)"
+								break
+							default:
+								error "ОШИБКА: Неизвестный продукт: '${params.product}'. Допустимые: fitness, salon, stoma"
+						}
+
+						if (!valid) {
+							error """
+							ОШИБКА: Неверная версия для продукта!
+							→ Продукт: ${params.product}
+							→ Указана версия: ${version}
+							→ Ожидается: ${expected}
+
+							Примеры правильных комбинаций:
+							fitness → 4.0.56.1, 4.0.57.1
+							salon   → 3.0.44.1, 4.0.55.1
+							stoma   → 2.1.27.1, 2.1.28.1
+							"""
+						}
+
+						echo "Валидация прошла: ${params.product} → ${version}"
+						// =====================================
+						
+						
+						updateConfigFile() // Заполнение json переменными
 						
 						if (params.product == 'fitness') {	
 						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
