@@ -28,7 +28,6 @@ def clean_1c_cache():
         f"C:\\Users\\{user}\\AppData\\Roaming\\1C\\1cv82",
         f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv82"
     ]
-
     for path in cache_paths:
         if not os.path.exists(path):
             continue
@@ -50,7 +49,7 @@ def clean_1c_cache():
 
 def drop_1c_database():
     if len(sys.argv) < 2:
-        print(f"{Fore.RED}Ошибка: не указано имя базы. Использование: drop_db.py <ИмяБазы>{Style.RESET_ALL}")
+        print(f"{Fore.RED}Ошибка: укажите имя базы. Использование: drop_db.py <ИмяБазы>{Style.RESET_ALL}")
         return False
 
     infobase = sys.argv[1].strip()
@@ -61,83 +60,78 @@ def drop_1c_database():
     pg_user = "postgres"
     pg_password = "postgres"
 
-    com_connector = None
+    com = None
     agent = None
     wp = None
 
     try:
         pythoncom.CoInitialize()
-        print(f"{Fore.CYAN}1. Подключение к агенту сервера 1С...{Style.RESET_ALL}")
-        com_connector = win32com.client.gencache.EnsureDispatch("V83.COMConnector")
-        agent = com_connector.ConnectAgent("localhost:1540")
+        print(f"{Fore.CYAN}1. Подключение к агенту 1С...{Style.RESET_ALL}")
+
+        # КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Dispatch вместо gencache
+        com = win32com.client.Dispatch("V83.COMConnector")
+        agent = com.ConnectAgent("localhost:1540")
 
         print(f"{Fore.CYAN}2. Получение кластеров...{Style.RESET_ALL}")
         clusters = agent.GetClusters()
         if not clusters:
             print(f"{Fore.YELLOW}Кластеры не найдены. Пропускаем 1С.{Style.RESET_ALL}")
-            return True
-
-        cluster = clusters[0]
-        print(f"{Fore.CYAN}3. Аутентификация в кластере...{Style.RESET_ALL}")
-        agent.Authenticate(cluster, "", "")
-
-        # === Рабочий процесс ===
-        print(f"{Fore.CYAN}4. Получение рабочих процессов...{Style.RESET_ALL}")
-        processes = agent.GetWorkingProcesses(cluster)
-        if not processes:
-            print(f"{Fore.YELLOW}Рабочие процессы не найдены.{Style.RESET_ALL}")
-            return True
-
-        wp = com_connector.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
-        wp.AddAuthentication(db_username, db_password)
-
-        # === Поиск базы ===
-        print(f"{Fore.CYAN}5. Поиск базы '{infobase}'...{Style.RESET_ALL}")
-        bases = wp.GetInfoBases()
-        base_obj = next((b for b in bases if b.Name.lower() == infobase.lower()), None)
-        if not base_obj:
-            print(f"{Fore.YELLOW}База не найдена в кластере. Пропускаем 1С.{Style.RESET_ALL}")
         else:
-            # === ОТКЛЮЧЕНИЕ СОЕДИНЕНИЙ ЧЕРЕЗ КЛАСТЕР (а не через wp!) ===
-            print(f"{Fore.CYAN}6. Проверка и отключение соединений...{Style.RESET_ALL}")
-            try:
-                # Получаем соединения через агент и кластер
-                connections = agent.GetConnections(cluster)
-                active_conn = [c for c in connections if c.InfoBase.Name.lower() == infobase.lower()]
-                if active_conn:
-                    print(f"{Fore.YELLOW}Найдено {len(active_conn)} активных соединений. Отключаем...{Style.RESET_ALL}")
-                    for conn in active_conn:
-                        try:
-                            agent.TerminateSession(cluster, conn)
-                            print(f"{Fore.GREEN}  → Соединение {conn.ConnectionID} ({conn.Application}) отключено{Style.RESET_ALL}")
-                        except Exception as e:
-                            print(f"{Fore.RED}  → Не удалось отключить {conn.ConnectionID}: {e}{Style.RESET_ALL}")
-                else:
-                    print(f"{Fore.GREEN}Активных соединений нет.{Style.RESET_ALL}")
-            except Exception as e:
-                print(f"{Fore.YELLOW}Не удалось получить соединения (возможно, старая версия): {e}{Style.RESET_ALL}")
+            cluster = clusters[0]
+            print(f"{Fore.CYAN}3. Аутентификация в кластере...{Style.RESET_ALL}")
+            agent.Authenticate(cluster, "", "")
 
-            # === УДАЛЕНИЕ БАЗЫ ===
-            print(f"{Fore.CYAN}7. Удаление базы из кластера (принудительно)...{Style.RESET_ALL}")
-            try:
-                wp.DropInfoBase(base_obj, 1)  # 1 = принудительно
-                print(f"{Fore.GREEN}База успешно удалена из кластера 1С{Style.RESET_ALL}")
-            except Exception as e:
-                print(f"{Fore.RED}Ошибка при удалении из кластера: {e}{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}4. Получение рабочих процессов...{Style.RESET_ALL}")
+            processes = agent.GetWorkingProcesses(cluster)
+            if not processes:
+                print(f"{Fore.YELLOW}Рабочие процессы не найдены.{Style.RESET_ALL}")
+            else:
+                wp = com.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
+                wp.AddAuthentication(db_username, db_password)
+
+                print(f"{Fore.CYAN}5. Поиск базы '{infobase}'...{Style.RESET_ALL}")
+                bases = wp.GetInfoBases()
+                base_obj = next((b for b in bases if b.Name.lower() == infobase.lower()), None)
+
+                if base_obj:
+                    # === ОТКЛЮЧЕНИЕ СОЕДИНЕНИЙ ===
+                    print(f"{Fore.CYAN}6. Отключение активных соединений...{Style.RESET_ALL}")
+                    try:
+                        connections = wp.GetIDBConnections(base_obj)
+                        if connections:
+                            print(f"{Fore.YELLOW}Найдено {len(connections)} соединений. Отключаем...{Style.RESET_ALL}")
+                            for conn in connections:
+                                try:
+                                    wp.TerminateConnection(conn)
+                                    app = getattr(conn, 'Application', 'Unknown')
+                                    print(f"{Fore.GREEN}  → {app} (ID: {conn.ConnectionID}) отключено{Style.RESET_ALL}")
+                                except Exception as e:
+                                    print(f"{Fore.RED}  → Ошибка: {e}{Style.RESET_ALL}")
+                        else:
+                            print(f"{Fore.GREEN}Активных соединений нет.{Style.RESET_ALL}")
+                    except Exception as e:
+                        print(f"{Fore.YELLOW}GetIDBConnections недоступен: {e}{Style.RESET_ALL}")
+
+                    # === УДАЛЕНИЕ БАЗЫ ===
+                    print(f"{Fore.CYAN}7. Удаление базы (принудительно)...{Style.RESET_ALL}")
+                    try:
+                        wp.DropInfoBase(base_obj, 1)
+                        print(f"{Fore.GREEN}База удалена из кластера 1С{Style.RESET_ALL}")
+                    except Exception as e:
+                        print(f"{Fore.RED}Ошибка удаления: {e}{Style.RESET_ALL}")
+                else:
+                    print(f"{Fore.YELLOW}База '{infobase}' не найдена в кластере.{Style.RESET_ALL}")
 
         # === PostgreSQL ===
         print(f"{Fore.CYAN}8. Удаление из PostgreSQL...{Style.RESET_ALL}")
         db_name = infobase.lower()
         try:
             os.environ['PGPASSWORD'] = pg_password
-
-            # Закрываем чужие сессии
             subprocess.run([
                 'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
                 '-c', f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{db_name}' AND pid <> pg_backend_pid();"
             ], check=False, capture_output=True)
 
-            # Удаляем БД
             result = subprocess.run([
                 'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
                 '-c', f"DROP DATABASE IF EXISTS \"{db_name}\";"
@@ -147,7 +141,7 @@ def drop_1c_database():
                 print(f"{Fore.GREEN}База '{db_name}' удалена из PostgreSQL{Style.RESET_ALL}")
             else:
                 if "does not exist" in result.stderr:
-                    print(f"{Fore.YELLOW}База '{db_name}' не существует в PostgreSQL{Style.RESET_ALL}")
+                    print(f"{Fore.YELLOW}База '{db_name}' не существует{Style.RESET_ALL}")
                 else:
                     print(f"{Fore.YELLOW}PostgreSQL: {result.stderr.strip()}{Style.RESET_ALL}")
         except Exception as e:
@@ -163,7 +157,7 @@ def drop_1c_database():
         clean_1c_cache()
         print(f"{Fore.GREEN}Кэш 1С очищен{Style.RESET_ALL}")
 
-        print(f"{Fore.GREEN}Скрипт завершён успешно{Style.RESET_ALL}")
+        print(f"{Fore.GREEN}Скрипт успешно завершён{Style.RESET_ALL}")
         return True
 
     except Exception as e:
@@ -171,12 +165,11 @@ def drop_1c_database():
         return False
 
     finally:
-        # === ОСВОБОЖДЕНИЕ COM-ОБЪЕКТОВ БЕЗ ОШИБОК ===
-        for obj in [wp, agent, com_connector]:
+        # === ОСВОБОЖДЕНИЕ ===
+        for obj in [wp, agent, com]:
             if obj is not None:
                 try:
-                    # Явно обнуляем ссылки
-                    obj = None
+                    del obj
                 except:
                     pass
         try:
@@ -186,7 +179,7 @@ def drop_1c_database():
 
 
 if __name__ == "__main__":
-    print(f"{Fore.BLUE}=== УДАЛЕНИЕ БАЗЫ 1С + PostgreSQL ==={Style.RESET_ALL}")
+    print(f"{Fore.BLUE}=== УДАЛЕНИЕ БАЗЫ 1С (8.3.27) ==={Style.RESET_ALL}")
     success = drop_1c_database()
     print(f"{Fore.BLUE}=== {'УСПЕХ' if success else 'ОШИБКА'} ==={Style.RESET_ALL}")
     sys.exit(0 if success else 1)
