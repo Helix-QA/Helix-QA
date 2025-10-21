@@ -2,58 +2,21 @@ pipeline {
     agent {
         label "OneS"
     }
+	environment {
+        InitDatabase = "tests/scripts/InitDatabase.bat"
+		dbTests = "avtotestqa"
+    }
     stages {
 		stage('Подготовка .cf') {
 				steps {
 					script {
-						// === 3. ПРОВЕРКА: СООТВЕТСТВУЕТ ЛИ ВЕРСИЯ ПРОДУКТУ? ===
-						def valid = false
-						def expected = ""
-
-						switch (params.product) {
-							case 'fitness':
-								valid = version ==~ /^4\.0\.\d+\.\d+$/
-								expected = "4.0.X.Y (например: 4.0.57.1)"
-								break
-							case 'salon':
-								valid = version ==~ /^(3|4)\.0\.\d+\.\d+$/
-								expected = "3.0.X.Y или 4.0.X.Y (например: 3.0.44.1, 4.0.55.1)"
-								break
-							case 'stoma':
-								valid = version ==~ /^2\.1\.\d+\.\d+$/
-								expected = "2.1.X.Y (например: 2.1.27.1)"
-								break
-							default:
-								error "ОШИБКА: Неизвестный продукт: '${params.product}'. Допустимые: fitness, salon, stoma"
-						}
-
-						if (!valid) {
-							error """
-							ОШИБКА: Неверная версия для продукта!
-							→ Продукт: ${params.product}
-							→ Указана версия: ${version}
-							→ Ожидается: ${expected}
-
-							Примеры правильных комбинаций:
-							fitness → 4.0.56.1, 4.0.57.1
-							salon   → 3.0.44.1, 4.0.55.1
-							stoma   → 2.1.27.1, 2.1.28.1
-							"""
-						}
-
-						echo "Валидация прошла: ${params.product} → ${version}"
-						// =====================================
-						
-						
-						updateConfigFile() // Заполнение json переменными
+						updateConfigFile()
 						
 						if (params.product == 'fitness') {	
 						env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}" // debug - тестовые запуски
 						env.repository = "${repositoryReleaseFitness}"
 						env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/fitness4_messenger_release"
 						env.extNameMess = "Мессенджер"
-						env.dbTests = "QA_fitness"
-						
 						} 
 						
 						else if (params.product == 'salon') {
@@ -61,7 +24,6 @@ pipeline {
 						env.repository = "${repositoryReleaseSalon}"
 						env.extmess== "http://192.168.2.16/hran1c/repository.1ccr/salon_messenger_release"
 						extNameMess= "Мессенджер_СалонКрасоты"
-						env.dbTests = "QA_salon"
 						} 
 
 						else {	
@@ -69,7 +31,6 @@ pipeline {
 						env.repository = "${repositoryReleaseStom}"
 						env.extmess = "http://192.168.2.16/hran1c/repository.1ccr/stomatology2_messenger_release"
 						env.extNameMess = "Мессенджер_Стоматология"
-						env.dbTests = "QA_stoma"
 					}
 				}
 			}
@@ -255,7 +216,7 @@ def runDbOperation(operation, params) {
 		try {
 			bat """
 				chcp 65001
-				@call tests/scripts/InitDatabase.bat ${operation} ${params}
+				@call ${env.InitDatabase} ${operation} ${params}
 			"""
 		} catch (Exception e) {
 			echo "Ошибка при выполнении операции ${operation}: ${e.message}"
