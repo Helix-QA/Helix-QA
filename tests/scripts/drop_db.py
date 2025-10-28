@@ -71,7 +71,7 @@ def drop_1c_database():
         print("1. Подключение к агенту 1С...")
 
         com = win32com.client.dynamic.Dispatch("V83.COMConnector")
-        agent = com.ConnectAgent("localhost:1540")
+        agent = com.ConnectAgent("tcp://127.0.0.1:1540")
 
         print("2. Получение кластеров...")
         clusters = agent.GetClusters()
@@ -87,7 +87,7 @@ def drop_1c_database():
             if not processes:
                 print("Рабочие процессы не найдены.")
             else:
-                wp = com.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
+                wp = com.ConnectWorkingProcess(f"tcp://127.0.0.1:{processes[0].MainPort}")
                 wp.AddAuthentication(db_username, db_password)
 
                 print(f"5. Поиск базы '{infobase}'...")
