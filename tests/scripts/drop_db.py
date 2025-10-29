@@ -39,7 +39,8 @@ DEFAULT_CONFIG = {
 
 LOG_DIR = "logs"
 LOG_FILE = os.path.join(LOG_DIR, "drop_1c.log")
-
+if len(sys.argv) == 2 and not sys.argv[1].startswith("--"):
+    sys.argv.insert(1, "--db")
 
 def setup_logging(level=logging.INFO):
     os.makedirs(LOG_DIR, exist_ok=True)
