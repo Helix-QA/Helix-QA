@@ -1,0 +1,20 @@
+{
+    "pg_server": "localhost",
+    "pg_port": 5432,
+    "pg_user": "postgres",
+    "pg_password": "postgres",
+    "agent_host": "127.0.0.1",
+    "agent_port": 1540,
+    "db_username": "Админ",
+    "db_password": "",
+    "temp_delete_paths": [
+      "tests/build/results"
+    ],
+    "cache_relative_paths": [
+      "AppData\\Local\\1C\\1cv8",
+      "AppData\\Roaming\\1C\\1cv8",
+      "AppData\\Roaming\\1C\\1cv82",
+      "AppData\\Local\\1C\\1cv82"
+    ]
+  }
+  
