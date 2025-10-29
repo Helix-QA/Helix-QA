@@ -49,7 +49,7 @@ pipeline {
 					while (attempt <= maxAttempts) {
 						try {
 							echo "Попытка ${attempt} из ${maxAttempts}"
-							bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
+					 		bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\"" // Удаление существующей базы
 							runDbOperation("create", "\"${env.dbTests}\"") // Создание новой пустой базы данных
 							runDbOperation("session_kill", "\"${env.dbTests}\"")
 							runDbOperation("restore", "\"${params.product}\" \"${env.dbTests}\"") // Загрузка .dt в новую базу
@@ -118,7 +118,6 @@ pipeline {
             steps {
                 script {
 					try{
-
 						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Сценарное тестирование																																
  					} catch (Exception Exc) {
 						echo "Error occurred: ${Exc.message}"
