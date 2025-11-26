@@ -47,7 +47,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
@@ -91,7 +91,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону 
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                 |
 		| '<CheckPackage>'                                                                                                                                                                                                                                             |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                         |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                         |
 		| '		<AgentData/>'                                                                                                                                                                                                                                             |
 		| '		<VendorData/>'                                                                                                                                                                                                                                            |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                        |
@@ -143,7 +143,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону 
 		|'<?xml version=\"1.0\" encoding=\"UTF-8\"?>'|
 		|'<CheckPackage>'|
-		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'|
+		|'	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'|
 		|'		<AgentData/>'|
 		|'		<VendorData/>'|
 		|'		<CustomerDetail/>'|
@@ -181,7 +181,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                                       |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                                   |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                                               |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                                               |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                                   |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                                  |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                              |
@@ -225,7 +225,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                                       |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                                   |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                                               |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                                               |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                                   |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                                  |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                              |
@@ -274,7 +274,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                                       |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                                   |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                                               |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                                               |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                                   |
 		| '		<VendorData/>'                                                                                                                                                                                                                                                                  |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                                              |
@@ -311,7 +311,7 @@
 	И элемент формы с именем "XML" стал равен по шаблону 
 		| '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'                                                                                                                                                                                                                    |
 		| '<CheckPackage>'                                                                                                                                                                                                                                                |
-		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс " CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                            |
+		| '	<Parameters CashierName=\"*\" OperationType=\"1\" TaxationSystem=\"0\" SaleLocation="Фитнес плюс" CustomerEmail=\"\" CustomerPhone=\"\" GroupingPositionsWhenPrinting=\"false\" OperationOnline="false">'                                                                                                                                            |
 		| '		<AgentData/>'                                                                                                                                                                                                                                                |
 		| '		<VendorData/>'                                                                                                                                                                                                                                               |
 		| '		<CustomerDetail/>'                                                                                                                                                                                                                                           |
