@@ -1,148 +1,182 @@
-# -*- coding: utf-8 -*-
-"""
-drop_db.py — УДАЛЕНИЕ БАЗЫ 1С 8.3 + PostgreSQL
-Работает на Jenkins под любой учёткой (SYSTEM, сервис, пользователь)
-Фикс для ошибки "V83.COMConnector.ConnectAgent" — 100% надёжно
-"""
-
 import os
+import subprocess
 import sys
 import shutil
-import subprocess
-import time
 import pythoncom
+import win32com.client
 
-# ----------------------------------------------------------------------
-# КЛЮЧЕВОЙ ФИКС: принудительно импортируем сгенерированный модуль
-# ----------------------------------------------------------------------
+# Полностью отключаем кэш COM
+win32com.client.gencache.is_readonly = False
 try:
-    # Это сработает, если модуль уже был сгенерирован хоть раз
-    from win32com.client.gencache import EnsureDispatch
-    print("Используем EnsureDispatch (рекомендуемый способ)")
-    com_connector = EnsureDispatch("V83.COMConnector")
-except Exception as e:
-    print("EnsureDispatch не сработал, падаем на MakePy...")
-    # Принудительно генерируем типовую библиотеку (это главное лекарство!)
-    import win32com.client
-    com_connector = win32com.client.gencache.EnsureModule(
-        "{54E1F101-8ED5-462D-9F2E-2E3C405A3A3F}", 0, 1, 0)  # CLSID V83.COMConnector
-    if com_connector is None:
-        raise ImportError("Не удалось сгенерировать COM-модуль V83.COMConnector")
-    com_connector = win32com.client.Dispatch("V83.COMConnector")
+    shutil.rmtree(os.path.expanduser(r"~\AppData\Local\Temp\gen_py"), ignore_errors=True)
+except:
+    pass
 
-# ----------------------------------------------------------------------
-# Остальные функции (очистка кэша и т.д.)
-# ----------------------------------------------------------------------
+
+def delete_folder(folder_path):
+    if os.path.exists(folder_path):
+        try:
+            shutil.rmtree(folder_path, ignore_errors=True)
+            print(f"Папка {folder_path} успешно удалена")
+        except Exception as e:
+            print(f"Не удалось удалить папку {folder_path}: {e}")
+    else:
+        print(f"Папка {folder_path} не существует")
+
+
 def clean_1c_cache():
-    user = os.getenv('USERNAME') or "DefaultUser"
-    paths = [
+    user = os.getenv('USERNAME')
+    cache_paths = [
         f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv8",
         f"C:\\Users\\{user}\\AppData\\Roaming\\1C\\1cv8",
-        f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv82",
         f"C:\\Users\\{user}\\AppData\\Roaming\\1C\\1cv82",
+        f"C:\\Users\\{user}\\AppData\\Local\\1C\\1cv82"
     ]
-    for p in paths:
-        if os.path.exists(p):
-            for item in os.listdir(p):
-                if item in {"ExtCompT", "1cv8strt.pfl"}:
+    for path in cache_paths:
+        if not os.path.exists(path):
+            continue
+        try:
+            for item in os.listdir(path):
+                item_path = os.path.join(path, item)
+                if item in ('ExtCompT', '1cv8strt.pfl'):
                     continue
-                path = os.path.join(p, item)
                 try:
-                    if os.path.isdir(path):
-                        shutil.rmtree(path, ignore_errors=True)
+                    if os.path.isdir(item_path):
+                        shutil.rmtree(item_path, ignore_errors=True)
                     else:
-                        os.remove(path)
-                except:
-                    pass
+                        os.remove(item_path)
+                except Exception as e:
+                    print(f"Не удалось удалить {item_path}: {e}")
+        except Exception as e:
+            print(f"Не удалось прочитать кэш в {path}: {e}")
 
-# ----------------------------------------------------------------------
-# Основная логика удаления
-# ----------------------------------------------------------------------
+
 def drop_1c_database():
     if len(sys.argv) < 2:
-        print("ОШИБКА: укажите имя базы!")
+        print("Ошибка: укажите имя базы. Использование: drop_db.py <ИмяБазы>")
         return False
 
-    infobase_name = sys.argv[1].strip()
-    db_name = infobase_name.lower()
+    infobase = sys.argv[1].strip()
+    db_username = "Админ"
+    db_password = ""
+    pg_server = "localhost"
+    pg_port = "5432"
+    pg_user = "postgres"
+    pg_password = "postgres"
 
-    agent = None
-    wp = None
+    com = agent = wp = None
 
     try:
-        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+        pythoncom.CoInitialize()
+        print("1. Подключение к агенту 1С...")
 
-        print(f"Подключение к агенту 1С (localhost:1540)...")
-        agent = com_connector.ConnectAgent("localhost:1540")   # ← теперь точно есть метод!
-        print("Подключение к агенту успешно!")
+        com = win32com.client.dynamic.Dispatch("V83.COMConnector")
+        agent = com.ConnectAgent("localhost:1540")
 
+        print("2. Получение кластеров...")
         clusters = agent.GetClusters()
-        cluster = clusters[0] if clusters else None
-
-        if cluster:
+        if not clusters:
+            print("Кластеры не найдены. Пропускаем 1С.")
+        else:
+            cluster = clusters[0]
+            print("3. Аутентификация в кластере...")
             agent.Authenticate(cluster, "", "")
 
+            print("4. Получение рабочих процессов...")
             processes = agent.GetWorkingProcesses(cluster)
             if not processes:
-                print("Нет рабочих процессов")
+                print("Рабочие процессы не найдены.")
             else:
-                wp = com_connector.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
-                wp.AddAuthentication("Админ", "")
+                wp = com.ConnectWorkingProcess(f"tcp://localhost:{processes[0].MainPort}")
+                wp.AddAuthentication(db_username, db_password)
 
+                print(f"5. Поиск базы '{infobase}'...")
                 bases = wp.GetInfoBases()
-                base = next((b for b in bases if b.Name.strip().lower() == infobase_name.lower()), None)
+                base_obj = next((b for b in bases if b.Name.lower() == infobase.lower()), None)
 
-                if base:
-                    print(f"Найдена база: {base.Name}")
-                    # Отключаем соединения
+                if base_obj:
+                    print("6. Попытка отключить соединения...")
                     try:
-                        for conn in wp.GetInfoBaseConnections(base):
-                            wp.TerminateConnection(conn)
-                    except:
-                        pass
-                    wp.DropInfoBase(base, 1)
-                    print("База удалена из кластера 1С")
+                        connections = wp.GetInfoBaseConnections(base_obj)
+                        if connections:
+                            print(f"Найдено {len(connections)} соединений. Отключаем...")
+                            for conn in connections:
+                                try:
+                                    wp.TerminateConnection(conn)
+                                    print(f"  → соединение ID={conn.ConnectionID} отключено")
+                                except Exception as e:
+                                    print(f"  → Ошибка отключения: {e}")
+                        else:
+                            print("Активных соединений нет.")
+                    except Exception as e:
+                        print(f"Не удалось получить соединения: {e}")
+
+                    print("7. Удаление базы из кластера...")
+                    try:
+                        wp.DropInfoBase(base_obj, 1)
+                        print("База удалена из кластера 1С")
+                    except Exception as e:
+                        print(f"Ошибка удаления: {e}")
                 else:
-                    print("База не найдена в кластере (возможно, уже удалена)")
+                    print(f"База '{infobase}' не найдена в кластере.")
 
-        # PostgreSQL — удаление
-        print("Удаление базы PostgreSQL...")
-        os.environ["PGPASSWORD"] = "postgres"
-        subprocess.run([
-            "psql", "-h", "localhost", "-p", "5432", "-U", "postgres", "-d", "postgres",
-            "-c", f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{db_name}' AND pid<>pg_backend_pid();"
-        ], check=False, capture_output=True)
+        # === PostgreSQL ===
+        print("8. Удаление из PostgreSQL...")
+        db_name = infobase.lower()
+        try:
+            os.environ['PGPASSWORD'] = pg_password
+            subprocess.run([
+                'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
+                '-c', f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{db_name}' AND pid <> pg_backend_pid();"
+            ], check=False, capture_output=True)
 
-        result = subprocess.run([
-            "psql", "-h", "localhost", "-p", "5432", "-U", "postgres", "-d", "postgres",
-            "-c", f"DROP DATABASE IF EXISTS \"{db_name}\";"
-        ], capture_output=True, text=True)
+            result = subprocess.run([
+                'psql', '-h', pg_server, '-p', pg_port, '-U', pg_user, '-d', 'postgres',
+                '-c', f"DROP DATABASE IF EXISTS \"{db_name}\";"
+            ], check=False, capture_output=True, text=True)
 
-        if result.returncode == 0:
-            print(f"PostgreSQL: база {db_name} удалена")
-        else:
-            print("PostgreSQL: база уже не существует или ошибка")
+            if result.returncode == 0:
+                print(f"База '{db_name}' удалена из PostgreSQL")
+            else:
+                if "does not exist" in result.stderr:
+                    print(f"База '{db_name}' не существует")
+                else:
+                    print(f"PostgreSQL ошибка: {result.stderr.strip()}")
+        except Exception as e:
+            print(f"Ошибка PostgreSQL: {e}")
+        finally:
+            os.environ.pop('PGPASSWORD', None)
 
+        print("9. Удаление временной папки...")
+        delete_folder("tests/build/results")
+
+        print("10. Очистка кэша 1С...")
         clean_1c_cache()
-        print("УСПЕШНО: база полностью удалена")
+        print("Кэш 1С очищен")
+
+        print("Скрипт успешно завершён")
         return True
 
     except Exception as e:
-        print(f"ОШИБКА: {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"Критическая ошибка: {e}")
         return False
 
     finally:
-        for obj in [wp, agent]:
-            if obj:
-                try: del obj
-                except: pass
-        pythoncom.CoUninitialize()
+        # Правильный порядок освобождения COM
+        for obj in [wp, agent, com]:
+            if obj is not None:
+                try:
+                    del obj
+                except:
+                    pass
+        try:
+            pythoncom.CoUninitialize()
+        except:
+            pass
 
 
-# ----------------------------------------------------------------------
 if __name__ == "__main__":
-    print("=== УДАЛЕНИЕ БАЗЫ 1С (Jenkins-совместимая версия) ===")
+    print("=== УДАЛЕНИЕ БАЗЫ 1С (8.3.27) ===")
     success = drop_1c_database()
+    print(f"=== {'УСПЕХ' if success else 'ОШИБКА'} ===")
     sys.exit(0 if success else 1)
