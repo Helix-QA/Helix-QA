@@ -2,7 +2,7 @@
 chcp 65001
 
 REM Переходим к нужной функции
-if "%1"=="session_kill" call vrunner session kill --ras "C:\Program Files\1cv8\8.3.27.1688\bin\rac.exe"--db %2 --db-user Админ --uccode tester
+if "%1"=="session_kill" call vrunner session kill --ras "C:\Program Files\1cv8\8.3.27.1688\bin\rac.exe" --db %2 --db-user Админ --uccode tester
 if "%1"=="loadrepo"     call vrunner loadrepo --storage-name %2 --storage-user %3 --ibconnection /Slocalhost/%4 --db-user Админ --uccode tester
 if "%1"=="restore"      call vrunner restore "D:\\Vanessa-Automation\\DT\\%2.dt" --ibconnection /Slocalhost/%3 --uccode tester
 if "%1"=="remove"       call vrunner remove --name %2 --drop-database --clear-database --db-user Админ --uccode tester
