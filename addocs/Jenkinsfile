@@ -68,7 +68,7 @@ pipeline {
                     steps {
                         bat """
                             chcp 65001
-                            @call vrunner compare --secondFile "${env.workDir}\\old\\${params.oldversion}.cf" --reportFile "${env.workDir}\\Отчет.txt" --reportType Brief --firstFile "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/VAFitness --db-user Админ
+                            @call vrunner compare --secondFile "${env.workDir}\\old\\${params.oldversion}.cf" --reportFile "${env.workDir}\\Отчет.txt" --reportType Brief --firstFile "${env.workDir}\\new\\${params.newversion}.cf" --ibconnection /Slocalhost/${env.base} --db-user Админ
                         """
                     }
                 }
