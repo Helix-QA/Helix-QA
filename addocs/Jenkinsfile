@@ -48,10 +48,16 @@ pipeline {
                 }
                 stage('Перенос .cf') {
                     steps {
-                        bat """
-                            chcp 65001
-                            if exist "${env.dir}\\${params.oldversion}.cf" copy "${env.dir}\\${params.oldversion}.cf" "${env.workDir}\\old"
-                        """
+                        script {
+                            def sourceFile = "${env.dir}\\${params.oldversion}.cf"
+                            if (!fileExists(sourceFile)) {
+                                error("Ошибка: Файл ${sourceFile} не найден.")
+                            }
+                            bat """
+                                chcp 65001
+                                copy "${sourceFile}" "${env.workDir}\\old"
+                            """
+                        }
                     }
                 }
             }
