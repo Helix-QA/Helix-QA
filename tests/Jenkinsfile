@@ -7,9 +7,10 @@ pipeline {
 		dbTests = "avtotestqa"
     }
     stages {
-		stage('Подготовка .cf') {
+		stage('Инициализация параметров') {
 				steps {
 					script {
+						currentBuild.displayName = "#${BUILD_NUMBER} – ${params.product} - ${params.VERSION_NEW}"
 						updateConfigFile()
 						
 						if (params.product == 'fitness') {	
