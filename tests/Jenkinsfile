@@ -10,7 +10,7 @@ pipeline {
 		stage('Инициализация параметров') {
 				steps {
 					script {
-						currentBuild.displayName = "#${BUILD_NUMBER} – ${params.product} - ${params.VERSION_NEW}"
+						currentBuild.displayName = "#${BUILD_NUMBER} – ${params.product} – ${params.VERSION_NEW} ${params.debug} "
 						updateConfigFile()
 						
 						if (params.product == 'fitness') {	
