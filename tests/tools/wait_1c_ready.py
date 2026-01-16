@@ -9,7 +9,7 @@ AGENT_ADDR = "localhost:1540"
 WP_HOST = "localhost"
 DB_USER_1C = "Админ"
 DB_PASS_1C = ""
-MAX_WAIT_SECONDS = 60   # Максимальное время ожидания 1С
+MAX_WAIT_SECONDS = 20   # Максимальное время ожидания 1С
 SLEEP_INTERVAL = 3      # Интервал проверки
 # ----------------------------
 
