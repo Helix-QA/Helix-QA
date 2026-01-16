@@ -1,27 +1,61 @@
 import time
-import subprocess
+import pythoncom
+import win32com.client
 import sys
+from contextlib import suppress
 
-MAX_WAIT = 180
-STEP = 5
-elapsed = 0
+# ---------- CONFIG ----------
+AGENT_ADDR = "localhost:1540"
+WP_HOST = "localhost"
+DB_USER_1C = "Админ"
+DB_PASS_1C = ""
+MAX_WAIT_SECONDS = 60   # Максимальное время ожидания 1С
+SLEEP_INTERVAL = 3      # Интервал проверки
+# ----------------------------
 
-while elapsed < MAX_WAIT:
+def is_1c_ready():
+    pythoncom.CoInitialize()
     try:
-        result = subprocess.run(
-            ['rac', 'cluster', 'list'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            print("1C server is ready")
+        com = win32com.client.gencache.EnsureDispatch("V83.COMConnector")
+        agent = com.ConnectAgent(AGENT_ADDR)
+        clusters = agent.GetClusters()
+        if not clusters:
+            return False
+
+        cluster = clusters[0]
+        agent.Authenticate(cluster, "", "")
+
+        wps = agent.GetWorkingProcesses(cluster)
+        if not wps:
+            return False
+
+        for wp_info in wps:
+            try:
+                wp = com.ConnectWorkingProcess(f"tcp://{WP_HOST}:{wp_info.MainPort}")
+                wp.AddAuthentication(DB_USER_1C, DB_PASS_1C)
+                return True
+            except:
+                continue
+        return False
+    except:
+        return False
+    finally:
+        with suppress(Exception):
+            del wp
+            del agent
+            del com
+        pythoncom.CoUninitialize()
+
+
+if __name__ == "__main__":
+    print("=== ОЖИДАНИЕ ГОТОВНОСТИ 1С ===")
+    start_time = time.time()
+    while time.time() - start_time < MAX_WAIT_SECONDS:
+        if is_1c_ready():
+            print("✅ 1С готова")
             sys.exit(0)
-    except Exception:
-        pass
+        print(f"⏳ 1С ещё не готова, ждём {SLEEP_INTERVAL} сек...")
+        time.sleep(SLEEP_INTERVAL)
 
-    time.sleep(STEP)
-    elapsed += STEP
-
-print("1C server NOT ready after timeout")
-sys.exit(1)
+    print(f"❌ 1С не готова после {MAX_WAIT_SECONDS} секунд")
+    sys.exit(1)
