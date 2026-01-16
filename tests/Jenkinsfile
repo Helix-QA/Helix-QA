@@ -1,7 +1,8 @@
 pipeline {
     agent { label "OneS" }
-	    environment {
-        dbTests = "avtotestqa"
+	
+	environment {
+        initDatabase = "tests/scripts/InitDatabase.bat"
     }
 
     stages {
@@ -40,7 +41,7 @@ pipeline {
             steps {
                 script {
                     def drop_db = "tests/scripts/drop_db.py"
-                    def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt"
+                    def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt" // перенести в git
                     timeout(time: 2, unit: 'MINUTES') {
                         retry(3) {
                             try {
@@ -144,7 +145,6 @@ pipeline {
 
 
 def runDbOperation(operation, params) {
-    def initDatabase = "tests/scripts/InitDatabase.bat"
 	bat """
         chcp 65001
         @call ${env.initDatabase} ${operation} ${params}
