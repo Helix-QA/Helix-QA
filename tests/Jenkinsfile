@@ -1,11 +1,5 @@
 pipeline {
     agent { label "OneS" }
-
-    environment {
-        InitDatabase = "tests/scripts/InitDatabase.bat"
-        dbTests      = "avtotestqa"
-    }
-
     stages {
 
         stage('Инициализация параметров') {
@@ -146,9 +140,10 @@ pipeline {
 
 
 def runDbOperation(operation, params) {
-    bat """
+    def initDatabase = "tests/scripts/InitDatabase.bat"
+	bat """
         chcp 65001
-        @call ${env.InitDatabase} ${operation} ${params}
+        @call ${env.initDatabase} ${operation} ${params}
     """
 }
 
