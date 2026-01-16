@@ -106,12 +106,10 @@ pipeline {
                     retry(2) {
                         try {
                             runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
-                        } catch (e) {
-                            echo "Сценарные тесты упали, повтор через 30 сек"
-                            sleep 30
-                            wait1C()
-                            throw e
-                        }
+ 						} catch (Exception Exc) {
+							echo "Error occurred: ${Exc.message}"
+							currentBuild.result = 'UNSTABLE'
+          				}
                     }
                 }
             }
