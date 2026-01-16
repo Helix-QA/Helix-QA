@@ -140,11 +140,9 @@ pipeline {
             script {
                 allure([
                     includeProperties: false,
-                    results: [[path: 'tests/build/results']]
+                    results: [[path: 'tests/build/results']]])
 					if (currentBuild.currentResult == "SUCCESS" || currentBuild.currentResult == "UNSTABLE") {
-					
 					def allureReportUrl = "${env.JENKINS_URL}job/${env.JOB_NAME.replaceAll('/', '/job/')}/${env.BUILD_NUMBER}/allure"
-
 					def configJson = readFile(file: 'tests/notifications/config.json')
 					def updatedConfigJson = configJson
 						.replace('"${allureReportUrl}"', "\"${allureReportUrl}\"")
@@ -152,7 +150,6 @@ pipeline {
 						.replace('"${env.BUILD_USER}"', "\"${env.BUILD_USER}\"")
 						.replace('"${logo}"', "\"${env.logo}\"")
 					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
-
 					try {
 						bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
 					}
@@ -160,7 +157,6 @@ pipeline {
 						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."
 					}
 				}
-                ])
             }
         }
     }
