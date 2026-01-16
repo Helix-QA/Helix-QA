@@ -29,7 +29,17 @@ def clean_gen_py():
     gen_py = os.path.expanduser(r"~\AppData\Local\Temp\gen_py")
     shutil.rmtree(gen_py, ignore_errors=True)
 
+def delete_folder(folder_path):
+    if os.path.exists(folder_path):
+        try:
+            shutil.rmtree(folder_path, ignore_errors=True)
+            print(f"Папка {folder_path} успешно удалена")
+        except Exception as e:
+            print(f"Не удалось удалить папку {folder_path}: {e}")
+    else:
+        print(f"Папка {folder_path} не существует")
 
+        
 def clean_1c_cache():
     user = os.getenv("USERNAME")
     paths = [
@@ -172,7 +182,6 @@ def drop_1c_infobase(infobase_name: str) -> bool:
             del com
         pythoncom.CoUninitialize()
 
-
 # ================== ENTRYPOINT ==================
 
 if __name__ == "__main__":
@@ -189,6 +198,9 @@ if __name__ == "__main__":
 
     print("Ожидание освобождения ресурсов...")
     time.sleep(5)
+    
+    print("9. Удаление временной папки...")
+    delete_folder("tests/build/results")
 
     drop_postgres(db_name)
     clean_1c_cache()
