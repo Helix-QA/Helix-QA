@@ -119,15 +119,21 @@ pipeline {
 
         stage("Дымовые тесты") {
             when { expression { !params.scenarios } }
-            steps {
-                script {
-                    try {
-                        runDbOperation("smoke", "\"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
-                    } catch (e) {
-                        currentBuild.result = 'UNSTABLE'
-                    }
-                }
-            }
+			steps {
+				script {
+					def replace = "tests/scripts/replaceSmoke.py"
+					def smokeTests = "${env.WORKSPACE}\\tests\\features\\smoke\\exceptions_${params.product}"
+					def folderSmoke = "\\tests\\features\\smoke\\exceptions_${params.product}"
+					runDbOperation("smoke", " \"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
+					bat "python -X utf8 \"${replace}\" \"${smokeTests}\" \"${params.product}\""
+					try{
+						runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${folderSmoke}\" \"${env.pathvanessa}\" \"${env.dbTests}\"") // Дымовые тесты
+					} catch (Exception Exc) {
+						echo "Error occurred: ${Exc.message}"
+						currentBuild.result = 'UNSTABLE'
+					}
+				}
+			}
         }
     }
 
