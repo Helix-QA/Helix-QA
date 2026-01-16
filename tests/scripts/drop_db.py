@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import shutil
+import time
 import pythoncom
 import win32com.client
 from contextlib import suppress
@@ -18,6 +19,9 @@ PG_HOST = "localhost"
 PG_PORT = "5432"
 PG_USER = "postgres"
 PG_PASS = "postgres"
+
+PG_RETRIES = 6          # сколько раз пробуем убить сессии
+PG_WAIT_BETWEEN = 5    # секунд между попытками
 # ============================================
 
 
@@ -47,48 +51,70 @@ def clean_1c_cache():
                 shutil.rmtree(full, ignore_errors=True) if os.path.isdir(full) else os.remove(full)
 
 
+# ---------- PostgreSQL ----------
+
+def terminate_pg_sessions(db_name: str):
+    os.environ["PGPASSWORD"] = PG_PASS
+
+    subprocess.run(
+        [
+            "psql", "-h", PG_HOST, "-p", PG_PORT,
+            "-U", PG_USER, "-d", "postgres",
+            "-c",
+            f"""
+            SELECT pg_terminate_backend(pid)
+            FROM pg_stat_activity
+            WHERE datname = '{db_name}'
+              AND pid <> pg_backend_pid();
+            """
+        ],
+        check=False,
+        capture_output=True
+    )
+
+
 def drop_postgres(db_name: str):
     print(f"PostgreSQL: удаление базы {db_name}")
     os.environ["PGPASSWORD"] = PG_PASS
+
     try:
-        subprocess.run(
-            [
-                "psql", "-h", PG_HOST, "-p", PG_PORT,
-                "-U", PG_USER, "-d", "postgres",
-                "-c",
-                f"""
-                SELECT pg_terminate_backend(pid)
-                FROM pg_stat_activity
-                WHERE datname = '{db_name}'
-                AND pid <> pg_backend_pid();
-                """
-            ],
-            check=False,
-            capture_output=True
-        )
+        for attempt in range(1, PG_RETRIES + 1):
+            print(f"Попытка {attempt}: закрываем подключения PostgreSQL")
+            terminate_pg_sessions(db_name)
 
-        subprocess.run(
-            [
-                "psql", "-h", PG_HOST, "-p", PG_PORT,
-                "-U", PG_USER, "-d", "postgres",
-                "-c", f'DROP DATABASE IF EXISTS "{db_name}";'
-            ],
-            check=True
-        )
+            result = subprocess.run(
+                [
+                    "psql", "-h", PG_HOST, "-p", PG_PORT,
+                    "-U", PG_USER, "-d", "postgres",
+                    "-c", f'DROP DATABASE IF EXISTS "{db_name}";'
+                ],
+                capture_output=True,
+                text=True
+            )
 
-        print("PostgreSQL: база удалена")
+            if result.returncode == 0:
+                print("PostgreSQL: база удалена")
+                return
+
+            print("PostgreSQL ещё занята, ждём...")
+            time.sleep(PG_WAIT_BETWEEN)
+
+        print("❌ PostgreSQL: не удалось удалить базу после всех попыток")
+        print(result.stderr)
+        sys.exit(2)
 
     finally:
         os.environ.pop("PGPASSWORD", None)
 
 
+# ---------- 1C ----------
+
 def drop_1c_infobase(infobase_name: str) -> bool:
     """
-    Возвращает True если база была найдена и удалена в кластере 1С
+    True — если база найдена (даже если Drop упал)
+    False — если базы нет в кластере
     """
     com = agent = None
-    removed = False
-
     pythoncom.CoInitialize()
 
     try:
@@ -122,13 +148,15 @@ def drop_1c_infobase(infobase_name: str) -> bool:
                         print(f"Найдена база {base.Name}")
 
                         with suppress(Exception):
-                            connections = wp.GetInfoBaseConnections(base)
-                            for c in connections:
+                            for c in wp.GetInfoBaseConnections(base):
                                 wp.TerminateConnection(c)
 
-                        wp.DropInfoBase(base, 1)
-                        print("База удалена из кластера 1С")
-                        removed = True
+                        try:
+                            wp.DropInfoBase(base, 1)
+                            print("База удалена из кластера 1С")
+                        except Exception as e:
+                            print("⚠ DropInfoBase не удался, продолжаем:", e)
+
                         return True
 
             finally:
@@ -155,9 +183,12 @@ if __name__ == "__main__":
         sys.exit(1)
 
     infobase = sys.argv[1].strip()
-    db_name = infobase.lower()   # В твоём случае имя БД = имя ИБ
+    db_name = infobase.lower()
 
-    removed_1c = drop_1c_infobase(infobase)
+    found_1c = drop_1c_infobase(infobase)
+
+    print("Ожидание освобождения ресурсов...")
+    time.sleep(5)
 
     drop_postgres(db_name)
     clean_1c_cache()
