@@ -11,11 +11,8 @@ pipeline {
         stage('Инициализация параметров') {
             steps {
                 script {
-                    currentBuild.displayName =
-                        "#${BUILD_NUMBER} – ${params.product} – ${params.VERSION_NEW} ${params.debug}"
-
-                    updateConfigFile()
-
+					currentBuild.displayName = "#${BUILD_NUMBER} – ${params.product} – ${params.VERSION_NEW} ${params.debug}"
+					updateConfigFile()
                     if (params.product == 'fitness') {
                         env.testPathPlaceholder = "\\tests\\features\\fitness${params.debug}"
                         env.repository = repositoryReleaseFitness
@@ -46,10 +43,6 @@ pipeline {
                 script {
                     def drop_db = "tests/scripts/drop_db.py"
                     def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt"
-
-                    // =========================
-                    // Retry для drop_db
-                    // =========================
                     timeout(time: 2, unit: 'MINUTES') {
                         retry(3) {
                             try {
@@ -64,30 +57,21 @@ pipeline {
                         }
                     }
 
-                    // =========================
-                    // Создание базы и работа с 1С
-                    // =========================
                     wait1C()
-
                     echo "Создание базы данных"
                     runDbOperation("create", "\"${env.dbTests}\"")
                     wait1C()
-
                     echo "Отключение сессий"
                     runDbOperation("session_kill", "\"${env.dbTests}\"")
-
                     echo "Загрузка .dt"
                     runDbOperation("restore", "\"${params.product}\" \"${env.dbTests}\"")
-
                     echo "Обновление конфигурации"
                     runDbOperation("updatedb", "\"${env.dbTests}\"")
-
                     echo "Загрузка из хранилища"
                     runDbOperation("loadrepo","\"${env.repository}\" \"${env.VATest}\" \"${env.dbTests}\"")
-
+					echo "Обновление конфигурации"
                     runDbOperation("updatedb", "\"${env.dbTests}\"")
                     wait1C()
-
                     echo "Разблокирование входа"
                     runDbOperation("session_unlock", "\"${env.dbTests}\"")
 
@@ -99,9 +83,6 @@ pipeline {
                     }
 
                     if (params.VERSION_NEW > env.version) {
-                        // =========================
-                        // Retry для vanessa-runner (update1C/run/dump)
-                        // =========================
                         retry(2) {
                             try {
                                 runDbOperation("update1C", "\"${env.dbTests}\" \"${env.epfvrunner}\"")
@@ -123,15 +104,9 @@ pipeline {
         stage('Сценарное тестирование') {
             steps {
                 script {
-                    // =========================
-                    // Retry для сценарных тестов
-                    // =========================
                     retry(2) {
                         try {
-                            runDbOperation(
-                                "vanessa",
-                                "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\""
-                            )
+                            runDbOperation("vanessa", "\"${env.WORKSPACE}\" \"${env.testPathPlaceholder}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
                         } catch (e) {
                             echo "Сценарные тесты упали, повтор через 30 сек"
                             sleep 30
@@ -148,10 +123,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        runDbOperation(
-                            "smoke",
-                            "\"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\""
-                        )
+                        runDbOperation("smoke", "\"${env.WORKSPACE}\" \"${env.pathvanessa}\" \"${env.dbTests}\"")
                     } catch (e) {
                         currentBuild.result = 'UNSTABLE'
                     }
@@ -172,7 +144,7 @@ pipeline {
     }
 }
 
-/* ===== helpers ===== */
+
 def runDbOperation(operation, params) {
     bat """
         chcp 65001
