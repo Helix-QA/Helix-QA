@@ -1,5 +1,9 @@
 pipeline {
     agent { label "OneS" }
+	    environment {
+        dbTests = "avtotestqa"
+    }
+
     stages {
 
         stage('Инициализация параметров') {
