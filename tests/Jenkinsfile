@@ -36,13 +36,32 @@ pipeline {
                 }
             }
         }
+		stage('Очистка кластера 1С') {
+			steps {
+				echo 'Принудительное удаление ИБ из кластера 1С'
+				bat """
+				chcp 65001
+				for /f "tokens=*" %%i in ('"C:\\Program Files\\1cv8\\8.3.27.1688\\bin\\rac.exe" infobase list --cluster localhost:1545 ^| findstr ${env.dbTests}') do (
+					echo Найдена зависшая база %%i
+					for /f "tokens=2 delims=:" %%u in ("%%i") do set UUID=%%u
+				)
+
+				if defined UUID (
+					echo Удаляю регистрацию базы %UUID%
+					"C:\\Program Files\\1cv8\\8.3.27.1688\\bin\\rac.exe" infobase drop --cluster localhost:1545 --infobase %UUID% --force
+				) else (
+					echo В кластере базы нет
+				)
+				"""
+			}
+		}
 
         stage("Создание БД") {
             steps {
                 script {
                     def drop_db = "tests/scripts/drop_db.py"
                     def versionFile = "D:\\Vanessa-Automation\\version\\${params.product}.txt" // перенести в git
-                    timeout(time: 2, unit: 'MINUTES') {
+				    timeout(time: 2, unit: 'MINUTES') {
                         retry(3) {
                             try {
 								echo "Удаление существующей базы"
