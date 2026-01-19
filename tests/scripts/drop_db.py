@@ -20,178 +20,174 @@ PG_PORT = "5432"
 PG_USER = "postgres"
 PG_PASS = "postgres"
 
-PG_RETRIES = 6          # сколько раз пробуем убить сессии
-PG_WAIT_BETWEEN = 5    # секунд между попытками
+RAC_PATH = r"C:\Program Files\1cv8\8.3.27.1688\bin\rac.exe"
+RAC_CLUSTER_ADDR = "localhost:1545"
+
+PG_RETRIES = 6
+PG_WAIT_BETWEEN = 5
 # ============================================
 
 
+# ---------- SERVICE UTILS ----------
+
+def run(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
+# ---------- RAC FORCE CLEAN ----------
+
+def rac_force_drop(infobase_name: str):
+    print("=== RAC CLEANUP ===")
+
+    cluster_uuid = None
+    result = run([RAC_PATH, "cluster", "list", RAC_CLUSTER_ADDR])
+
+    for line in result.stdout.splitlines():
+        if "cluster" in line.lower():
+            cluster_uuid = line.split(":")[1].strip()
+            break
+
+    if not cluster_uuid:
+        print("RAC: кластер не найден")
+        return
+
+    print("Cluster UUID:", cluster_uuid)
+
+    ib_uuid = None
+    result = run([RAC_PATH, "infobase", "list", "--cluster", cluster_uuid])
+
+    for line in result.stdout.splitlines():
+        if infobase_name.lower() in line.lower():
+            ib_uuid = line.split(":")[1].strip()
+            break
+
+    if not ib_uuid:
+        print("RAC: база не зарегистрирована")
+        return
+
+    print("RAC: найдена IB", ib_uuid)
+
+    print("RAC: убиваем сессии")
+    run([
+        RAC_PATH, "session", "terminate",
+        "--cluster", cluster_uuid,
+        "--infobase", ib_uuid,
+        "--force"
+    ])
+
+    print("RAC: удаляем IB из кластера")
+    run([
+        RAC_PATH, "infobase", "drop",
+        "--cluster", cluster_uuid,
+        "--infobase", ib_uuid
+    ])
+
+    print("RAC cleanup завершён")
+
+
+# ---------- CLEAN ----------
+
 def clean_gen_py():
-    gen_py = os.path.expanduser(r"~\AppData\Local\Temp\gen_py")
-    shutil.rmtree(gen_py, ignore_errors=True)
+    shutil.rmtree(os.path.expanduser(r"~\AppData\Local\Temp\gen_py"), ignore_errors=True)
+
+
+def delete_folder(folder_path):
+    shutil.rmtree(folder_path, ignore_errors=True)
 
 
 def clean_1c_cache():
     user = os.getenv("USERNAME")
+    base = fr"C:\Users\{user}\AppData"
     paths = [
-        fr"C:\Users\{user}\AppData\Local\1C\1cv8",
-        fr"C:\Users\{user}\AppData\Roaming\1C\1cv8",
-        fr"C:\Users\{user}\AppData\Local\1C\1cv82",
-        fr"C:\Users\{user}\AppData\Roaming\1C\1cv82",
+        base + r"\Local\1C\1cv8",
+        base + r"\Roaming\1C\1cv8",
+        base + r"\Local\1C\1cv82",
+        base + r"\Roaming\1C\1cv82",
     ]
-
     for path in paths:
-        if not os.path.exists(path):
-            continue
-
-        for item in os.listdir(path):
-            if item in ("ExtCompT", "1cv8strt.pfl"):
-                continue
-            full = os.path.join(path, item)
-            with suppress(Exception):
-                shutil.rmtree(full, ignore_errors=True) if os.path.isdir(full) else os.remove(full)
+        if os.path.exists(path):
+            for item in os.listdir(path):
+                if item not in ("ExtCompT", "1cv8strt.pfl"):
+                    delete_folder(os.path.join(path, item))
 
 
 # ---------- PostgreSQL ----------
 
-def terminate_pg_sessions(db_name: str):
+def terminate_pg_sessions(db_name):
     os.environ["PGPASSWORD"] = PG_PASS
+    run([
+        "psql", "-h", PG_HOST, "-p", PG_PORT,
+        "-U", PG_USER, "-d", "postgres",
+        "-c",
+        f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{db_name}' AND pid<>pg_backend_pid();"
+    ])
 
-    subprocess.run(
-        [
+
+def drop_postgres(db_name):
+    print("PostgreSQL drop:", db_name)
+    os.environ["PGPASSWORD"] = PG_PASS
+    for i in range(PG_RETRIES):
+        terminate_pg_sessions(db_name)
+        result = run([
             "psql", "-h", PG_HOST, "-p", PG_PORT,
             "-U", PG_USER, "-d", "postgres",
-            "-c",
-            f"""
-            SELECT pg_terminate_backend(pid)
-            FROM pg_stat_activity
-            WHERE datname = '{db_name}'
-              AND pid <> pg_backend_pid();
-            """
-        ],
-        check=False,
-        capture_output=True
-    )
+            "-c", f'DROP DATABASE IF EXISTS "{db_name}";'
+        ])
+        if result.returncode == 0:
+            print("PostgreSQL удалена")
+            return
+        time.sleep(PG_WAIT_BETWEEN)
+    print(result.stderr)
+    sys.exit(2)
 
 
-def drop_postgres(db_name: str):
-    print(f"PostgreSQL: удаление базы {db_name}")
-    os.environ["PGPASSWORD"] = PG_PASS
+# ---------- 1C COM ----------
 
-    try:
-        for attempt in range(1, PG_RETRIES + 1):
-            print(f"Попытка {attempt}: закрываем подключения PostgreSQL")
-            terminate_pg_sessions(db_name)
-
-            result = subprocess.run(
-                [
-                    "psql", "-h", PG_HOST, "-p", PG_PORT,
-                    "-U", PG_USER, "-d", "postgres",
-                    "-c", f'DROP DATABASE IF EXISTS "{db_name}";'
-                ],
-                capture_output=True,
-                text=True
-            )
-
-            if result.returncode == 0:
-                print("PostgreSQL: база удалена")
-                return
-
-            print("PostgreSQL ещё занята, ждём...")
-            time.sleep(PG_WAIT_BETWEEN)
-
-        print("❌ PostgreSQL: не удалось удалить базу после всех попыток")
-        print(result.stderr)
-        sys.exit(2)
-
-    finally:
-        os.environ.pop("PGPASSWORD", None)
-
-
-# ---------- 1C ----------
-
-def drop_1c_infobase(infobase_name: str) -> bool:
-    """
-    True — если база найдена (даже если Drop упал)
-    False — если базы нет в кластере
-    """
+def drop_1c_infobase(name):
     com = agent = None
     pythoncom.CoInitialize()
-
     try:
         clean_gen_py()
-
-        print("1. Подключение к COMConnector")
         com = win32com.client.gencache.EnsureDispatch("V83.COMConnector")
-
-        print("2. Подключение к агенту 1С")
         agent = com.ConnectAgent(AGENT_ADDR)
-
-        clusters = agent.GetClusters()
-        if not clusters:
-            print("Кластеры 1С не найдены")
-            return False
-
-        cluster = clusters[0]
+        cluster = agent.GetClusters()[0]
         agent.Authenticate(cluster, "", "")
 
-        print("3. Поиск базы во всех Working Process")
         for wp_info in agent.GetWorkingProcesses(cluster):
-            wp = None
-            try:
-                wp = com.ConnectWorkingProcess(
-                    f"tcp://{WP_HOST}:{wp_info.MainPort}"
-                )
-                wp.AddAuthentication(DB_USER_1C, DB_PASS_1C)
-
-                for base in wp.GetInfoBases():
-                    if base.Name.lower() == infobase_name.lower():
-                        print(f"Найдена база {base.Name}")
-
-                        with suppress(Exception):
-                            for c in wp.GetInfoBaseConnections(base):
-                                wp.TerminateConnection(c)
-
-                        try:
-                            wp.DropInfoBase(base, 1)
-                            print("База удалена из кластера 1С")
-                        except Exception as e:
-                            print("⚠ DropInfoBase не удался, продолжаем:", e)
-
-                        return True
-
-            finally:
-                with suppress(Exception):
-                    del wp
-
-        print("База не найдена в кластере 1С")
+            wp = com.ConnectWorkingProcess(f"tcp://{WP_HOST}:{wp_info.MainPort}")
+            wp.AddAuthentication(DB_USER_1C, DB_PASS_1C)
+            for base in wp.GetInfoBases():
+                if base.Name.lower() == name.lower():
+                    print("COM: база найдена")
+                    with suppress(Exception):
+                        for c in wp.GetInfoBaseConnections(base):
+                            wp.TerminateConnection(c)
+                    with suppress(Exception):
+                        wp.DropInfoBase(base, 1)
+                    return True
         return False
-
     finally:
-        with suppress(Exception):
-            del agent
-            del com
         pythoncom.CoUninitialize()
 
 
-# ================== ENTRYPOINT ==================
+# ================= ENTRY =================
 
 if __name__ == "__main__":
-    print("=== УДАЛЕНИЕ БАЗЫ 1С ===")
-
-    if len(sys.argv) < 2:
-        print("Использование: drop_db.py <ИмяИБ>")
-        sys.exit(1)
+    print("=== DROP DB START ===")
 
     infobase = sys.argv[1].strip()
-    db_name = infobase.lower()
+    db = infobase.lower()
 
-    found_1c = drop_1c_infobase(infobase)
+    drop_1c_infobase(infobase)
 
-    print("Ожидание освобождения ресурсов...")
+    print("Ожидание...")
     time.sleep(5)
 
-    drop_postgres(db_name)
+    rac_force_drop(infobase)
+
+    delete_folder("tests/build/results")
+
+    drop_postgres(db)
     clean_1c_cache()
 
-    print("=== УСПЕХ ===")
-    sys.exit(0)
+    print("=== DONE ===")
