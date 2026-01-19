@@ -7,7 +7,7 @@
 	  "reportLink": "${allureReportUrl}",
 	  "language": "ru",
 	  "allureFolder": "allure-report",
-	  "enableChart": true,
+	  "enableChart": false,
 	  "enableSuitesPublishing": false,
 	  "customData": {}
 	},
