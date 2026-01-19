@@ -36,7 +36,7 @@ pipeline {
                 }
             }
         }
-		
+
         stage("Создание БД") {
             steps {
                 script {
@@ -156,7 +156,7 @@ pipeline {
 						.replace('"${logo}"', "\"${env.logo}\"")
 					writeFile(file: 'tests/notifications/config.json', text: updatedConfigJson)
 					try {
-						bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -jar tests/notifications/allure-notifications-4.8.0.jar"""
+						bat """java "-DconfigFile=tests/notifications/config.json" "-Dhttp.connection.timeout=60000" "-Dhttp.socket.timeout=120000" -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO -jar tests/notifications/allure-notifications-4.8.0.jar"""
 					}
 					catch (Exception e) {
 						echo "Ошибка при отправке уведомления: ${e.message}. Продолжаем выполнение pipeline."

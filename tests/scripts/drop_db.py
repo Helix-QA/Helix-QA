@@ -30,8 +30,12 @@ PG_WAIT_BETWEEN = 5
 
 # ---------- SERVICE UTILS ----------
 
-def run(cmd):
-    return subprocess.run(cmd, capture_output=True, text=True)
+def run(cmd, ignore_errors=False):
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if ignore_errors and result.stderr:
+        result.stderr = ""  # очищаем вывод ошибок
+    return result
+
 
 
 # ---------- RAC FORCE CLEAN ----------
