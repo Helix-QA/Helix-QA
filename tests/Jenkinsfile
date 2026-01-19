@@ -45,8 +45,13 @@ pipeline {
                     timeout(time: 2, unit: 'MINUTES') {
                         retry(3) {
                             try {
-                                echo "Удаление существующей базы"
-                                bat "python -X utf8 \"${drop_db}\" \"${env.dbTests}\""
+								echo "Удаление существующей базы"
+								bat """
+								chcp 65001
+								set PYTHONIOENCODING=utf-8
+								set PYTHONUTF8=1
+								cmd /c python -X utf8 "${drop_db}" "${env.dbTests}"
+								"""
                             } catch (e) {
                                 echo "drop_db упал, перезапуск агента 1С"
                                 bat 'python -X utf8 tests/scripts/AgentRestart.py'
