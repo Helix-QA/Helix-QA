@@ -38,51 +38,60 @@ def run(cmd):
 
 def rac_force_drop(infobase_name: str):
     print("=== RAC CLEANUP ===")
+    try:
+        cluster_uuid = None
+        result = run([RAC_PATH, "cluster", "list", RAC_CLUSTER_ADDR])
+        if result.returncode != 0:
+            print("RAC: невозможно получить список кластеров:", result.stderr)
+            return
 
-    cluster_uuid = None
-    result = run([RAC_PATH, "cluster", "list", RAC_CLUSTER_ADDR])
+        for line in result.stdout.splitlines():
+            if "cluster" in line.lower():
+                cluster_uuid = line.split(":")[1].strip()
+                break
 
-    for line in result.stdout.splitlines():
-        if "cluster" in line.lower():
-            cluster_uuid = line.split(":")[1].strip()
-            break
+        if not cluster_uuid:
+            print("RAC: кластер не найден")
+            return
 
-    if not cluster_uuid:
-        print("RAC: кластер не найден")
-        return
+        print("Cluster UUID:", cluster_uuid)
 
-    print("Cluster UUID:", cluster_uuid)
+        ib_uuid = None
+        result = run([RAC_PATH, "infobase", "list", "--cluster", cluster_uuid])
+        if result.returncode != 0:
+            print("RAC: невозможно получить список ИБ:", result.stderr)
+            return
 
-    ib_uuid = None
-    result = run([RAC_PATH, "infobase", "list", "--cluster", cluster_uuid])
+        for line in result.stdout.splitlines():
+            if infobase_name.lower() in line.lower():
+                ib_uuid = line.split(":")[1].strip()
+                break
 
-    for line in result.stdout.splitlines():
-        if infobase_name.lower() in line.lower():
-            ib_uuid = line.split(":")[1].strip()
-            break
+        if not ib_uuid:
+            print("RAC: база не зарегистрирована")
+            return
 
-    if not ib_uuid:
-        print("RAC: база не зарегистрирована")
-        return
+        print("RAC: найдена IB", ib_uuid)
 
-    print("RAC: найдена IB", ib_uuid)
+        print("RAC: убиваем сессии")
+        run([
+            RAC_PATH, "session", "terminate",
+            "--cluster", cluster_uuid,
+            "--infobase", ib_uuid,
+            "--force"
+        ])
 
-    print("RAC: убиваем сессии")
-    run([
-        RAC_PATH, "session", "terminate",
-        "--cluster", cluster_uuid,
-        "--infobase", ib_uuid,
-        "--force"
-    ])
+        print("RAC: удаляем IB из кластера")
+        run([
+            RAC_PATH, "infobase", "drop",
+            "--cluster", cluster_uuid,
+            "--infobase", ib_uuid
+        ])
 
-    print("RAC: удаляем IB из кластера")
-    run([
-        RAC_PATH, "infobase", "drop",
-        "--cluster", cluster_uuid,
-        "--infobase", ib_uuid
-    ])
+        print("RAC cleanup завершён")
+    except Exception as e:
+        print("RAC cleanup пропущен из-за ошибки:", e)
 
-    print("RAC cleanup завершён")
 
 
 # ---------- CLEAN ----------
