@@ -2,42 +2,64 @@
 
 <details>
 <summary><h3>1С: Фитнес-клуб</h3></summary>
-<table style="border-collapse: separate; border-spacing: 40px 20px; width: 100%;">
-  <tr>
-    <!-- Договоры (фиолетовый блок, занимает 3 строки по высоте) -->
-    <td rowspan="3" style="background:#bb86fc; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; white-space:nowrap; font-size:18px; color:black;">
-      Договоры
-    </td>
-    <td rowspan="3" style="text-align:center; vertical-align:middle; font-size:30px;">
-      →
-    </td>
-    <td rowspan="2" style="background:#81d4fa; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
-      Создание и проверка<br>справочников
-    </td>
-    <td rowspan="3" style="text-align:center; vertical-align:middle; font-size:24px;">
-      ↱<br><br>↳
-    </td>
+<svg width="1000" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" style="background:white;">
 
-    <!-- Заполнение организации (зелёный) -->
-    <td style="background:#a7ffeb; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
-      Заполнение<br>организации
-    </td>
-  </tr>
+  <!-- Фон (опционально) -->
+  <rect width="1000" height="500" fill="white"/>
 
-  <tr>
-    <!-- Заполнение структурной единицы (зелёный) -->
-    <td style="background:#a7ffeb; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
-      Заполнение<br>структурной единицы
-    </td>
-  </tr>
+  <!-- Блок "Договоры" (фиолетовый) -->
+  <rect x="50" y="200" width="200" height="80" rx="40" ry="40" fill="#bb86fc" stroke="#333" stroke-width="3"/>
+  <text x="150" y="240" font-size="20" text-anchor="middle" fill="black" font-weight="bold">Договоры</text>
 
-  <tr>
-    <!-- Создание и проверка документов (синий) -->
-    <td colspan="3" style="background:#81d4fa; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
-      Создание и проверка<br>документов
-    </td>
-  </tr>
-</table>
+  <!-- Стрелка от "Договоры" к центральному разветвлению -->
+  <line x1="250" y1="240" x2="320" y2="240" stroke="#333" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <!-- Центральное разветвление (невидимый узел для стрелок) -->
+  <!-- Верхний синий блок "Создание и проверка справочников" -->
+  <rect x="350" y="100" width="400" height="80" rx="40" ry="40" fill="#81d4fa" stroke="#333" stroke-width="3"/>
+  <text x="550" y="140" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
+    <tspan x="550" dy="-10">Создание и проверка</tspan>
+    <tspan x="550" dy="30">справочников</tspan>
+  </text>
+
+  <!-- Нижний синий блок "Создание и проверка документов" -->
+  <rect x="350" y="300" width="400" height="80" rx="40" ry="40" fill="#81d4fa" stroke="#333" stroke-width="3"/>
+  <text x="550" y="340" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
+    <tspan x="550" dy="-10">Создание и проверка</tspan>
+    <tspan x="550" dy="30">документов</tspan>
+  </text>
+
+  <!-- Стрелки от центрального узла к синим блокам -->
+  <path d="M320 240 Q 335 140 350 140" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M320 240 Q 335 340 350 340" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Зелёный блок "Заполнение организации" (верхний правый) -->
+  <rect x="800" y="80" width="350" height="80" rx="40" ry="40" fill="#a7ffeb" stroke="#333" stroke-width="3"/>
+  <text x="975" y="120" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
+    <tspan x="975" dy="-10">Заполнение</tspan>
+    <tspan x="975" dy="30">организации</tspan>
+  </text>
+
+  <!-- Зелёный блок "Заполнение структурной единицы" (нижний правый) -->
+  <rect x="800" y="280" width="400" height="80" rx="40" ry="40" fill="#a7ffeb" stroke="#333" stroke-width="3"/>
+  <text x="1000" y="320" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
+    <tspan x="1000" dy="-10">Заполнение структурной</tspan>
+    <tspan x="1000" dy="30">единицы</tspan>
+  </text>
+
+  <!-- Стрелки от верхнего синего блока к зелёным (ветвление) -->
+  <line x1="750" y1="140" x2="800" y2="140" stroke="#333" stroke-width="4"/>
+  <path d="M800 140 Q 825 120 850 120" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M800 140 Q 825 320 850 320" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Определение стрелки -->
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto-start-reverse">
+      <path d="M0,0 L0,12 L12,6 z" fill="#333"/>
+    </marker>
+  </defs>
+
+</svg>
 </details>
 
 <details>
