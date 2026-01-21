@@ -8,18 +8,12 @@
     <td rowspan="3" style="background:#bb86fc; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; white-space:nowrap; font-size:18px; color:black;">
       Договоры
     </td>
-
-    <!-- Пустая ячейка для отступа/стрелки -->
     <td rowspan="3" style="text-align:center; vertical-align:middle; font-size:30px;">
       →
     </td>
-
-    <!-- Создание и проверка справочников (синий, занимает 2 строки) -->
     <td rowspan="2" style="background:#81d4fa; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
       Создание и проверка<br>справочников
     </td>
-
-    <!-- Пустая ячейка для отступа/ветвления стрелок -->
     <td rowspan="3" style="text-align:center; vertical-align:middle; font-size:24px;">
       ↱<br><br>↳
     </td>
