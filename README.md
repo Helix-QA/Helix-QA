@@ -2,64 +2,31 @@
 
 <details>
 <summary><h3>1С: Фитнес-клуб</h3></summary>
-<svg width="1000" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" style="background:white;">
+```mermaid
+graph LR
+    subgraph Центр
+        direction TB
+        B[Создание и проверка справочников]:::blue
+        C[Создание и проверка документов]:::blue
+    end
 
-  <!-- Фон (опционально) -->
-  <rect width="1000" height="500" fill="white"/>
+    subgraph Право
+        direction TB
+        D[Заполнение организации]:::green
+        E[Заполнение структурной единицы]:::green
+    end
 
-  <!-- Блок "Договоры" (фиолетовый) -->
-  <rect x="50" y="200" width="200" height="80" rx="40" ry="40" fill="#bb86fc" stroke="#333" stroke-width="3"/>
-  <text x="150" y="240" font-size="20" text-anchor="middle" fill="black" font-weight="bold">Договоры</text>
+    A[Договоры]:::purple --> Центр
+    B --> D
+    B --> E
 
-  <!-- Стрелка от "Договоры" к центральному разветвлению -->
-  <line x1="250" y1="240" x2="320" y2="240" stroke="#333" stroke-width="4" marker-end="url(#arrow)"/>
+    classDef purple fill:#bb86fc,stroke:#333,stroke-width:3px,color:#000,rx:40,ry:40;
+    classDef blue fill:#81d4fa,stroke:#333,stroke-width:3px,color:#000,rx:40,ry:40;
+    classDef green fill:#a7ffeb,stroke:#333,stroke-width:3px,color:#000,rx:40,ry:40;
 
-  <!-- Центральное разветвление (невидимый узел для стрелок) -->
-  <!-- Верхний синий блок "Создание и проверка справочников" -->
-  <rect x="350" y="100" width="400" height="80" rx="40" ry="40" fill="#81d4fa" stroke="#333" stroke-width="3"/>
-  <text x="550" y="140" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
-    <tspan x="550" dy="-10">Создание и проверка</tspan>
-    <tspan x="550" dy="30">справочников</tspan>
-  </text>
-
-  <!-- Нижний синий блок "Создание и проверка документов" -->
-  <rect x="350" y="300" width="400" height="80" rx="40" ry="40" fill="#81d4fa" stroke="#333" stroke-width="3"/>
-  <text x="550" y="340" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
-    <tspan x="550" dy="-10">Создание и проверка</tspan>
-    <tspan x="550" dy="30">документов</tspan>
-  </text>
-
-  <!-- Стрелки от центрального узла к синим блокам -->
-  <path d="M320 240 Q 335 140 350 140" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
-  <path d="M320 240 Q 335 340 350 340" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Зелёный блок "Заполнение организации" (верхний правый) -->
-  <rect x="800" y="80" width="350" height="80" rx="40" ry="40" fill="#a7ffeb" stroke="#333" stroke-width="3"/>
-  <text x="975" y="120" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
-    <tspan x="975" dy="-10">Заполнение</tspan>
-    <tspan x="975" dy="30">организации</tspan>
-  </text>
-
-  <!-- Зелёный блок "Заполнение структурной единицы" (нижний правый) -->
-  <rect x="800" y="280" width="400" height="80" rx="40" ry="40" fill="#a7ffeb" stroke="#333" stroke-width="3"/>
-  <text x="1000" y="320" font-size="20" text-anchor="middle" fill="black" font-weight="bold">
-    <tspan x="1000" dy="-10">Заполнение структурной</tspan>
-    <tspan x="1000" dy="30">единицы</tspan>
-  </text>
-
-  <!-- Стрелки от верхнего синего блока к зелёным (ветвление) -->
-  <line x1="750" y1="140" x2="800" y2="140" stroke="#333" stroke-width="4"/>
-  <path d="M800 140 Q 825 120 850 120" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
-  <path d="M800 140 Q 825 320 850 320" stroke="#333" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Определение стрелки -->
-  <defs>
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto-start-reverse">
-      <path d="M0,0 L0,12 L12,6 z" fill="#333"/>
-    </marker>
-  </defs>
-
-</svg>
+    class A purple
+    class B,C blue
+    class D,E green
 </details>
 
 <details>
