@@ -1,4 +1,214 @@
-# Автоматическое тестирование
+<h1>Покрытие тестов</h1>
+
+<details>
+<summary><h3>1С: Фитнес-клуб</h3></summary>
+<table style="width:100%; border-collapse: separate; border-spacing: 20px 15px; font-size: 18px;">
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Договоры
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Занятия
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Заявки / Сделки / Задачи
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Клиенты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Модификаторы
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Начисление зарплаты
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Оплаты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Отчёты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Печатные формы
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Телефония
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Расписание занятий
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Рекурренты
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Роли
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Секции
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Сотрудники
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Членства / Пакеты услуг
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Методы API
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Маркетинговые акции
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Справка в налоговую
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Триггерные события
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center;">
+      &nbsp;
+    </td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary><h3>1С: Стоматологическая клиника</h3></summary>
+<table style="width:100%; border-collapse: separate; border-spacing: 20px 15px; font-size: 18px;">
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Журнал записи
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Заявки / Сделки / Задачи
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Начисление зарплаты
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Отчёты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Пациент
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Печатные формы
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Телефония
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Роли
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Сотрудники
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Справочники
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Маркетинговые акции
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Оплаты
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Триггерные события
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center;">
+      &nbsp;
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center;">
+      &nbsp;
+    </td>
+  </tr>
+</table>
+</details>
+
+<details>
+<summary><h3>1С: Салон красоты</h3></summary>
+<table style="width:100%; border-collapse: separate; border-spacing: 20px 15px; font-size: 18px;">
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Договоры
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Журнал Записи
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Заявки / Сделки / Задачи
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Начисление зарплаты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Отчёты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Печатные формы
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Пользователи
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Сотрудники
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Телефония
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Триггерные события
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Справка в налоговую
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Клиент
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Маркетинговые акции
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Оплаты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Визит
+    </td>
+  </tr>
+</table>
+</details>
+
+
+<details>
+<summary><h1>Автоматическое тестирование </h1></summary>
 
 Автоматическое тестирование продукта перед выпуском релиза для обеспечения качества.
 
@@ -83,3 +293,4 @@
 
 ![Этапы выполнения](docs/build.jpg)
 
+</details>
