@@ -2,24 +2,47 @@
 
 <details>
 <summary><h3>1С: Фитнес-клуб</h3></summary>
-<table>
-  <thead>
-    <tr>
-      <th>Параметр</th>
-      <th>Значение</th>
-      <th>Описание</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Напряжение</td>
-      <td>5V</td>
-      <td>Питание микроконтроллера</td>
-    </tr>
-    <tr>
-      <td colspan="3">Примечание: используйте стабилизатор</td>
-    </tr>
-  </tbody>
+<table style="border-collapse: separate; border-spacing: 40px 20px; width: 100%;">
+  <tr>
+    <!-- Договоры (фиолетовый блок, занимает 3 строки по высоте) -->
+    <td rowspan="3" style="background:#bb86fc; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; white-space:nowrap; font-size:18px; color:black;">
+      Договоры
+    </td>
+
+    <!-- Пустая ячейка для отступа/стрелки -->
+    <td rowspan="3" style="text-align:center; vertical-align:middle; font-size:30px;">
+      →
+    </td>
+
+    <!-- Создание и проверка справочников (синий, занимает 2 строки) -->
+    <td rowspan="2" style="background:#81d4fa; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
+      Создание и проверка<br>справочников
+    </td>
+
+    <!-- Пустая ячейка для отступа/ветвления стрелок -->
+    <td rowspan="3" style="text-align:center; vertical-align:middle; font-size:24px;">
+      ↱<br><br>↳
+    </td>
+
+    <!-- Заполнение организации (зелёный) -->
+    <td style="background:#a7ffeb; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
+      Заполнение<br>организации
+    </td>
+  </tr>
+
+  <tr>
+    <!-- Заполнение структурной единицы (зелёный) -->
+    <td style="background:#a7ffeb; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
+      Заполнение<br>структурной единицы
+    </td>
+  </tr>
+
+  <tr>
+    <!-- Создание и проверка документов (синий) -->
+    <td colspan="3" style="background:#81d4fa; padding:30px 50px; border-radius:30px; text-align:center; vertical-align:middle; font-size:18px; color:black;">
+      Создание и проверка<br>документов
+    </td>
+  </tr>
 </table>
 </details>
 
