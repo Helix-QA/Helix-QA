@@ -3,7 +3,7 @@
 <details>
 <summary><h3>1С: Фитнес-клуб</h3></summary>
 <svg width="600" height="300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300">
-  <!-- Пример простой принципиальной схемы: батарея → выключатель → резистор → светодиод → GND -->
+
 
   <!-- Батарея (+) -->
   <circle cx="50" cy="150" r="10" fill="none" stroke="black" stroke-width="4"/>
