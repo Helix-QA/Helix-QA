@@ -1,3 +1,27 @@
+<h1>Покрытие тестов</h1>
+
+<details>
+<summary><h3>1С: Фитнес-клуб</h3></summary>
+```mermaid
+graph TD
+    A[Начало] --> B{Решение?}
+    B -->|Да| C[Действие 1]
+    B -->|Нет| D[Действие 2]
+    C --> E[Конец]
+    D --> E
+</details>
+
+<details>
+<summary><h3>1С: Стоматологическая клиника</h3></summary>
+
+</details>
+
+<details>
+<summary><h3>1С: Салон красоты</h3></summary>
+
+</details>
+
+
 <details>
 <summary><h1>Автоматическое тестирование </h1></summary>
 
