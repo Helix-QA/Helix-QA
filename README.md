@@ -2,26 +2,85 @@
 
 <details>
 <summary><h3>1С: Фитнес-клуб</h3></summary>
- Договоры
- Занятия
- Заявки / Сделки / Задачи
- Клиенты
- Модификаторы
- Начисление зарплаты
- Оплаты
- Отчёты
- Печатные формы
- Телефония
- Расписание занятий
- Рекурренты
- Роли
- Секции
- Сотрудники
- Членства / Пакеты услуг
- Методы API
- Маркетинговые акции
- Справка в налоговую
- Триггерные события
+<table style="width:100%; border-collapse: separate; border-spacing: 20px 15px; font-size: 18px;">
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Договоры
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Занятия
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Заявки / Сделки / Задачи
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Клиенты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Модификаторы
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Начисление зарплаты
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Оплаты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Отчёты
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Печатные формы
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Телефония
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Расписание занятий
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Рекурренты
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Роли
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Секции
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Сотрудники
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Членства / Пакеты услуг
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Методы API
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Маркетинговые акции
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Справка в налоговую
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center; white-space:nowrap;">
+      Триггерные события
+    </td>
+    <td style="background:#f0f0f0; padding:20px 30px; border-radius:20px; text-align:center;">
+      &nbsp;
+    </td>
+  </tr>
+</table>
 
 </details>
 
