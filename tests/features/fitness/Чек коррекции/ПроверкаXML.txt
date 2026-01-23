@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CheckPackage>
+	<Parameters CashierName="Админ" OperationType="2" TaxationSystem="0" SaleLocation="Фитнес плюс" CustomerEmail="" CustomerPhone="" GroupingPositionsWhenPrinting="false" OperationOnline="false">
+		<CorrectionData Type="0" Date="$$ДатаСТире$$T00:00:00" Description="Ошибка в указании ставки НДС при применении ККТ"/>
+		<AgentData/>
+		<VendorData/>
+		<CustomerDetail/>
+		<OperationalAttribute/>
+		<IndustryAttribute/>
+	</Parameters>
+	<Positions>
+		<FiscalString Name=" $$УслугаГрупповая$$" Quantity="1" PriceWithDiscount="250" AmountWithDiscount="250" DiscountAmount="0" Department="0" VATRate="none" PaymentMethod="4" CalculationSubject="4" MeasureOfQuantity="0">
+			<IndustryAttribute/>
+			<AgentData/>
+			<VendorData/>
+		</FiscalString>
+	</Positions>
+	<Payments Cash="250" ElectronicPayment="0" PrePayment="0" PostPayment="0" Barter="0"/>
+</CheckPackage>
